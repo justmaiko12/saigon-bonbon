@@ -22,7 +22,7 @@ export default function ShopSection() {
             
             <div className="w-full relative h-[250px] md:h-[300px] mb-10">
               <Image 
-                src="/assets/3_pack.png" 
+                src="/assets/3_pack-transparent.png" 
                 alt="3-Pack Signature Flavors"
                 fill
                 className="object-contain"
@@ -50,10 +50,10 @@ export default function ShopSection() {
             
             <div className="w-full relative h-[250px] md:h-[300px] mb-10">
               <Image 
-                src="/assets/6_pack.png" 
+                src="/assets/6_pack-transparent.png" 
                 alt="6-Pack Signature Flavors"
                 fill
-                className="object-contain scale-110"
+                className="object-contain"
               />
             </div>
 
@@ -68,26 +68,60 @@ export default function ShopSection() {
         </div>
 
         {/* Badges */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 mt-20">
-          {[
-            { title: "THOUGHTFULLY MADE", icon: "🌱" },
-            { title: "NO ARTIFICIAL COLORS OR FLAVORS", icon: "🚫" },
-            { title: "CRAFTED IN THE USA", icon: "🇺🇸" }
-          ].map((badge, i) => (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              viewport={{ once: true }}
-              key={i} 
-              className="flex items-center gap-4"
-            >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/20 flex items-center justify-center text-lg">
-                {badge.icon}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 mt-20">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-4"
+          >
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF5E00] to-[#DDA2AC] flex items-center justify-center p-2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-white/20" />
+              <Image src="/assets/lion-silhouettes-transparent.png" alt="Thoughtfully Made" width={24} height={24} className="object-contain z-10 drop-shadow-md brightness-0 invert" />
+            </div>
+            <span className="font-bold text-xs md:text-sm tracking-widest w-32 leading-tight uppercase font-bolero iridescent-text">THOUGHTFULLY<br/>MADE</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-4"
+          >
+            <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-[#D5A1E3] via-[#FFD2CD] to-[#B4FFED]">
+              <div className="w-full h-full bg-black/40 rounded-full flex items-center justify-center backdrop-blur-md">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#iridescent-gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <defs>
+                    <linearGradient id="iridescent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#D5A1E3" />
+                      <stop offset="50%" stopColor="#FFD2CD" />
+                      <stop offset="100%" stopColor="#B4FFED" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                </svg>
               </div>
-              <span className="text-white/80 font-bold text-xs tracking-widest w-32 leading-tight">{badge.title}</span>
-            </motion.div>
-          ))}
+            </div>
+            <span className="font-bold text-xs md:text-sm tracking-widest w-32 leading-tight uppercase font-bolero iridescent-text">NO ARTIFICIAL<br/>COLORS OR FLAVORS</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-4"
+          >
+            <div className="w-12 h-12 relative flex items-center justify-center rounded-full overflow-hidden p-[2px] bg-gradient-to-br from-[#D5A1E3] via-[#FFD2CD] to-[#B4FFED]">
+              <div className="w-full h-full bg-black/40 rounded-full flex items-center justify-center backdrop-blur-md relative">
+                <Image src="/assets/usa-stamp-transparent.png" alt="Crafted in USA" fill className="object-contain p-1 opacity-90 drop-shadow-md brightness-200" />
+              </div>
+            </div>
+            <span className="font-bold text-xs md:text-sm tracking-widest w-32 leading-tight uppercase font-bolero iridescent-text">CRAFTED<br/>IN THE USA</span>
+          </motion.div>
         </div>
       </div>
     </section>

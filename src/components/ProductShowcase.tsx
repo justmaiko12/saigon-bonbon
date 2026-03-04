@@ -124,7 +124,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute -left-[5%] md:-left-16 lg:-left-24 top-[45%] md:top-[40%] -translate-y-1/2 w-[55%] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-16 lg:-left-24 -top-[140px] sm:-top-[180px] md:top-[40%] md:-translate-y-1/2 w-[300px] sm:w-[350px] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video 
@@ -152,8 +152,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         </AnimatePresence>
 
         {/* Main Card Container */}
-        <div className="relative w-full flex justify-end">
-          <AnimatePresence mode="wait">
+        <div className="relative w-full flex justify-center md:justify-end mt-[80px] sm:mt-[100px] md:mt-0">
+              <AnimatePresence mode="wait">
             <motion.div 
               key={`card-${currentIndex}`}
               initial={{ opacity: 0, x: 20 }}
@@ -161,9 +161,9 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
               layout 
-              className={`w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col justify-center relative shadow-2xl transition-colors duration-500 glass-panel ml-auto`}
+              className={`w-[95%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[160px] sm:pt-[200px] md:pt-16 mt-0`}
             >
-            <div className="w-full pl-[38%] sm:pl-[35%] md:pl-16 lg:pl-24 flex flex-col">
+            <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-16 lg:pl-24 md:pt-0">
               
               {/* Shared Layout Title */}
               <motion.h2 
@@ -171,7 +171,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-[3.2vw] sm:text-[3vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
+                className="font-bolero text-center md:text-left text-[6.5vw] sm:text-[5vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal md:whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}&nbsp;
@@ -185,7 +185,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     animate={{ opacity: 1, y: 0, height: "auto" }}
                     exit={{ opacity: 0, y: -10, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="flex flex-col overflow-hidden"
+                    className="flex flex-col overflow-hidden items-center md:items-start text-center md:text-left"
                   >
                     <p className="text-white/90 text-xs sm:text-sm md:text-lg mb-8 md:mb-12 leading-relaxed font-medium max-w-xl">
                       {activeFlavor.desc}
@@ -201,35 +201,35 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     className="flex flex-col overflow-hidden"
                   >
                     {/* Nutrition Badges */}
-                    <div className="flex flex-wrap items-center justify-between w-full max-w-2xl mb-12 mt-2 md:mt-4">
-                      <div className="text-center">
-                        <span className="font-bolero text-2xl sm:text-3xl md:text-6xl lg:text-[4.5rem] text-white leading-none">4g</span><br/>
-                        <span className="text-white/90 text-[8px] sm:text-[10px] md:text-base font-bold tracking-widest mt-2 md:mt-4 block leading-tight">SUGAR</span>
+                    <div className="flex flex-wrap items-center justify-center md:justify-between w-full max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-2 md:gap-0">
+                      <div className="text-center w-[45%] md:w-auto">
+                        <span className="font-bolero text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">4g</span><br/>
+                        <span className="text-white/90 text-[10px] sm:text-xs md:text-base font-bold tracking-widest mt-1 md:mt-4 block leading-tight">SUGAR</span>
                       </div>
-                      <div className="w-px h-10 md:h-20 bg-white/30 block" />
-                      <div className="text-center">
-                        <span className="font-bolero text-2xl sm:text-3xl md:text-6xl lg:text-[4.5rem] text-white leading-none">100%</span><br/>
-                        <span className="text-white/90 text-[8px] sm:text-[10px] md:text-base font-bold tracking-widest mt-2 md:mt-4 block leading-tight">PLANT<br/>BASED</span>
+                      <div className="hidden md:block w-px h-10 md:h-20 bg-white/30" />
+                      <div className="text-center w-[45%] md:w-auto">
+                        <span className="font-bolero text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">100%</span><br/>
+                        <span className="text-white/90 text-[10px] sm:text-xs md:text-base font-bold tracking-widest mt-1 md:mt-4 block leading-tight">PLANT<br/>BASED</span>
                       </div>
-                      <div className="w-px h-10 md:h-20 bg-white/30 block" />
-                      <div className="text-center">
-                        <span className="font-bolero text-2xl sm:text-3xl md:text-6xl lg:text-[4.5rem] text-white leading-none">10g</span><br/>
-                        <span className="text-white/90 text-[8px] sm:text-[10px] md:text-base font-bold tracking-widest mt-2 md:mt-4 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                      <div className="hidden md:block w-px h-10 md:h-20 bg-white/30" />
+                      <div className="text-center w-[45%] md:w-auto mt-4 md:mt-0">
+                        <span className="font-bolero text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">10g</span><br/>
+                        <span className="text-white/90 text-[10px] sm:text-xs md:text-base font-bold tracking-widest mt-1 md:mt-4 block leading-tight">PREBIOTIC<br/>FIBER</span>
                       </div>
-                      <div className="w-px h-10 md:h-20 bg-white/30 block" />
-                      <div className="text-center">
-                        <span className="font-bolero text-2xl sm:text-3xl md:text-6xl lg:text-[4.5rem] text-white leading-none">ZERO</span><br/>
-                        <span className="text-white/90 text-[8px] sm:text-[10px] md:text-base font-bold tracking-widest mt-2 md:mt-4 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                      <div className="hidden md:block w-px h-10 md:h-20 bg-white/30" />
+                      <div className="text-center w-[45%] md:w-auto mt-4 md:mt-0">
+                        <span className="font-bolero text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">ZERO</span><br/>
+                        <span className="text-white/90 text-[10px] sm:text-xs md:text-base font-bold tracking-widest mt-1 md:mt-4 block leading-tight">SUGAR<br/>ALCOHOLS</span>
                       </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <motion.div layout="position">
+              <motion.div layout="position" className="flex justify-center md:justify-start w-full">
                 <button 
                   onClick={isFlipped ? handleFlipToFront : handleFlipToBack}
-                  className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-[9px] md:text-xs font-bold tracking-widest shadow-lg w-fit"
+                  className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-[10px] md:text-xs font-bold tracking-widest shadow-lg w-fit mt-6 md:mt-0 mb-4 md:mb-0"
                 >
                   <RotateCcw size={16} className="w-3 h-3 md:w-4 md:h-4" />
                   {isFlipped ? "DESCRIPTION" : "INGREDIENTS & NUTRITIONAL VALUES"}
@@ -243,7 +243,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute right-2 bottom-2 md:right-6 md:bottom-6 pointer-events-none w-16 h-16 md:w-24 md:h-24 lg:w-[100px] lg:h-[100px]"
+                    className="absolute right-2 bottom-2 md:right-6 md:bottom-6 pointer-events-none w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-[100px] lg:h-[100px] z-10"
                   >
                     <Image 
                       src="/assets/usa-stamp-transparent.png" 
