@@ -29,7 +29,7 @@ export default function Home() {
       <AccordionSection />
       <ShopSection />
       
-      <Footer />
+      <Footer setBgColor={setBgColor} />
     </main>
   );
 }
