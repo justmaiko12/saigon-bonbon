@@ -112,7 +112,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               transition={{ duration: 0.4 }}
               className="glass-panel p-8 md:p-12 rounded-3xl"
             >
-              <h2 className="font-serif text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+              <h2 className="font-bolero text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
                 {activeFlavor.name}
               </h2>
               <p className="text-white/90 text-base md:text-lg mb-10 leading-relaxed font-medium">

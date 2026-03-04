@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Playfair_Display } from "next/font/google";
+import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,9 +8,14 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
+const lostType = localFont({
+  src: "./fonts/LostType2023-Regular.otf",
   variable: "--font-serif",
-  subsets: ["latin"],
+});
+
+const bolero = localFont({
+  src: "./fonts/BoleroesquePhysica.otf",
+  variable: "--font-bolero",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${playfair.variable} antialiased`}
+        className={`${geistSans.variable} ${lostType.variable} ${bolero.variable} antialiased`}
       >
         {children}
       </body>
