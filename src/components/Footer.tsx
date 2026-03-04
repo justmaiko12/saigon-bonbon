@@ -19,7 +19,11 @@ export default function Footer({ setBgColor }: { setBgColor?: (color: string) =>
       {/* Sunburst background rays */}
       <div 
         className="absolute inset-0 -z-10 mix-blend-overlay bg-bottom bg-no-repeat bg-cover opacity-60" 
-        style={{ backgroundImage: "url('/assets/footer-rays.png')" }}
+        style={{ 
+          backgroundImage: "url('/assets/footer-rays.png')",
+          maskImage: "linear-gradient(to bottom, transparent, black 20%)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 20%)"
+        }}
       />
       
       <div className="max-w-6xl mx-auto flex flex-col items-center">
