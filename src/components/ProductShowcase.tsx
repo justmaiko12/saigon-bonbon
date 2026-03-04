@@ -23,7 +23,7 @@ const flavors = [
     bg: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
     color: "#FF5E00",
     nutritionColor: "#FF5E00",
-    video: null
+    video: "/assets/mango-flip.webm"
   },
   {
     id: "coconut",
