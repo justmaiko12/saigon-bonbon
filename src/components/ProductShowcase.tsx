@@ -171,7 +171,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[4.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal lg:whitespace-nowrap translate-x-3 md:translate-x-0"
+                className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[5.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal lg:whitespace-nowrap translate-x-3 md:translate-x-0"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}&nbsp;
