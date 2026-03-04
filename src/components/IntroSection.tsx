@@ -20,14 +20,14 @@ export default function IntroSection({ setBgColor }: { setBgColor: (color: strin
       {/* Background Silhouettes */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 0.4, scale: 1 }}
+        whileInView={{ opacity: 0.8, scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
         viewport={{ once: true }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10"
+        className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 mix-blend-screen"
       >
         <div 
           className="w-full h-full max-w-[1400px] bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/assets/lion-silhouettes-transparent.png')" }}
+          style={{ backgroundImage: "url('/assets/lion-silhouettes.png')" }}
         />
       </motion.div>
 
@@ -36,7 +36,7 @@ export default function IntroSection({ setBgColor }: { setBgColor: (color: strin
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
         viewport={{ once: true }}
-        className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white max-w-5xl leading-[1.4] tracking-wide"
+        className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white max-w-5xl leading-[1.4] tracking-wide relative z-10"
       >
         AUTHENTIC<br/>
         VIETNAMESE-INSPIRED<br/>
