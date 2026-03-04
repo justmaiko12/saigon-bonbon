@@ -124,7 +124,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-16 lg:-left-24 -top-[140px] sm:-top-[180px] md:top-[40%] md:-translate-y-1/2 w-[300px] sm:w-[350px] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-16 lg:-left-24 -top-[100px] sm:-top-[160px] md:top-[40%] md:-translate-y-1/2 w-[480px] sm:w-[500px] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video 
@@ -152,8 +152,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         </AnimatePresence>
 
         {/* Main Card Container */}
-        <div className="relative w-full flex justify-center md:justify-end mt-[80px] sm:mt-[100px] md:mt-0">
-              <AnimatePresence mode="wait">
+        <div className="relative w-full flex justify-center md:justify-end mt-[120px] sm:mt-[200px] md:mt-0">
+          <AnimatePresence mode="wait">
             <motion.div 
               key={`card-${currentIndex}`}
               initial={{ opacity: 0, x: 20 }}
@@ -161,7 +161,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
               layout 
-              className={`w-[95%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[160px] sm:pt-[200px] md:pt-16 mt-0`}
+              className={`w-[95%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[280px] sm:pt-[280px] md:pt-16 mt-0`}
             >
             <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-16 lg:pl-24 md:pt-0">
               
@@ -171,7 +171,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-center md:text-left text-[6.5vw] sm:text-[5vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal md:whitespace-nowrap"
+                className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal md:whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}&nbsp;
