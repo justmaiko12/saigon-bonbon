@@ -152,7 +152,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         </AnimatePresence>
 
         {/* Main Card Container */}
-        <div className="relative w-full flex justify-center md:justify-end mt-[80px] sm:mt-[200px] md:mt-0">
+        <div className="relative w-full flex justify-center lg:justify-end mt-[80px] sm:mt-[200px] md:mt-0">
           <AnimatePresence mode="wait">
             <motion.div 
               key={`card-${currentIndex}`}
