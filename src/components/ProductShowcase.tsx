@@ -124,7 +124,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-32 lg:-left-40 xl:-left-48 top-[60px] sm:top-[20px] md:top-[50%] md:-translate-y-1/2 w-[550px] sm:w-[600px] md:w-[450px] lg:w-[550px] xl:w-[600px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-32 lg:-left-40 xl:-left-48 top-[60px] sm:top-[20px] md:top-[30%] md:-translate-y-1/2 w-[550px] sm:w-[600px] md:w-[450px] lg:w-[550px] xl:w-[600px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video 
