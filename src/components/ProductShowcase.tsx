@@ -198,10 +198,10 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     animate={{ opacity: 1, y: 0, height: "auto" }}
                     exit={{ opacity: 0, y: -10, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="flex flex-col overflow-y-hidden"
+                    className="flex flex-col overflow-hidden w-full md:w-[130%] lg:w-full"
                   >
                     {/* Nutrition Badges */}
-                    <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:w-full lg:w-full md:pl-[15%] lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
+                    <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:pl-[20%] lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
                       <div className="text-center w-full lg:w-auto">
                         <span className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">4g</span><br/>
                         <span className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">SUGAR</span>
