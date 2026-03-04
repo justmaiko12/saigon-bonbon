@@ -87,7 +87,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       <div className="w-full max-w-5xl relative" style={{ perspective: "2000px" }}>
         
         {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
-        <div className={`absolute left-0 md:-left-8 lg:-left-16 top-1/2 -translate-y-1/2 w-[300px] md:w-[400px] lg:w-[450px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 overflow-hidden ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
+        <div className={`absolute left-0 md:-left-8 lg:-left-16 top-[45%] md:top-[40%] -translate-y-1/2 w-[300px] md:w-[400px] lg:w-[450px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
           {activeFlavor.video ? (
             <video 
               ref={videoRef}
