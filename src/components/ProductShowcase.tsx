@@ -107,91 +107,82 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
           )}
         </div>
 
-        {/* Flipping Container */}
-        <motion.div
-          className="relative w-full flex justify-end"
-          style={{ transformStyle: "preserve-3d" }}
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ duration: 0.8, type: "spring", stiffness: 60, damping: 15 }}
-        >
-          {/* FRONT SIDE (Glass Panel on Right) */}
-          <div 
-            className="w-full md:w-[75%] glass-panel p-8 md:p-16 rounded-[2rem] min-h-[400px] flex flex-col justify-center relative shadow-2xl" 
-            style={{ backfaceVisibility: "hidden" }}
-          >
+        {/* Main Card Container */}
+        <div className="relative w-full flex justify-end">
+          <div className={`w-full md:w-[85%] lg:w-[75%] p-8 md:p-16 rounded-[2rem] min-h-[400px] flex flex-col justify-center relative shadow-2xl transition-colors duration-500 ${isFlipped ? 'glass-panel-dark border border-white/10' : 'glass-panel'}`}>
             <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.4 }}
-              >
-                <h2 className="font-bolero text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-sm">
-                  {activeFlavor.name}
-                </h2>
-                <p className="text-white/90 text-base md:text-lg mb-12 leading-relaxed font-medium max-w-xl">
-                  {activeFlavor.desc}
-                </p>
-
-                <button 
-                  onClick={handleFlipToBack}
-                  className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-xs font-bold tracking-widest shadow-lg w-fit"
+              {!isFlipped ? (
+                <motion.div
+                  key={`front-${currentIndex}`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="w-full md:pl-16 lg:pl-24" // Added padding to clear the pouch on the left
                 >
-                  <RotateCcw size={16} />
-                  INGREDIENTS & NUTRITIONAL VALUES
-                </button>
-              </motion.div>
+                  <h2 className="font-bolero text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-sm">
+                    {activeFlavor.name}
+                  </h2>
+                  <p className="text-white/90 text-base md:text-lg mb-12 leading-relaxed font-medium max-w-xl">
+                    {activeFlavor.desc}
+                  </p>
+
+                  <button 
+                    onClick={handleFlipToBack}
+                    className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-xs font-bold tracking-widest shadow-lg w-fit"
+                  >
+                    <RotateCcw size={16} />
+                    INGREDIENTS & NUTRITIONAL VALUES
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={`back-${currentIndex}`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="w-full md:pl-16 lg:pl-24" // Added padding to clear the pouch on the left
+                >
+                  <h2 className="font-bolero text-3xl md:text-5xl font-bold text-white mb-10 tracking-wide drop-shadow-sm">
+                    {activeFlavor.name}
+                  </h2>
+                  
+                  {/* Nutrition Badges */}
+                  <div className="flex flex-wrap items-start gap-4 md:gap-8 mb-12">
+                    <div className="text-center min-w-[60px]">
+                      <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>4g</span><br/>
+                      <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR</span>
+                    </div>
+                    <div className="w-px h-12 bg-white/20 hidden md:block" />
+                    <div className="text-center min-w-[60px]">
+                      <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>100%</span><br/>
+                      <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PLANT<br/>BASED</span>
+                    </div>
+                    <div className="w-px h-12 bg-white/20 hidden md:block" />
+                    <div className="text-center min-w-[60px]">
+                      <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>10g</span><br/>
+                      <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                    </div>
+                    <div className="w-px h-12 bg-white/20 hidden md:block" />
+                    <div className="text-center min-w-[60px]">
+                      <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>ZERO</span><br/>
+                      <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handleFlipToFront}
+                    className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors text-xs font-bold tracking-widest bg-white/5 shadow-lg w-fit"
+                  >
+                    <RotateCcw size={16} />
+                    INGREDIENTS & NUTRITIONAL VALUES
+                  </button>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
-
-          {/* BACK SIDE (Dark Full Card with Nutrition Info) */}
-          <div 
-            className="absolute top-0 right-0 w-full h-full glass-panel-dark rounded-[2rem] flex flex-col md:flex-row items-center p-8 md:p-16 shadow-2xl border border-white/10" 
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          >
-            {/* Empty space on the left to let the video overlay show through */}
-            <div className="w-full md:w-[40%] flex justify-center md:justify-start invisible" />
-
-            {/* Nutritional Info */}
-            <div className="w-full md:w-[60%] text-left md:pl-12 mt-8 md:mt-0">
-              <h2 className="font-bolero text-3xl md:text-5xl font-bold text-white mb-10 tracking-wide drop-shadow-sm">
-                {activeFlavor.name}
-              </h2>
-              
-              {/* Nutrition Badges */}
-              <div className="flex flex-wrap items-start gap-4 md:gap-8 mb-12">
-                <div className="text-center min-w-[60px]">
-                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>4g</span><br/>
-                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR</span>
-                </div>
-                <div className="w-px h-12 bg-white/20 hidden md:block" />
-                <div className="text-center min-w-[60px]">
-                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>100%</span><br/>
-                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PLANT<br/>BASED</span>
-                </div>
-                <div className="w-px h-12 bg-white/20 hidden md:block" />
-                <div className="text-center min-w-[60px]">
-                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>10g</span><br/>
-                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PREBIOTIC<br/>FIBER</span>
-                </div>
-                <div className="w-px h-12 bg-white/20 hidden md:block" />
-                <div className="text-center min-w-[60px]">
-                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>ZERO</span><br/>
-                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR<br/>ALCOHOLS</span>
-                </div>
-              </div>
-
-              <button 
-                onClick={handleFlipToFront}
-                className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors text-xs font-bold tracking-widest bg-white/5 shadow-lg w-fit"
-              >
-                <RotateCcw size={16} />
-                INGREDIENTS & NUTRITIONAL VALUES
-              </button>
-            </div>
-          </div>
-        </motion.div>
+        </div>
 
         {/* Carousel Controls (Below Card) */}
         <div className="flex items-center justify-center gap-6 mt-16 relative z-10">
