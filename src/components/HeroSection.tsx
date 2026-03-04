@@ -14,8 +14,7 @@ export default function HeroSection({ setBgColor }: { setBgColor: (color: string
     <section className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-12 px-6">
       
       {/* Background Video Placeholder */}
-      <div className="absolute inset-0 overflow-hidden -z-10 flex items-center justify-center pointer-events-none opacity-50 mix-blend-overlay">
-        <div className="w-full h-full bg-black/20" />
+      <div className="absolute inset-0 overflow-hidden -z-10 flex items-center justify-center pointer-events-none opacity-20">
         <p className="text-white/50 text-2xl absolute font-mono">Lion Dance Video Placeholder</p>
       </div>
 
