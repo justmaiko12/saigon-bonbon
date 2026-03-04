@@ -201,23 +201,23 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     className="flex flex-col overflow-hidden"
                   >
                     {/* Nutrition Badges */}
-                    <div className="flex flex-wrap items-center justify-center md:justify-start w-full max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-2 md:gap-6 lg:gap-8">
-                      <div className="text-center w-[45%] md:w-auto">
+                    <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-8 gap-x-4 lg:gap-8">
+                      <div className="text-center w-full lg:w-auto">
                         <span className="font-bolero text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-none">4g</span><br/>
                         <span className="text-white/90 text-[10px] sm:text-xs md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">SUGAR</span>
                       </div>
-                      <div className="hidden md:block w-px h-12 md:h-16 lg:h-20 bg-white/30" />
-                      <div className="text-center w-[45%] md:w-auto">
+                      <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />
+                      <div className="text-center w-full lg:w-auto">
                         <span className="font-bolero text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-none">100%</span><br/>
                         <span className="text-white/90 text-[10px] sm:text-xs md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">PLANT<br/>BASED</span>
                       </div>
-                      <div className="hidden md:block w-px h-12 md:h-16 lg:h-20 bg-white/30" />
-                      <div className="text-center w-[45%] md:w-auto mt-4 md:mt-0">
+                      <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />
+                      <div className="text-center w-full lg:w-auto">
                         <span className="font-bolero text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-none">10g</span><br/>
                         <span className="text-white/90 text-[10px] sm:text-xs md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">PREBIOTIC<br/>FIBER</span>
                       </div>
-                      <div className="hidden md:block w-px h-12 md:h-16 lg:h-20 bg-white/30" />
-                      <div className="text-center w-[45%] md:w-auto mt-4 md:mt-0">
+                      <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />
+                      <div className="text-center w-full lg:w-auto">
                         <span className="font-bolero text-4xl sm:text-5xl md:text-5xl lg:text-6xl text-white leading-none">ZERO</span><br/>
                         <span className="text-white/90 text-[10px] sm:text-xs md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">SUGAR<br/>ALCOHOLS</span>
                       </div>
