@@ -40,6 +40,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const [isFlipped, setIsFlipped] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const backVideoRef = useRef<HTMLVideoElement>(null);
+  const reverseReqId = useRef<number | null>(null);
   
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
@@ -54,8 +55,11 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   const handleFlipToBack = () => {
     setIsFlipped(true);
+    if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     if (videoRef.current && activeFlavor.video) {
-      videoRef.current.currentTime = 0;
+      if (videoRef.current.currentTime === videoRef.current.duration) {
+        videoRef.current.currentTime = 0;
+      }
       videoRef.current.playbackRate = 2.0; // Speed up video by 2x
       videoRef.current.play();
     }
@@ -64,21 +68,37 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const handleFlipToFront = () => {
     setIsFlipped(false);
     if (videoRef.current && activeFlavor.video) {
-      videoRef.current.playbackRate = 2.0;
-      // Depending on the video format, we might play it from the start or just reset
-      // For a spinning loop, we can just reset to 0 or play it again
-      videoRef.current.currentTime = 0;
-      videoRef.current.play(); // Play the flip back animation
+      videoRef.current.pause();
+      let lastTime = performance.now();
+      
+      const step = (time: number) => {
+        if (!videoRef.current) return;
+        const dt = (time - lastTime) / 1000;
+        lastTime = time;
+        
+        const newTime = videoRef.current.currentTime - (dt * 2.0); // 2x speed reverse
+        
+        if (newTime <= 0) {
+          videoRef.current.currentTime = 0;
+        } else {
+          videoRef.current.currentTime = newTime;
+          reverseReqId.current = requestAnimationFrame(step);
+        }
+      };
+      
+      reverseReqId.current = requestAnimationFrame(step);
     }
   };
 
   const next = () => {
     setIsFlipped(false);
+    if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     setCurrentIndex((prev) => (prev + 1) % flavors.length);
   };
 
   const prev = () => {
     setIsFlipped(false);
+    if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length);
   };
 
@@ -87,7 +107,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       <div className="w-full max-w-5xl relative" style={{ perspective: "2000px" }}>
         
         {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
-        <div className={`absolute left-0 md:-left-8 lg:-left-16 top-[45%] md:top-[40%] -translate-y-1/2 w-[300px] md:w-[400px] lg:w-[450px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
+        <div className={`absolute -left-4 md:-left-16 lg:-left-24 top-[45%] md:top-[40%] -translate-y-1/2 w-[350px] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
           {activeFlavor.video ? (
             <video 
               ref={videoRef}
