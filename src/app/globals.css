@@ -31,7 +31,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif), serif;
 }
 
-.font-serif {
+.font-serif, .iridescent-text {
   background-image: linear-gradient(90deg, #D5A1E3 2%, #BAFFE2 22%, #FFD2CD 34%, #FEDAC2 47%, #DDA2AC 63%, #9EB9FA 79%, #B4FFED 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;

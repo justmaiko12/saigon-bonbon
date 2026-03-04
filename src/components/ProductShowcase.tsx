@@ -143,7 +143,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-sm"
+                className="font-bolero text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
               >
                 {activeFlavor.name}
               </motion.h2>
