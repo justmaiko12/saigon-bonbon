@@ -28,7 +28,7 @@ export default function HeroSection({ setBgColor }: { setBgColor: (color: string
         <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-wide">
           SAIGON BONBON
         </h2>
-        <h1 className="font-serif text-6xl md:text-8xl lg:text-[7rem] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-pink-200 mb-8 leading-[0.9]">
+        <h1 className="font-serif text-6xl md:text-8xl lg:text-[7rem] font-bold iridescent-animated-text mb-8 leading-[0.9]">
           THIS IS<br/>OUR FLAVOR.
         </h1>
       </motion.div>
