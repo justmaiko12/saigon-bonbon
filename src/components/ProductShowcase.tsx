@@ -56,6 +56,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     setIsFlipped(true);
     if (videoRef.current && activeFlavor.video) {
       videoRef.current.currentTime = 0;
+      videoRef.current.playbackRate = 2.0; // Speed up video by 2x
       videoRef.current.play();
     }
   };
@@ -82,12 +83,12 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       <div className="w-full max-w-5xl relative" style={{ perspective: "2000px" }}>
         
         {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
-        <div className={`absolute left-0 md:left-4 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] aspect-[3/4] z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 overflow-hidden ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
+        <div className={`absolute left-0 md:-left-8 lg:-left-16 top-1/2 -translate-y-1/2 w-[300px] md:w-[400px] lg:w-[450px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 overflow-hidden ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
           {activeFlavor.video ? (
             <video 
               ref={videoRef}
               src={activeFlavor.video}
-              className="w-full h-full object-cover scale-[1.35]"
+              className="w-full h-full object-contain"
               muted
               playsInline
             />
@@ -153,23 +154,23 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     {/* Nutrition Badges */}
                     <div className="flex flex-wrap items-start gap-4 md:gap-8 mb-12">
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>4g</span><br/>
-                        <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR</span>
+                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>4g</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR</span>
                       </div>
-                      <div className="w-px h-12 bg-white/20 hidden md:block" />
+                      <div className="w-px h-16 bg-white/30 hidden md:block mt-2" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>100%</span><br/>
-                        <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PLANT<br/>BASED</span>
+                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>100%</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PLANT<br/>BASED</span>
                       </div>
-                      <div className="w-px h-12 bg-white/20 hidden md:block" />
+                      <div className="w-px h-16 bg-white/30 hidden md:block mt-2" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>10g</span><br/>
-                        <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>10g</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PREBIOTIC<br/>FIBER</span>
                       </div>
-                      <div className="w-px h-12 bg-white/20 hidden md:block" />
+                      <div className="w-px h-16 bg-white/30 hidden md:block mt-2" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>ZERO</span><br/>
-                        <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>ZERO</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR<br/>ALCOHOLS</span>
                       </div>
                     </div>
                   </motion.div>
