@@ -124,7 +124,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-40 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video 
@@ -198,7 +198,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     animate={{ opacity: 1, y: 0, height: "auto" }}
                     exit={{ opacity: 0, y: -10, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="flex flex-col overflow-hidden w-full md:w-[115%] lg:w-full"
+                    className="flex flex-col overflow-y-hidden overflow-x-visible w-full md:w-[115%] lg:w-full md:-ml-8 lg:ml-0"
                   >
                     {/* Nutrition Badges */}
                     <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:pl-0 lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
