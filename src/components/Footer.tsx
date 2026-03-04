@@ -4,9 +4,12 @@ import { ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gradient-to-b from-transparent to-black/80 pt-32 pb-16 px-6 overflow-hidden mt-24">
-      {/* Sunburst placeholder */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_var(--color-brand-pink)_0%,_transparent_60%)] opacity-20 -z-10 mix-blend-screen" />
+    <footer className="relative pt-32 pb-16 px-6 overflow-hidden mt-24">
+      {/* Sunburst background rays */}
+      <div 
+        className="absolute inset-0 -z-10 opacity-30 mix-blend-overlay bg-bottom bg-no-repeat bg-cover" 
+        style={{ backgroundImage: "url('/assets/footer-rays.png')" }}
+      />
       
       <div className="max-w-6xl mx-auto flex flex-col items-center">
         {/* Top Glass Card */}
