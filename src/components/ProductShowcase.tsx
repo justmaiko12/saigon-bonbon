@@ -171,7 +171,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal md:whitespace-nowrap"
+                className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[4.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal lg:whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}&nbsp;
@@ -201,7 +201,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     className="flex flex-col overflow-hidden w-full md:w-[115%] lg:w-full"
                   >
                     {/* Nutrition Badges */}
-                    <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:pl-[5%] lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
+                    <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:pl-0 lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
                       <div className="text-center w-full lg:w-auto">
                         <span className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">4g</span><br/>
                         <span className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">SUGAR</span>
