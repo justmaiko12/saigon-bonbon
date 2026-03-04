@@ -114,7 +114,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   return (
     <section ref={ref} className="relative min-h-screen flex flex-col items-center justify-center py-24 px-4 overflow-hidden" id="flavors">
-      <div className="w-full max-w-5xl relative" style={{ perspective: "2000px" }}>
+      <div className="w-full max-w-5xl relative scale-[0.85] sm:scale-100 origin-top md:origin-center" style={{ perspective: "2000px" }}>
         
         {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
         <AnimatePresence mode="wait">
