@@ -124,7 +124,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-32 lg:-left-24 top-[20px] sm:top-[20px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[400px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-32 lg:-left-24 top-[40px] sm:top-[20px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video 
@@ -152,7 +152,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         </AnimatePresence>
 
         {/* Main Card Container */}
-        <div className="relative w-full flex justify-center md:justify-end mt-[60px] sm:mt-[200px] md:mt-0">
+        <div className="relative w-full flex justify-center md:justify-end mt-[80px] sm:mt-[200px] md:mt-0">
           <AnimatePresence mode="wait">
             <motion.div 
               key={`card-${currentIndex}`}
@@ -161,7 +161,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
               layout 
-              className={`w-[85%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[240px] sm:pt-[380px] md:pt-16 mt-0`}
+              className={`w-[88%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[280px] sm:pt-[380px] md:pt-16 mt-0`}
             >
             <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[40%] lg:pl-24 md:pt-0">
               
