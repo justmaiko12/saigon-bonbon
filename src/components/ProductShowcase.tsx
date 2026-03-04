@@ -174,7 +174,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 className="font-bolero text-[3.2vw] sm:text-[3vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
-                {activeFlavor.name}
+                {activeFlavor.name}&nbsp;
               </motion.h2>
 
               <AnimatePresence mode="wait">
