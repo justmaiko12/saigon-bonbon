@@ -17,7 +17,7 @@ export default function ShopSection() {
             viewport={{ once: true }}
             className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl"
           >
-            <h3 className="text-white/80 font-bold tracking-widest text-sm md:text-base mb-2">3-PACK</h3>
+            <h3 className="font-bold tracking-widest text-sm md:text-base mb-2 iridescent-text">3-PACK</h3>
             <h2 className="font-bolero text-2xl md:text-3xl font-bold mb-10 tracking-wide iridescent-text">SIGNATURE FLAVORS</h2>
             
             <div className="w-full relative h-[250px] md:h-[300px] mb-10">
@@ -45,7 +45,7 @@ export default function ShopSection() {
             viewport={{ once: true }}
             className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl"
           >
-            <h3 className="text-white/80 font-bold tracking-widest text-sm md:text-base mb-2">6-PACK</h3>
+            <h3 className="font-bold tracking-widest text-sm md:text-base mb-2 iridescent-text">6-PACK</h3>
             <h2 className="font-bolero text-2xl md:text-3xl font-bold mb-10 tracking-wide iridescent-text">SIGNATURE FLAVORS</h2>
             
             <div className="w-full relative h-[250px] md:h-[300px] mb-10">
