@@ -23,10 +23,13 @@ export default function HeroSection({ setBgColor }: { setBgColor: (color: string
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="text-center z-10"
+        className="text-center z-10 flex flex-col items-center"
       >
-        <p className="text-white tracking-[0.2em] text-sm md:text-base mb-4 uppercase">Introducing</p>
-        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight">
+        <p className="text-white font-serif italic text-sm md:text-base mb-2 uppercase font-bold tracking-[0.1em]">Introducing</p>
+        <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-wide">
+          SAIGON BONBON
+        </h2>
+        <h1 className="font-serif text-6xl md:text-8xl lg:text-[7rem] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-pink-200 mb-8 leading-[0.9]">
           THIS IS<br/>OUR FLAVOR.
         </h1>
       </motion.div>

@@ -21,27 +21,24 @@ export default function Navigation() {
     <motion.nav 
       variants={{
         visible: { y: 0 },
-        hidden: { y: "-150%" }
+        hidden: { y: "-100%" }
       }}
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl glass-panel rounded-full px-6 py-3 flex items-center justify-between"
+      className="fixed top-0 left-0 w-full z-50 pt-8 pb-4 flex justify-center items-center gap-8 md:gap-16 text-white/80 text-xs md:text-sm font-medium tracking-widest uppercase"
     >
-      <Link href="/" className="font-serif font-bold text-xl tracking-wider text-white">
-        SAIGON BONBON
+      <Link href="/" className="hover:text-white transition-colors">
+        Home
       </Link>
-      
-      <div className="flex items-center gap-6">
-        <Link href="#about" className="text-sm font-medium text-white/80 hover:text-white transition-colors">
-          About
-        </Link>
-        <Link 
-          href="#shop" 
-          className="bg-white/20 text-white px-4 py-1.5 rounded-full text-sm font-bold hover:bg-white hover:text-black transition-colors"
-        >
-          Buy
-        </Link>
-      </div>
+      <Link href="#about" className="hover:text-white transition-colors">
+        Our Story
+      </Link>
+      <Link href="#flavors" className="hover:text-white transition-colors">
+        Flavors
+      </Link>
+      <Link href="#shop" className="hover:text-white transition-colors">
+        Shop
+      </Link>
     </motion.nav>
   );
 }
