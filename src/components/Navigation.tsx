@@ -55,6 +55,7 @@ export default function Navigation() {
             alt="Saigon Bonbon Logo" 
             fill
             className="object-contain mix-blend-screen"
+            style={{ mixBlendMode: 'screen' }}
             priority
           />
         </button>
@@ -83,7 +84,8 @@ export default function Navigation() {
                 src="/assets/logo.png" 
                 alt="Saigon Bonbon Logo" 
                 fill
-                className="object-contain mix-blend-screen object-left"
+                className="object-contain object-left mix-blend-screen"
+                style={{ mixBlendMode: 'screen' }}
                 priority
               />
             </button>
