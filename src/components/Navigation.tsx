@@ -1,9 +1,7 @@
 "use client";
 
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import Link from "next/link";
 import { useState } from "react";
-
 import Image from "next/image";
 
 export default function Navigation() {
@@ -19,6 +17,18 @@ export default function Navigation() {
     }
   });
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, targetId: string) => {
+    e.preventDefault();
+    if (targetId === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      const elem = document.getElementById(targetId);
+      if (elem) {
+        elem.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <motion.nav 
       variants={{
@@ -29,15 +39,15 @@ export default function Navigation() {
       transition={{ duration: 0.35, ease: "easeInOut" }}
       className="fixed top-0 left-0 w-full z-50 pt-8 pb-4 flex justify-center items-center gap-8 md:gap-16 text-white/80 text-xs md:text-sm font-medium tracking-widest uppercase"
     >
-      <Link href="/" className="hover:text-white transition-colors">
+      <button onClick={(e) => handleScroll(e, 'top')} className="hover:text-white transition-colors cursor-pointer">
         Home
-      </Link>
-      <Link href="#about" className="hover:text-white transition-colors">
+      </button>
+      <button onClick={(e) => handleScroll(e, 'about')} className="hover:text-white transition-colors cursor-pointer">
         Our Story
-      </Link>
+      </button>
       
       {/* Centered Logo */}
-      <Link href="/" className="relative w-32 h-10 md:w-48 md:h-12 mx-4 hover:opacity-80 transition-opacity">
+      <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-10 md:w-48 md:h-12 mx-4 hover:opacity-80 transition-opacity cursor-pointer">
         <Image 
           src="/assets/logo.png" 
           alt="Saigon Bonbon Logo" 
@@ -45,14 +55,14 @@ export default function Navigation() {
           className="object-contain mix-blend-screen"
           priority
         />
-      </Link>
+      </button>
 
-      <Link href="#flavors" className="hover:text-white transition-colors">
+      <button onClick={(e) => handleScroll(e, 'flavors')} className="hover:text-white transition-colors cursor-pointer">
         Flavors
-      </Link>
-      <Link href="#shop" className="hover:text-white transition-colors">
+      </button>
+      <button onClick={(e) => handleScroll(e, 'shop')} className="hover:text-white transition-colors cursor-pointer">
         Shop
-      </Link>
+      </button>
     </motion.nav>
   );
 }
