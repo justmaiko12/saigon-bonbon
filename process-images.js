@@ -24,3 +24,4 @@ async function removeBlack(input, output, threshold) {
 
 removeBlack("public/assets/logo.png", "public/assets/logo-transparent.png", 25);
 removeBlack("public/assets/lion-silhouettes.png", "public/assets/lion-silhouettes-transparent.png", 20);
+removeBlack("public/assets/usa-stamp.png", "public/assets/usa-stamp-transparent.png", 20);

@@ -144,7 +144,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight tracking-wide drop-shadow-sm iridescent-text"
+                className="font-bolero text-2xl md:text-3xl lg:text-4xl font-bold mb-6 leading-tight tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}
@@ -180,27 +180,27 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     {/* Nutrition Badges */}
                     <div className="flex flex-wrap items-center gap-4 md:gap-8 mb-12">
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">4g</span><br/>
-                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-white">4g</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR</span>
                       </div>
-                      <div className="w-px h-16 bg-[#e53935]/30 hidden md:block" />
+                      <div className="w-px h-16 bg-white/30 hidden md:block" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">100%</span><br/>
-                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PLANT<br/>BASED</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-white">100%</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PLANT<br/>BASED</span>
                       </div>
-                      <div className="w-px h-16 bg-[#e53935]/30 hidden md:block" />
+                      <div className="w-px h-16 bg-white/30 hidden md:block" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">10g</span><br/>
-                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-white">10g</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PREBIOTIC<br/>FIBER</span>
                       </div>
-                      <div className="w-px h-16 bg-[#e53935]/30 hidden md:block" />
+                      <div className="w-px h-16 bg-white/30 hidden md:block" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">ZERO</span><br/>
-                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-white">ZERO</span><br/>
+                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR<br/>ALCOHOLS</span>
                       </div>
                       <div className="ml-auto flex items-center justify-center">
                         <Image 
-                          src="/assets/usa-stamp.png" 
+                          src="/assets/usa-stamp-transparent.png" 
                           alt="Crafted in California Made in USA" 
                           width={100} 
                           height={100}
