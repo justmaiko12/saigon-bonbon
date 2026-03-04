@@ -144,7 +144,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-[4vw] sm:text-[3.5vw] md:text-[3vw] lg:text-[2.2rem] xl:text-[2.5rem] font-bold mb-3 md:mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
+                className="font-bolero text-[4vw] sm:text-[3.5vw] md:text-[3vw] lg:text-[2rem] xl:text-[2.25rem] font-bold mb-3 md:mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}
