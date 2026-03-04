@@ -45,10 +45,10 @@ export default function AccordionSection() {
                   onClick={() => setOpenId(item.id)}
                   className="w-full flex items-center gap-4 p-6 text-left"
                 >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors ${isOpen ? 'bg-white border-white text-black' : 'border-white/30 text-white'}`}>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors flex-shrink-0 ${isOpen ? 'bg-white border-white text-black' : 'border-white/30 text-white'}`}>
                     {isOpen ? <Minus size={14} /> : <Plus size={14} />}
                   </div>
-                  <span className={`font-bold tracking-widest text-xs md:text-sm transition-colors ${isOpen ? 'text-white' : 'text-white/60'}`}>
+                  <span className={`font-bolero font-bold tracking-widest text-lg md:text-xl transition-colors ${isOpen ? 'iridescent-text' : 'text-white/60'}`}>
                     {item.title}
                   </span>
                 </button>
