@@ -64,7 +64,11 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const handleFlipToFront = () => {
     setIsFlipped(false);
     if (videoRef.current && activeFlavor.video) {
+      videoRef.current.playbackRate = 2.0;
+      // Depending on the video format, we might play it from the start or just reset
+      // For a spinning loop, we can just reset to 0 or play it again
       videoRef.current.currentTime = 0;
+      videoRef.current.play(); // Play the flip back animation
     }
   };
 
