@@ -117,34 +117,52 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       <div className="w-full max-w-5xl relative" style={{ perspective: "2000px" }}>
         
         {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
-        <div className={`absolute -left-[5%] md:-left-16 lg:-left-24 top-[45%] md:top-[40%] -translate-y-1/2 w-[55%] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
-          {activeFlavor.video ? (
-            <video 
-              ref={videoRef}
-              src={activeFlavor.video}
-              className="w-full h-full object-contain"
-              muted
-              playsInline
-            />
-          ) : (
-            <>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-              <span className="text-white font-bolero text-xl md:text-2xl z-10 text-center px-4 leading-tight drop-shadow-md">
-                {activeFlavor.name}<br/>(FRONT POUCH)
-              </span>
-              {/* Floating Fruits Placeholder */}
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-8 -right-8 md:-top-12 md:-right-12 w-24 h-24 md:w-40 md:h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" 
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={`video-${currentIndex}`}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.4 }}
+            className={`absolute -left-[5%] md:-left-16 lg:-left-24 top-[45%] md:top-[40%] -translate-y-1/2 w-[55%] md:w-[500px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+          >
+            {activeFlavor.video ? (
+              <video 
+                ref={videoRef}
+                src={activeFlavor.video}
+                className="w-full h-full object-contain"
+                muted
+                playsInline
               />
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                <span className="text-white font-bolero text-xl md:text-2xl z-10 text-center px-4 leading-tight drop-shadow-md">
+                  {activeFlavor.name}<br/>(FRONT POUCH)
+                </span>
+                {/* Floating Fruits Placeholder */}
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-8 -right-8 md:-top-12 md:-right-12 w-24 h-24 md:w-40 md:h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" 
+                />
+              </>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
         {/* Main Card Container */}
         <div className="relative w-full flex justify-end">
-          <motion.div layout className={`w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col justify-center relative shadow-2xl transition-colors duration-500 glass-panel ml-auto`}>
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={`card-${currentIndex}`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              layout 
+              className={`w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col justify-center relative shadow-2xl transition-colors duration-500 glass-panel ml-auto`}
+            >
             <div className="w-full pl-[38%] sm:pl-[35%] md:pl-16 lg:pl-24 flex flex-col">
               
               {/* Shared Layout Title */}
@@ -238,6 +256,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               </AnimatePresence>
             </div>
           </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Carousel Controls (Below Card) */}
