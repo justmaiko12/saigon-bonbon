@@ -12,7 +12,8 @@ const flavors = [
     desc: "Light lychee infused with soft floral rose. Modern girl, free spirit, and elegant. As alluring a summer Vietnamese home.",
     bg: "linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)",
     color: "#FF107A",
-    nutritionColor: "#FF5E00"
+    nutritionColor: "#FF5E00",
+    video: "/assets/lychee-flip.webm"
   },
   {
     id: "mango",
@@ -20,7 +21,8 @@ const flavors = [
     desc: "Juicy mango, tangy tamarind, and a subtle chili kick. Just like the street snacks we used to love.",
     bg: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
     color: "#FF5E00",
-    nutritionColor: "#FF5E00"
+    nutritionColor: "#FF5E00",
+    video: null
   },
   {
     id: "coconut",
@@ -28,13 +30,16 @@ const flavors = [
     desc: "Creamy coconut meets fragrant pandan — smooth, toasty, and unmistakably Southeast Asian. A Vietnamese dessert classic that always hits.",
     bg: "linear-gradient(180deg, #67B626 0%, #009045 100%)",
     color: "#67B626",
-    nutritionColor: "#67B626"
+    nutritionColor: "#67B626",
+    video: null
   }
 ];
 
 export default function ProductShowcase({ setBgColor }: { setBgColor: (color: string) => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const backVideoRef = useRef<HTMLVideoElement>(null);
   
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
@@ -46,6 +51,21 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   }, [currentIndex, isInView, setBgColor]);
 
   const activeFlavor = flavors[currentIndex];
+
+  const handleFlipToBack = () => {
+    setIsFlipped(true);
+    if (videoRef.current && activeFlavor.video) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play();
+    }
+  };
+
+  const handleFlipToFront = () => {
+    setIsFlipped(false);
+    if (videoRef.current && activeFlavor.video) {
+      videoRef.current.currentTime = 0;
+    }
+  };
 
   const next = () => {
     setIsFlipped(false);
@@ -59,76 +79,79 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   return (
     <section ref={ref} className="relative min-h-screen flex flex-col items-center justify-center py-24 px-4 overflow-hidden" id="flavors">
-      <div className="w-full max-w-5xl" style={{ perspective: "2000px" }}>
+      <div className="w-full max-w-5xl relative" style={{ perspective: "2000px" }}>
         
-        {/* Flipping Container */}
-        <motion.div
-          className="relative w-full"
-          style={{ transformStyle: "preserve-3d" }}
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ duration: 0.8, type: "spring", stiffness: 60, damping: 15 }}
-        >
-          {/* FRONT SIDE (Glass Panel on Right, Pouch protruding on Left) */}
-          <div 
-            className="w-full flex flex-col md:flex-row items-center justify-end relative z-10" 
-            style={{ backfaceVisibility: "hidden" }}
-          >
-            {/* Transparent Card */}
-            <div className="w-full md:w-[75%] glass-panel p-8 md:p-16 rounded-[2rem] min-h-[400px] flex flex-col justify-center relative ml-auto shadow-2xl">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentIndex}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <h2 className="font-bolero text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-sm">
-                    {activeFlavor.name}
-                  </h2>
-                  <p className="text-white/90 text-base md:text-lg mb-12 leading-relaxed font-medium max-w-xl">
-                    {activeFlavor.desc}
-                  </p>
-
-                  <button 
-                    onClick={() => setIsFlipped(true)}
-                    className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-xs font-bold tracking-widest shadow-lg w-fit"
-                  >
-                    <RotateCcw size={16} />
-                    INGREDIENTS & NUTRITIONAL VALUES
-                  </button>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Floating Pouch (Left Side) */}
-            <div className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] aspect-[3/4] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center transition-colors duration-500 overflow-hidden" style={{ backgroundColor: activeFlavor.color }}>
+        {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
+        <div className={`absolute left-0 md:left-4 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] aspect-[3/4] z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 overflow-hidden ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}>
+          {activeFlavor.video ? (
+            <video 
+              ref={videoRef}
+              src={activeFlavor.video}
+              className="w-full h-full object-cover scale-[1.35]"
+              muted
+              playsInline
+            />
+          ) : (
+            <>
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
               <span className="text-white font-bolero text-2xl z-10 text-center px-4 leading-tight drop-shadow-md">
                 {activeFlavor.name}<br/>(FRONT POUCH)
               </span>
-              
               {/* Floating Fruits Placeholder */}
               <motion.div 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className="absolute -top-12 -right-12 w-40 h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" 
               />
-            </div>
+            </>
+          )}
+        </div>
+
+        {/* Flipping Container */}
+        <motion.div
+          className="relative w-full flex justify-end"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 60, damping: 15 }}
+        >
+          {/* FRONT SIDE (Glass Panel on Right) */}
+          <div 
+            className="w-full md:w-[75%] glass-panel p-8 md:p-16 rounded-[2rem] min-h-[400px] flex flex-col justify-center relative shadow-2xl" 
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <h2 className="font-bolero text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-sm">
+                  {activeFlavor.name}
+                </h2>
+                <p className="text-white/90 text-base md:text-lg mb-12 leading-relaxed font-medium max-w-xl">
+                  {activeFlavor.desc}
+                </p>
+
+                <button 
+                  onClick={handleFlipToBack}
+                  className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-xs font-bold tracking-widest shadow-lg w-fit"
+                >
+                  <RotateCcw size={16} />
+                  INGREDIENTS & NUTRITIONAL VALUES
+                </button>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* BACK SIDE (Dark Full Card with Back Pouch and Nutrition Info) */}
+          {/* BACK SIDE (Dark Full Card with Nutrition Info) */}
           <div 
-            className="absolute top-0 left-0 w-full h-full glass-panel-dark rounded-[2rem] flex flex-col md:flex-row items-center p-8 md:p-16 shadow-2xl border border-white/10" 
+            className="absolute top-0 right-0 w-full h-full glass-panel-dark rounded-[2rem] flex flex-col md:flex-row items-center p-8 md:p-16 shadow-2xl border border-white/10" 
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            {/* Back Pouch Placeholder */}
-            <div className="w-full md:w-[40%] flex justify-center md:justify-start">
-              <div className="w-[240px] md:w-[280px] aspect-[3/4] bg-white/5 rounded-2xl border border-white/20 flex flex-col items-center justify-center shadow-inner relative overflow-hidden" style={{ backgroundColor: `${activeFlavor.color}40` }}>
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80" />
-                <span className="text-white/80 font-bold text-sm z-10 tracking-widest">BACK LABEL</span>
-              </div>
-            </div>
+            {/* Empty space on the left to let the video overlay show through */}
+            <div className="w-full md:w-[40%] flex justify-center md:justify-start invisible" />
 
             {/* Nutritional Info */}
             <div className="w-full md:w-[60%] text-left md:pl-12 mt-8 md:mt-0">
@@ -160,7 +183,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               </div>
 
               <button 
-                onClick={() => setIsFlipped(false)}
+                onClick={handleFlipToFront}
                 className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors text-xs font-bold tracking-widest bg-white/5 shadow-lg w-fit"
               >
                 <RotateCcw size={16} />
