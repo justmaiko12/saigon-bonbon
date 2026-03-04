@@ -70,6 +70,12 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     setIsFlipped(false);
     if (videoRef.current && activeFlavor.video) {
       videoRef.current.pause();
+      
+      // If the video somehow reset, push it to the end so it can reverse
+      if (videoRef.current.currentTime === 0 && videoRef.current.duration > 0) {
+        videoRef.current.currentTime = videoRef.current.duration;
+      }
+      
       let lastTime = performance.now();
       
       const step = (time: number) => {
@@ -77,7 +83,10 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         const dt = (time - lastTime) / 1000;
         lastTime = time;
         
-        const newTime = videoRef.current.currentTime - (dt * 2.5); // 2.5x speed reverse
+        // Cap dt to prevent massive jumps
+        const clampedDt = Math.min(dt, 0.1);
+        
+        const newTime = videoRef.current.currentTime - (clampedDt * 2.5); // 2.5x speed reverse
         
         if (newTime <= 0) {
           videoRef.current.currentTime = 0;
