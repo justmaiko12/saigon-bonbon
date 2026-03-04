@@ -10,11 +10,12 @@ export default function Background({ color }: { color: string }) {
       transition={{ duration: 1, ease: "easeInOut" }}
     >
       <div 
-        className="absolute inset-0 opacity-50 mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.6] mix-blend-multiply"
         style={{
           backgroundImage: "url('/assets/pattern.png')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px" // Adjust size as necessary
+          backgroundSize: "400px",
+          filter: "invert(1)"
         }}
       />
     </motion.div>
