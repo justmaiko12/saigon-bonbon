@@ -20,13 +20,13 @@ export default function IntroSection({ setBgColor }: { setBgColor: (color: strin
       {/* Background Silhouettes */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 0.15, scale: 1 }}
+        whileInView={{ opacity: 0.3, scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
         viewport={{ once: true }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10"
+        className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 mix-blend-multiply"
       >
         <div 
-          className="w-full max-w-[1200px] aspect-[16/9] bg-contain bg-center bg-no-repeat"
+          className="w-full h-full max-w-[1400px] bg-contain bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/assets/lion-silhouettes.png')" }}
         />
       </motion.div>
