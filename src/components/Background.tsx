@@ -9,9 +9,14 @@ export default function Background({ color }: { color: string }) {
       animate={{ background: color }}
       transition={{ duration: 1, ease: "easeInOut" }}
     >
-      {/* Pattern overlay placeholder (for the subtle mandala/sunburst pattern) */}
-      <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay bg-repeat" 
-           style={{ backgroundImage: "radial-gradient(circle at center, #ffffff 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+      <div 
+        className="absolute inset-0 opacity-20 mix-blend-overlay"
+        style={{
+          backgroundImage: "url('/assets/pattern.png')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "400px" // Adjust size as necessary
+        }}
+      />
     </motion.div>
   );
 }
