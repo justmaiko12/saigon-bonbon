@@ -39,7 +39,7 @@ export default function Navigation() {
         animate={isScrolled ? "hidden" : "visible"}
         transition={{ duration: 0.3 }}
         className="fixed top-0 left-0 w-full z-40 pt-8 pb-4 flex justify-center items-center gap-8 md:gap-16 text-white/80 text-xs md:text-sm font-medium tracking-widest uppercase"
-        style={{ pointerEvents: isScrolled ? "none" : "auto" }}
+        style={{ mixBlendMode: 'screen', pointerEvents: isScrolled ? "none" : "auto" }}
       >
         <button onClick={(e) => handleScroll(e, 'top')} className="hover:text-white transition-colors cursor-pointer">
           Home
