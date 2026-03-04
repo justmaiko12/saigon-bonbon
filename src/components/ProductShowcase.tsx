@@ -144,7 +144,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-2xl md:text-3xl lg:text-4xl font-bold mb-6 leading-tight tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
+                className="font-bolero text-xl md:text-3xl lg:text-[2.2rem] xl:text-[2.75rem] font-bold mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}
@@ -173,39 +173,26 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     transition={{ duration: 0.3 }}
                     className="flex flex-col overflow-hidden"
                   >
-                    <p className="text-white/80 text-sm md:text-base mb-8 leading-relaxed font-medium max-w-xl">
-                      80 calories per serving bla bla natural bla bla
-                    </p>
-                    
                     {/* Nutrition Badges */}
-                    <div className="flex flex-wrap items-center gap-4 md:gap-8 mb-12">
-                      <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-white">4g</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR</span>
+                    <div className="flex flex-wrap items-center justify-between w-full max-w-2xl mb-12 mt-4">
+                      <div className="text-center">
+                        <span className="font-bolero text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">4g</span><br/>
+                        <span className="text-white/90 text-sm md:text-base font-bold tracking-widest mt-4 block leading-tight">SUGAR</span>
                       </div>
-                      <div className="w-px h-16 bg-white/30 hidden md:block" />
-                      <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-white">100%</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PLANT<br/>BASED</span>
+                      <div className="w-px h-20 bg-white/30 hidden md:block" />
+                      <div className="text-center">
+                        <span className="font-bolero text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">100%</span><br/>
+                        <span className="text-white/90 text-sm md:text-base font-bold tracking-widest mt-4 block leading-tight">PLANT<br/>BASED</span>
                       </div>
-                      <div className="w-px h-16 bg-white/30 hidden md:block" />
-                      <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-white">10g</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                      <div className="w-px h-20 bg-white/30 hidden md:block" />
+                      <div className="text-center">
+                        <span className="font-bolero text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">10g</span><br/>
+                        <span className="text-white/90 text-sm md:text-base font-bold tracking-widest mt-4 block leading-tight">PREBIOTIC<br/>FIBER</span>
                       </div>
-                      <div className="w-px h-16 bg-white/30 hidden md:block" />
-                      <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl text-white">ZERO</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR<br/>ALCOHOLS</span>
-                      </div>
-                      <div className="ml-auto flex items-center justify-center">
-                        <Image 
-                          src="/assets/usa-stamp-transparent.png" 
-                          alt="Crafted in California Made in USA" 
-                          width={100} 
-                          height={100}
-                          className="object-contain drop-shadow-md"
-                        />
+                      <div className="w-px h-20 bg-white/30 hidden md:block" />
+                      <div className="text-center">
+                        <span className="font-bolero text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-none">ZERO</span><br/>
+                        <span className="text-white/90 text-sm md:text-base font-bold tracking-widest mt-4 block leading-tight">SUGAR<br/>ALCOHOLS</span>
                       </div>
                     </div>
                   </motion.div>
@@ -218,9 +205,29 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                   className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-xs font-bold tracking-widest shadow-lg w-fit"
                 >
                   <RotateCcw size={16} />
-                  INGREDIENTS & NUTRITIONAL VALUES
+                  {isFlipped ? "DESCRIPTION" : "INGREDIENTS & NUTRITIONAL VALUES"}
                 </button>
               </motion.div>
+
+              <AnimatePresence>
+                {isFlipped && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute right-8 bottom-8 md:right-12 md:bottom-12 pointer-events-none"
+                  >
+                    <Image 
+                      src="/assets/usa-stamp-transparent.png" 
+                      alt="Crafted in California Made in USA" 
+                      width={120} 
+                      height={120}
+                      className="object-contain drop-shadow-2xl"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>
