@@ -136,7 +136,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         {/* Main Card Container */}
         <div className="relative w-full flex justify-end">
           <motion.div layout className={`w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col justify-center relative shadow-2xl transition-colors duration-500 glass-panel ml-auto`}>
-            <div className="w-full pl-[45%] sm:pl-[40%] md:pl-16 lg:pl-24 flex flex-col">
+            <div className="w-full pl-[38%] sm:pl-[35%] md:pl-16 lg:pl-24 flex flex-col">
               
               {/* Shared Layout Title */}
               <motion.h2 
@@ -144,7 +144,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-[4vw] sm:text-[3.5vw] md:text-[3vw] lg:text-[2rem] xl:text-[2.25rem] font-bold mb-3 md:mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
+                className="font-bolero text-[3.2vw] sm:text-[3vw] md:text-[2.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
                 style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}
@@ -216,7 +216,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute right-4 bottom-4 md:right-12 md:bottom-12 pointer-events-none w-16 h-16 md:w-28 md:h-28 lg:w-[120px] lg:h-[120px]"
+                    className="absolute right-2 bottom-2 md:right-6 md:bottom-6 pointer-events-none w-16 h-16 md:w-24 md:h-24 lg:w-[100px] lg:h-[100px]"
                   >
                     <Image 
                       src="/assets/usa-stamp-transparent.png" 
