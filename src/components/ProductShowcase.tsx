@@ -61,7 +61,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       if (videoRef.current.currentTime === videoRef.current.duration) {
         videoRef.current.currentTime = 0;
       }
-      videoRef.current.playbackRate = 2.5; // Speed up video by 2.5x
+      // Assuming a 3.12 second video, a playback rate of ~2.6x gets it to ~1.2s.
+      videoRef.current.playbackRate = 2.6; 
       videoRef.current.play();
     }
   };
@@ -77,6 +78,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       }
       
       let lastTime = performance.now();
+      let startReverseTime = performance.now();
+      const duration = videoRef.current.currentTime;
       
       const step = (time: number) => {
         if (!videoRef.current) return;
@@ -86,7 +89,13 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         // Cap dt to prevent massive jumps
         const clampedDt = Math.min(dt, 0.1);
         
-        const newTime = videoRef.current.currentTime - (clampedDt * 2.5); // 2.5x speed reverse
+        // Simple Speed Ramp: starts slightly slower, then speeds up in the middle, then slows down at the end.
+        // It uses a sine wave curve based on the current progress of the reverse animation.
+        const progress = 1 - (videoRef.current.currentTime / duration);
+        // speedMultiplier ranges from 1.5x at edges to 3.5x in the middle (averaging around 2.6x overall)
+        const speedMultiplier = 1.5 + (Math.sin(progress * Math.PI) * 2.0);
+        
+        const newTime = videoRef.current.currentTime - (clampedDt * speedMultiplier); 
         
         if (newTime <= 0) {
           videoRef.current.currentTime = 0;
