@@ -51,7 +51,7 @@ export default function Navigation() {
         {/* Centered Logo */}
         <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-10 md:w-48 md:h-12 mx-4 hover:opacity-80 transition-opacity cursor-pointer">
           <Image 
-            src="/assets/logo.png" 
+            src="/assets/logo-transparent.png" 
             alt="Saigon Bonbon Logo" 
             fill
             className="object-contain"
@@ -80,11 +80,10 @@ export default function Navigation() {
             {/* Logo on the left */}
             <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-8 hover:opacity-80 transition-opacity cursor-pointer">
               <Image 
-                src="/assets/logo.png" 
+                src="/assets/logo-transparent.png" 
                 alt="Saigon Bonbon Logo" 
                 fill
-                className="object-contain object-left mix-blend-screen"
-                style={{ mixBlendMode: 'screen' }}
+                className="object-contain object-left"
                 priority
               />
             </button>
