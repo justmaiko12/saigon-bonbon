@@ -163,7 +163,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               layout 
               className={`w-[88%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[280px] sm:pt-[380px] md:pt-16 mt-0`}
             >
-            <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[45%] lg:pl-24 md:pt-0">
+            <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[50%] lg:pl-24 md:pt-0">
               
               {/* Shared Layout Title */}
               <motion.h2 
