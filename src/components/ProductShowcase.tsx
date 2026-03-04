@@ -32,7 +32,7 @@ const flavors = [
     bg: "linear-gradient(180deg, #67B626 0%, #009045 100%)",
     color: "#67B626",
     nutritionColor: "#67B626",
-    video: null
+    video: "/assets/pandan-flip.webm"
   }
 ];
 
