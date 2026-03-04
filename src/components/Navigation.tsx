@@ -78,12 +78,13 @@ export default function Navigation() {
             className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-4xl bg-black/60 backdrop-blur-xl rounded-full px-6 py-3 flex items-center justify-between shadow-2xl border border-white/20"
           >
             {/* Logo on the left */}
-            <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-8 hover:opacity-80 transition-opacity cursor-pointer mix-blend-screen">
+            <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-8 hover:opacity-80 transition-opacity cursor-pointer">
               <Image 
                 src="/assets/logo.png" 
                 alt="Saigon Bonbon Logo" 
                 fill
-                className="object-contain object-left"
+                className="object-contain object-left mix-blend-screen"
+                style={{ mixBlendMode: 'screen' }}
                 priority
               />
             </button>
