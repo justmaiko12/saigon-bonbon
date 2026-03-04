@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import Image from "next/image";
 
 const flavors = [
   {
@@ -60,7 +61,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       if (videoRef.current.currentTime === videoRef.current.duration) {
         videoRef.current.currentTime = 0;
       }
-      videoRef.current.playbackRate = 2.0; // Speed up video by 2x
+      videoRef.current.playbackRate = 2.5; // Speed up video by 2.5x
       videoRef.current.play();
     }
   };
@@ -76,7 +77,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         const dt = (time - lastTime) / 1000;
         lastTime = time;
         
-        const newTime = videoRef.current.currentTime - (dt * 2.0); // 2x speed reverse
+        const newTime = videoRef.current.currentTime - (dt * 2.5); // 2.5x speed reverse
         
         if (newTime <= 0) {
           videoRef.current.currentTime = 0;
@@ -143,7 +144,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 key={`title-${currentIndex}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight tracking-wide drop-shadow-sm iridescent-text whitespace-nowrap"
+                className="font-bolero text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight tracking-wide drop-shadow-sm iridescent-text"
+                style={{ paddingRight: '20px' }}
               >
                 {activeFlavor.name}
               </motion.h2>
@@ -176,25 +178,34 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     </p>
                     
                     {/* Nutrition Badges */}
-                    <div className="flex flex-wrap items-start gap-4 md:gap-8 mb-12">
+                    <div className="flex flex-wrap items-center gap-4 md:gap-8 mb-12">
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>4g</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">4g</span><br/>
+                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR</span>
                       </div>
-                      <div className="w-px h-16 bg-white/30 hidden md:block mt-2" />
+                      <div className="w-px h-16 bg-[#e53935]/30 hidden md:block" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>100%</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PLANT<br/>BASED</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">100%</span><br/>
+                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PLANT<br/>BASED</span>
                       </div>
-                      <div className="w-px h-16 bg-white/30 hidden md:block mt-2" />
+                      <div className="w-px h-16 bg-[#e53935]/30 hidden md:block" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>10g</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">10g</span><br/>
+                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">PREBIOTIC<br/>FIBER</span>
                       </div>
-                      <div className="w-px h-16 bg-white/30 hidden md:block mt-2" />
+                      <div className="w-px h-16 bg-[#e53935]/30 hidden md:block" />
                       <div className="text-center min-w-[60px]">
-                        <span className="font-bolero text-4xl md:text-5xl" style={{ color: activeFlavor.nutritionColor }}>ZERO</span><br/>
-                        <span className="text-white/90 text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                        <span className="font-bolero text-4xl md:text-5xl text-[#e53935]">ZERO</span><br/>
+                        <span className="text-[#e53935] text-xs md:text-sm font-bold tracking-widest mt-3 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                      </div>
+                      <div className="ml-auto flex items-center justify-center">
+                        <Image 
+                          src="/assets/usa-stamp.png" 
+                          alt="Crafted in California Made in USA" 
+                          width={100} 
+                          height={100}
+                          className="object-contain drop-shadow-md"
+                        />
                       </div>
                     </div>
                   </motion.div>

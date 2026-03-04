@@ -37,6 +37,9 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
+  /* Prevent cutting off the gradient on some webkit browsers, especially for custom fonts */
+  padding-right: 0.1em;
+  padding-bottom: 0.1em;
 }
 
 /* Glassmorphism utilities */
