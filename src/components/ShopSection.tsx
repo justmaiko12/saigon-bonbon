@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function ShopSection() {
   return (
@@ -17,10 +18,15 @@ export default function ShopSection() {
             className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl"
           >
             <h3 className="text-white/80 font-bold tracking-widest text-sm md:text-base mb-2">3-PACK</h3>
-            <h2 className="font-bolero text-2xl md:text-3xl text-white font-bold mb-10 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300">SIGNATURE FLAVORS</h2>
+            <h2 className="font-bolero text-2xl md:text-3xl font-bold mb-10 tracking-wide iridescent-text">SIGNATURE FLAVORS</h2>
             
-            <div className="w-full h-48 bg-white/5 rounded-xl flex items-center justify-center mb-10 border border-white/10">
-              <span className="text-white/30 font-mono text-xs uppercase tracking-widest">3 Pouches Graphic Placeholder</span>
+            <div className="w-full relative h-[250px] md:h-[300px] mb-10">
+              <Image 
+                src="/assets/3_pack.png" 
+                alt="3-Pack Signature Flavors"
+                fill
+                className="object-contain"
+              />
             </div>
 
             <div className="flex items-center justify-between w-full mt-auto">
@@ -40,10 +46,15 @@ export default function ShopSection() {
             className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl"
           >
             <h3 className="text-white/80 font-bold tracking-widest text-sm md:text-base mb-2">6-PACK</h3>
-            <h2 className="font-bolero text-2xl md:text-3xl text-white font-bold mb-10 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300">SIGNATURE FLAVORS</h2>
+            <h2 className="font-bolero text-2xl md:text-3xl font-bold mb-10 tracking-wide iridescent-text">SIGNATURE FLAVORS</h2>
             
-            <div className="w-full h-48 bg-white/5 rounded-xl flex items-center justify-center mb-10 border border-white/10">
-              <span className="text-white/30 font-mono text-xs uppercase tracking-widest">6 Pouches Graphic Placeholder</span>
+            <div className="w-full relative h-[250px] md:h-[300px] mb-10">
+              <Image 
+                src="/assets/6_pack.png" 
+                alt="6-Pack Signature Flavors"
+                fill
+                className="object-contain scale-110"
+              />
             </div>
 
             <div className="flex items-center justify-between w-full mt-auto">
