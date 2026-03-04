@@ -42,7 +42,7 @@ export default function Navigation() {
           src="/assets/logo.png" 
           alt="Saigon Bonbon Logo" 
           fill
-          className="object-contain"
+          className="object-contain mix-blend-screen"
           priority
         />
       </Link>
