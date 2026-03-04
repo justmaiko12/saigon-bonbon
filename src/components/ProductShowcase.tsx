@@ -11,21 +11,24 @@ const flavors = [
     name: "LUSCIOUS LYCHEE ROSE",
     desc: "Light lychee infused with soft floral rose. Modern girl, free spirit, and elegant. As alluring a summer Vietnamese home.",
     bg: "linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)",
-    color: "#FF107A"
+    color: "#FF107A",
+    nutritionColor: "#FF5E00"
   },
   {
     id: "mango",
     name: "SPICY MANGO TAMARIND",
     desc: "Juicy mango, tangy tamarind, and a subtle chili kick. Just like the street snacks we used to love.",
     bg: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
-    color: "#FF5E00"
+    color: "#FF5E00",
+    nutritionColor: "#FF5E00"
   },
   {
     id: "coconut",
     name: "COCONUT PANDAN CRUSH",
     desc: "Creamy coconut meets fragrant pandan — smooth, toasty, and unmistakably Southeast Asian. A Vietnamese dessert classic that always hits.",
     bg: "linear-gradient(180deg, #67B626 0%, #009045 100%)",
-    color: "#67B626"
+    color: "#67B626",
+    nutritionColor: "#67B626"
   }
 ];
 
@@ -55,94 +58,131 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   };
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center py-24 px-4" id="flavors">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row items-center gap-12 md:gap-24">
+    <section ref={ref} className="relative min-h-screen flex flex-col items-center justify-center py-24 px-4 overflow-hidden" id="flavors">
+      <div className="w-full max-w-5xl" style={{ perspective: "2000px" }}>
         
-        {/* Left Side: Product Pouch (3D Flip) */}
-        <div className="w-full md:w-1/2 flex justify-center" style={{ perspective: "1000px" }}>
-          <motion.div
-            className="relative w-[300px] h-[400px] cursor-pointer"
-            style={{ transformStyle: "preserve-3d" }}
-            animate={{ rotateY: isFlipped ? 180 : 0 }}
-            transition={{ duration: 0.8, type: "spring", stiffness: 70, damping: 15 }}
-            onClick={() => setIsFlipped(!isFlipped)}
+        {/* Flipping Container */}
+        <motion.div
+          className="relative w-full"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 60, damping: 15 }}
+        >
+          {/* FRONT SIDE (Glass Panel on Right, Pouch protruding on Left) */}
+          <div 
+            className="w-full flex flex-col md:flex-row items-center justify-end relative z-10" 
+            style={{ backfaceVisibility: "hidden" }}
           >
-            {/* Front Side */}
-            <div className="absolute inset-0 flex items-center justify-center" style={{ backfaceVisibility: "hidden" }}>
-              {/* Product Placeholder Card */}
-              <div className="w-full h-full rounded-2xl shadow-2xl flex flex-col items-center justify-center relative overflow-hidden transition-colors duration-500" style={{ backgroundColor: activeFlavor.color }}>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-                <span className="text-white font-bold text-xl z-10 text-center px-4">
-                  {activeFlavor.name}<br/>(FRONT)
-                </span>
-                
-                {/* Floating Fruits Placeholder */}
-                {!isFlipped && (
-                  <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-8 -right-8 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none" 
-                  />
-                )}
+            {/* Transparent Card */}
+            <div className="w-full md:w-[75%] glass-panel p-8 md:p-16 rounded-[2rem] min-h-[400px] flex flex-col justify-center relative ml-auto shadow-2xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <h2 className="font-bolero text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-sm">
+                    {activeFlavor.name}
+                  </h2>
+                  <p className="text-white/90 text-base md:text-lg mb-12 leading-relaxed font-medium max-w-xl">
+                    {activeFlavor.desc}
+                  </p>
+
+                  <button 
+                    onClick={() => setIsFlipped(true)}
+                    className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-xs font-bold tracking-widest shadow-lg w-fit"
+                  >
+                    <RotateCcw size={16} />
+                    INGREDIENTS & NUTRITIONAL VALUES
+                  </button>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Floating Pouch (Left Side) */}
+            <div className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] aspect-[3/4] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center transition-colors duration-500 overflow-hidden" style={{ backgroundColor: activeFlavor.color }}>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+              <span className="text-white font-bolero text-2xl z-10 text-center px-4 leading-tight drop-shadow-md">
+                {activeFlavor.name}<br/>(FRONT POUCH)
+              </span>
+              
+              {/* Floating Fruits Placeholder */}
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-12 -right-12 w-40 h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" 
+              />
+            </div>
+          </div>
+
+          {/* BACK SIDE (Dark Full Card with Back Pouch and Nutrition Info) */}
+          <div 
+            className="absolute top-0 left-0 w-full h-full glass-panel-dark rounded-[2rem] flex flex-col md:flex-row items-center p-8 md:p-16 shadow-2xl border border-white/10" 
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          >
+            {/* Back Pouch Placeholder */}
+            <div className="w-full md:w-[40%] flex justify-center md:justify-start">
+              <div className="w-[240px] md:w-[280px] aspect-[3/4] bg-white/5 rounded-2xl border border-white/20 flex flex-col items-center justify-center shadow-inner relative overflow-hidden" style={{ backgroundColor: `${activeFlavor.color}40` }}>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80" />
+                <span className="text-white/80 font-bold text-sm z-10 tracking-widest">BACK LABEL</span>
               </div>
             </div>
 
-            {/* Back Side */}
-            <div className="absolute inset-0 flex items-center justify-center" style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
-               {/* Nutritional Info Placeholder Card */}
-               <div className="w-full h-full bg-[#1A1A1A] rounded-2xl border border-white/10 shadow-2xl flex flex-col items-center justify-center p-6">
-                <h3 className="text-white font-bold mb-4 tracking-wider text-sm">NUTRITION FACTS</h3>
-                <div className="w-full h-48 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
-                  <span className="text-white/30 text-xs">Ingredients Data</span>
-                </div>
-                <p className="text-white/40 text-xs mt-6 text-center uppercase tracking-widest">Click to flip back</p>
-               </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Right Side: Text & Controls */}
-        <div className="w-full md:w-1/2 text-left">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.4 }}
-              className="glass-panel p-8 md:p-12 rounded-3xl"
-            >
-              <h2 className="font-bolero text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            {/* Nutritional Info */}
+            <div className="w-full md:w-[60%] text-left md:pl-12 mt-8 md:mt-0">
+              <h2 className="font-bolero text-3xl md:text-5xl font-bold text-white mb-10 tracking-wide drop-shadow-sm">
                 {activeFlavor.name}
               </h2>
-              <p className="text-white/90 text-base md:text-lg mb-10 leading-relaxed font-medium">
-                {activeFlavor.desc}
-              </p>
+              
+              {/* Nutrition Badges */}
+              <div className="flex flex-wrap items-start gap-4 md:gap-8 mb-12">
+                <div className="text-center min-w-[60px]">
+                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>4g</span><br/>
+                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR</span>
+                </div>
+                <div className="w-px h-12 bg-white/20 hidden md:block" />
+                <div className="text-center min-w-[60px]">
+                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>100%</span><br/>
+                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PLANT<br/>BASED</span>
+                </div>
+                <div className="w-px h-12 bg-white/20 hidden md:block" />
+                <div className="text-center min-w-[60px]">
+                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>10g</span><br/>
+                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">PREBIOTIC<br/>FIBER</span>
+                </div>
+                <div className="w-px h-12 bg-white/20 hidden md:block" />
+                <div className="text-center min-w-[60px]">
+                  <span className="font-bolero text-3xl md:text-4xl" style={{ color: activeFlavor.nutritionColor }}>ZERO</span><br/>
+                  <span className="text-white/70 text-[10px] md:text-xs font-bold tracking-widest mt-2 block leading-tight">SUGAR<br/>ALCOHOLS</span>
+                </div>
+              </div>
 
               <button 
-                onClick={() => setIsFlipped(!isFlipped)}
-                className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors text-xs font-bold tracking-widest"
+                onClick={() => setIsFlipped(false)}
+                className="flex items-center gap-3 px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 transition-colors text-xs font-bold tracking-widest bg-white/5 shadow-lg w-fit"
               >
                 <RotateCcw size={16} />
                 INGREDIENTS & NUTRITIONAL VALUES
               </button>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Carousel Controls */}
-          <div className="flex items-center gap-6 mt-8 ml-2">
-            <button onClick={prev} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-              <ChevronLeft size={20} />
-            </button>
-            <div className="flex gap-2">
-              {flavors.map((_, idx) => (
-                <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "w-8 bg-white" : "w-2 bg-white/30"}`} />
-              ))}
             </div>
-            <button onClick={next} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-              <ChevronRight size={20} />
-            </button>
           </div>
+        </motion.div>
+
+        {/* Carousel Controls (Below Card) */}
+        <div className="flex items-center justify-center gap-6 mt-16 relative z-10">
+          <button onClick={prev} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors bg-white/5 backdrop-blur-sm">
+            <ChevronLeft size={20} />
+          </button>
+          <div className="flex gap-3">
+            {flavors.map((_, idx) => (
+              <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "w-8 bg-white" : "w-2 bg-white/30"}`} />
+            ))}
+          </div>
+          <button onClick={next} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors bg-white/5 backdrop-blur-sm">
+            <ChevronRight size={20} />
+          </button>
         </div>
 
       </div>
