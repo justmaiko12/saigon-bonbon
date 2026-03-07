@@ -19,11 +19,11 @@
 }
 
 html {
-  background: #000;
+  background-color: #FF107A;
 }
 
 body {
-  background: transparent;
+  background-color: #FF5E00;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
