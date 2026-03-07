@@ -235,19 +235,19 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                   <source src={activeFlavor.video} type="video/webm" />
                   <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
                 </video>
+                <canvas
+                  ref={canvasRef}
+                  className="w-full h-full object-contain"
+                />
                 {!isAnimating && activeFlavor.poster && (
                   <Image
                     src={activeFlavor.poster}
                     alt={activeFlavor.name}
                     fill
-                    className="object-contain"
+                    className="object-contain z-10"
                     priority
                   />
                 )}
-                <canvas
-                  ref={canvasRef}
-                  className={`w-full h-full object-contain ${!isAnimating ? 'hidden' : ''}`}
-                />
               </>
             ) : (
               <>
