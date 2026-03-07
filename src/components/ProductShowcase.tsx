@@ -136,13 +136,16 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
-              <video 
+              <video
                 ref={videoRef}
-                src={activeFlavor.video}
                 className="w-full h-full object-contain"
                 muted
                 playsInline
-              />
+                preload="auto"
+              >
+                <source src={activeFlavor.video} type="video/webm" />
+                <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
+              </video>
             ) : (
               <>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />

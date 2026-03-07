@@ -23,11 +23,11 @@ export default function IntroSection({ setBgColor }: { setBgColor: (color: strin
         whileInView={{ opacity: 0.8, scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
         viewport={{ once: true }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 mix-blend-screen"
+        className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
       >
-        <div 
+        <div
           className="w-full h-full max-w-[1400px] bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/assets/lion-silhouettes.png')" }}
+          style={{ backgroundImage: "url('/assets/lion-silhouettes-transparent.png')" }}
         />
       </motion.div>
 
