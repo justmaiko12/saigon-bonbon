@@ -139,11 +139,11 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               <video
                 ref={videoRef}
                 className="w-full h-full object-contain"
-                style={{ mixBlendMode: 'screen' }}
                 muted
                 playsInline
                 preload="auto"
               >
+                <source src={activeFlavor.video.replace('.webm', '.mov')} type='video/quicktime; codecs="hvc1"' />
                 <source src={activeFlavor.video} type="video/webm" />
                 <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
               </video>
