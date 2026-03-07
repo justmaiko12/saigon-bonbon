@@ -20,6 +20,7 @@
 
 html {
   background: linear-gradient(180deg, #FF107A 0%, #FF5E00 100%);
+  background-attachment: fixed;
 }
 
 body {
