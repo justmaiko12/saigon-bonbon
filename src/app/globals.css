@@ -18,18 +18,11 @@
   --foreground: #ffffff;
 }
 
-html {
-  background: #E35E28;
-}
-
 body {
   background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
-  /* Extend content into safe areas while background fills edge-to-edge */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 h1, h2, h3, h4, h5, h6 {

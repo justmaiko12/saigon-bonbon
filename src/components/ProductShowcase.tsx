@@ -260,11 +260,10 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               <>
                 <video
                   ref={videoRef}
-                  className="absolute w-px h-px opacity-0 pointer-events-none"
+                  className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none"
                   muted
                   playsInline
                   preload="auto"
-                  crossOrigin="anonymous"
                 >
                   <source src={activeFlavor.video} type="video/webm" />
                   <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
