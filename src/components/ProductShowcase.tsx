@@ -45,6 +45,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderLoopRef = useRef<number | null>(null);
   const isRenderingRef = useRef(false);
+  const touchStartX = useRef<number | null>(null);
 
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
@@ -58,7 +59,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    const size = 480; // Render at 480px for mobile performance
+    // Use native video resolution (1440) for sharp rendering on retina
+    const size = video.videoWidth;
     if (canvas.width !== size) {
       canvas.width = size;
       canvas.height = size;
@@ -75,7 +77,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         data[i + 3] = 0;
       } else if (r < 70 && g < 70 && b < 70) {
         // Soft edge: partially transparent for dark pixels near the pouch
-        data[i + 3] = Math.max(r, g, b) * 3;
+        data[i + 3] = Math.min(255, Math.max(r, g, b) * 3);
       }
     }
 
@@ -105,15 +107,26 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     renderFrame();
   }, [renderFrame]);
 
-  // Render first frame when video loads
+  // Render first frame when video loads — poll until video has data
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const onLoaded = () => renderFrame();
-    video.addEventListener('loadeddata', onLoaded);
-    // Also try to render immediately in case already loaded
-    if (video.readyState >= 2) renderFrame();
-    return () => video.removeEventListener('loadeddata', onLoaded);
+
+    let cancelled = false;
+    const tryRender = () => {
+      if (cancelled) return;
+      if (video.readyState >= 2 && video.videoWidth > 0) {
+        renderFrame();
+      } else {
+        requestAnimationFrame(tryRender);
+      }
+    };
+
+    video.addEventListener('loadeddata', () => renderFrame());
+    video.addEventListener('seeked', () => renderFrame());
+    tryRender();
+
+    return () => { cancelled = true; };
   }, [currentIndex, renderFrame]);
 
   useEffect(() => {
@@ -191,7 +204,21 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   };
 
   return (
-    <section ref={ref} className="relative min-h-screen flex flex-col items-center justify-center py-24 px-4 overflow-hidden" id="flavors">
+    <section
+      ref={ref}
+      className="relative min-h-screen flex flex-col items-center justify-center py-24 px-4 overflow-hidden"
+      id="flavors"
+      onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+      onTouchEnd={(e) => {
+        if (touchStartX.current === null) return;
+        const diff = e.changedTouches[0].clientX - touchStartX.current;
+        touchStartX.current = null;
+        if (Math.abs(diff) > 50) {
+          if (diff < 0) next();
+          else prev();
+        }
+      }}
+    >
       <div className="w-full max-w-5xl relative scale-[0.85] sm:scale-100 origin-top md:origin-center" style={{ perspective: "2000px" }}>
         
         {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
