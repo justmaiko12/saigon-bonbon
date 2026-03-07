@@ -260,7 +260,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               <>
                 <video
                   ref={videoRef}
-                  className="hidden"
+                  className="absolute w-px h-px opacity-0 pointer-events-none"
                   muted
                   playsInline
                   preload="auto"
