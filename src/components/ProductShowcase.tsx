@@ -39,12 +39,22 @@ const flavors = [
 export default function ProductShowcase({ setBgColor }: { setBgColor: (color: string) => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [needsBlend, setNeedsBlend] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const backVideoRef = useRef<HTMLVideoElement>(null);
   const reverseReqId = useRef<number | null>(null);
-  
+
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
+
+  // Detect if browser can't play transparent webm (Safari/iOS)
+  useEffect(() => {
+    const video = document.createElement('video');
+    const canPlayWebm = video.canPlayType('video/webm; codecs="vp9"') || video.canPlayType('video/webm; codecs="vp8"');
+    if (!canPlayWebm) {
+      setNeedsBlend(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (isInView) {
@@ -133,12 +143,13 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ background: activeFlavor.video ? `radial-gradient(circle, transparent 35%, ${activeFlavor.color} 65%)` : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video
                 ref={videoRef}
                 className="w-full h-full object-contain"
+                style={{ mixBlendMode: needsBlend ? 'screen' : undefined }}
                 muted
                 playsInline
                 preload="auto"
