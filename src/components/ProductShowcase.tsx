@@ -200,7 +200,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex flex-col items-center justify-center py-24 px-4 overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-8 px-4 overflow-hidden"
       id="flavors"
       onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
       onTouchEnd={(e) => {

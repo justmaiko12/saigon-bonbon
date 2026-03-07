@@ -8,7 +8,7 @@ export default function VideoModalSection() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section className="relative py-24 px-4 flex flex-col items-center justify-center">
+    <section className="relative pt-8 pb-24 px-4 flex flex-col items-center justify-center">
       <div className="w-full max-w-5xl flex flex-col items-center text-center">
         
         <h2 className="font-serif text-3xl md:text-5xl font-bold text-white mb-12">
