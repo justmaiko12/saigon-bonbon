@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-export default function ShopSection() {
+export default function ShopSection({ variant = "full" }: { variant?: "full" | "no-badges" }) {
   return (
     <section className="relative pt-24 pb-8 px-4 flex flex-col items-center justify-center" id="shop">
       <div className="w-full max-w-5xl">
@@ -68,7 +68,7 @@ export default function ShopSection() {
         </div>
 
         {/* Badges */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 mt-20">
+        {variant === "full" && <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 mt-20">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -122,7 +122,7 @@ export default function ShopSection() {
             </div>
             <span className="font-bold text-xs md:text-sm tracking-widest w-32 leading-tight uppercase font-bolero iridescent-text">CRAFTED<br/>IN THE USA</span>
           </motion.div>
-        </div>
+        </div>}
       </div>
     </section>
   );

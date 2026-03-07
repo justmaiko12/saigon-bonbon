@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Play, X } from "lucide-react";
 
-export default function VideoModalSection() {
+export default function VideoModalSection({ variant = "full" }: { variant?: "full" | "compact" }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -36,12 +36,18 @@ export default function VideoModalSection() {
         </motion.div>
 
         {/* Story Text */}
-        <div className="mt-16 max-w-2xl text-white/90 text-left md:text-center text-sm md:text-base leading-relaxed space-y-6">
-          <p>Long have we searched for something that truly reflected us. Something to stand behind. Something to be proud of.</p>
-          <p>Now, it's here.<br/>This is us—no longer quiet, no longer waiting.</p>
-          <p>We don't ask for permission.<br/>We don't save our joy for special occasions.</p>
-          <p className="font-bold italic">Because every day is a gift.<br/>Every day, we dance.</p>
-        </div>
+        {variant === "full" ? (
+          <div className="mt-16 max-w-2xl text-white/90 text-left md:text-center text-sm md:text-base leading-relaxed space-y-6">
+            <p>Long have we searched for something that truly reflected us. Something to stand behind. Something to be proud of.</p>
+            <p>Now, it&apos;s here.<br/>This is us—no longer quiet, no longer waiting.</p>
+            <p>We don&apos;t ask for permission.<br/>We don&apos;t save our joy for special occasions.</p>
+            <p className="font-bold italic">Because every day is a gift.<br/>Every day, we dance.</p>
+          </div>
+        ) : (
+          <p className="mt-10 max-w-xl text-white/90 text-center text-sm md:text-lg font-bold italic leading-relaxed">
+            Because every day is a gift. Every day, we dance.
+          </p>
+        )}
       </div>
 
       {/* Video Modal */}
