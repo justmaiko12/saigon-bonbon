@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function Background({ color }: { color: string }) {
   return (
     <motion.div
-      className="fixed inset-0 -z-50 pointer-events-none"
+      className="fixed -z-50 pointer-events-none"
       style={{
         top: 'calc(-1 * env(safe-area-inset-top, 0px))',
         bottom: 'calc(-1 * env(safe-area-inset-bottom, 0px))',
