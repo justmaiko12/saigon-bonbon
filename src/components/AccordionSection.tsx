@@ -29,7 +29,7 @@ export default function AccordionSection() {
   const [openId, setOpenId] = useState(accordionData[0].id);
 
   return (
-    <section className="relative py-24 px-4 flex items-center justify-center">
+    <section className="relative pt-24 pb-8 px-4 flex items-center justify-center">
       <div className="w-full max-w-5xl flex flex-col md:flex-row gap-12 md:gap-24 items-center">
         
         {/* Accordion Left */}
