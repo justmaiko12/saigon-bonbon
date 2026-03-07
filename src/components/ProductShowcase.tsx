@@ -241,7 +241,6 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                     alt={activeFlavor.name}
                     fill
                     className="object-contain"
-                    style={{ mixBlendMode: 'screen' }}
                     priority
                   />
                 )}
