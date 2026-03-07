@@ -133,7 +133,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ background: activeFlavor.video ? `radial-gradient(circle, transparent 35%, ${activeFlavor.color} 65%)` : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <video
@@ -239,13 +239,15 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               </AnimatePresence>
 
               <motion.div layout="position" className="flex justify-center md:justify-start w-full">
-                <button 
+                <motion.button
                   onClick={isFlipped ? handleFlipToFront : handleFlipToBack}
-                  className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 rounded-full border border-white/30 text-white hover:bg-white/20 transition-colors text-[10px] md:text-xs font-bold tracking-widest shadow-lg w-fit mt-6 md:mt-0 mb-4 md:mb-0"
+                  animate={!isFlipped ? { opacity: [0.7, 1, 0.7] } : { opacity: 1 }}
+                  transition={!isFlipped ? { duration: 2, repeat: 2, ease: "easeInOut" } : {}}
+                  className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 rounded-full border border-white/30 bg-white/10 hover:bg-white/20 text-white transition-colors text-[10px] md:text-xs font-bold tracking-widest shadow-lg w-fit mt-6 md:mt-0 mb-4 md:mb-0"
                 >
                   <RotateCcw size={16} className="w-3 h-3 md:w-4 md:h-4" />
                   {isFlipped ? "DESCRIPTION" : "INGREDIENTS & NUTRITIONAL VALUES"}
-                </button>
+                </motion.button>
               </motion.div>
 
               <AnimatePresence>

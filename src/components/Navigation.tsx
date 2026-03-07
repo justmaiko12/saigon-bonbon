@@ -38,7 +38,7 @@ export default function Navigation() {
         }}
         animate={isScrolled ? "hidden" : "visible"}
         transition={{ duration: 0.3 }}
-        className="fixed top-0 left-0 w-full z-[100] pt-8 pb-4 flex justify-center items-center gap-8 md:gap-16 text-white/80 text-xs md:text-sm font-medium tracking-widest uppercase mix-blend-screen"
+        className="fixed top-0 left-0 w-full z-[100] pt-4 sm:pt-8 pb-4 flex justify-center items-center gap-4 sm:gap-8 md:gap-16 text-white/80 text-[10px] sm:text-xs md:text-sm font-medium tracking-widest uppercase mix-blend-screen"
         style={{ pointerEvents: isScrolled ? "none" : "auto" }}
       >
         <button onClick={(e) => handleScroll(e, 'top')} className="hover:text-white transition-colors cursor-pointer">
@@ -49,7 +49,7 @@ export default function Navigation() {
         </button>
         
         {/* Centered Logo */}
-        <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-10 md:w-48 md:h-12 mx-4 hover:opacity-80 transition-opacity cursor-pointer">
+        <button onClick={(e) => handleScroll(e, 'top')} className="relative w-24 h-8 sm:w-32 sm:h-10 md:w-48 md:h-12 mx-1 sm:mx-4 hover:opacity-80 transition-opacity cursor-pointer">
           <Image 
             src="/assets/logo-transparent.png" 
             alt="Saigon Bonbon Logo" 
