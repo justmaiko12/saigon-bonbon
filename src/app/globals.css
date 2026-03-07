@@ -18,6 +18,10 @@
   --foreground: #ffffff;
 }
 
+html {
+  background: #D92384;
+}
+
 body {
   background: transparent;
   color: var(--foreground);

@@ -14,7 +14,8 @@ const flavors = [
     bg: "linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)",
     color: "#FF107A",
     nutritionColor: "#FF5E00",
-    video: "/assets/lychee-flip.webm"
+    video: "/assets/lychee-flip.webm",
+    poster: "/assets/lychee-front.png"
   },
   {
     id: "mango",
@@ -23,7 +24,8 @@ const flavors = [
     bg: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
     color: "#FF5E00",
     nutritionColor: "#FF5E00",
-    video: "/assets/mango-flip.webm"
+    video: "/assets/mango-flip.webm",
+    poster: "/assets/mango-front.png"
   },
   {
     id: "coconut",
@@ -32,13 +34,15 @@ const flavors = [
     bg: "linear-gradient(180deg, #67B626 0%, #009045 100%)",
     color: "#67B626",
     nutritionColor: "#67B626",
-    video: "/assets/pandan-flip.webm"
+    video: "/assets/pandan-flip.webm",
+    poster: "/assets/pandan-front.png"
   }
 ];
 
 export default function ProductShowcase({ setBgColor }: { setBgColor: (color: string) => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const backVideoRef = useRef<HTMLVideoElement>(null);
   const reverseReqId = useRef<number | null>(null);
@@ -107,51 +111,13 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     renderFrame();
   }, [renderFrame]);
 
-  // Render first frame — iOS won't decode until video plays briefly
+  // Render canvas frame on seek (for reverse animation)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
-    let cancelled = false;
-
-    const forceFirstFrame = async () => {
-      try {
-        // Seek to start and briefly play to force iOS to decode a frame
-        video.currentTime = 0;
-        await video.play();
-        video.pause();
-        video.currentTime = 0;
-      } catch {
-        // Autoplay blocked — seek alone may work on some browsers
-        video.currentTime = 0.001;
-      }
-    };
-
-    const tryRender = () => {
-      if (cancelled) return;
-      if (video.readyState >= 2 && video.videoWidth > 0) {
-        renderFrame();
-      } else {
-        requestAnimationFrame(tryRender);
-      }
-    };
-
-    const onCanPlay = () => {
-      if (cancelled) return;
-      forceFirstFrame().then(() => {
-        if (!cancelled) tryRender();
-      });
-    };
-
-    video.addEventListener('seeked', () => { if (!cancelled) renderFrame(); });
-
-    if (video.readyState >= 3) {
-      onCanPlay();
-    } else {
-      video.addEventListener('canplay', onCanPlay, { once: true });
-    }
-
-    return () => { cancelled = true; };
+    const onSeeked = () => renderFrame();
+    video.addEventListener('seeked', onSeeked);
+    return () => video.removeEventListener('seeked', onSeeked);
   }, [currentIndex, renderFrame]);
 
   useEffect(() => {
@@ -164,6 +130,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   const handleFlipToBack = () => {
     setIsFlipped(true);
+    setIsAnimating(true);
     if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     if (videoRef.current && activeFlavor.video) {
       if (videoRef.current.currentTime === videoRef.current.duration) {
@@ -172,7 +139,6 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       videoRef.current.playbackRate = 2.6;
       videoRef.current.play();
       startRenderLoop();
-      // Stop loop when video ends
       videoRef.current.onended = () => stopRenderLoop();
     }
   };
@@ -204,6 +170,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         if (newTime <= 0) {
           videoRef.current.currentTime = 0;
           stopRenderLoop();
+          setIsAnimating(false);
         } else {
           videoRef.current.currentTime = newTime;
           reverseReqId.current = requestAnimationFrame(step);
@@ -268,9 +235,18 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                   <source src={activeFlavor.video} type="video/webm" />
                   <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
                 </video>
+                {!isAnimating && activeFlavor.poster && (
+                  <Image
+                    src={activeFlavor.poster}
+                    alt={activeFlavor.name}
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                )}
                 <canvas
                   ref={canvasRef}
-                  className="w-full h-full object-contain"
+                  className={`w-full h-full object-contain ${!isAnimating ? 'hidden' : ''}`}
                 />
               </>
             ) : (
