@@ -107,12 +107,26 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     renderFrame();
   }, [renderFrame]);
 
-  // Render first frame when video loads — poll until video has data
+  // Render first frame — iOS won't decode until video plays briefly
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     let cancelled = false;
+
+    const forceFirstFrame = async () => {
+      try {
+        // Seek to start and briefly play to force iOS to decode a frame
+        video.currentTime = 0;
+        await video.play();
+        video.pause();
+        video.currentTime = 0;
+      } catch {
+        // Autoplay blocked — seek alone may work on some browsers
+        video.currentTime = 0.001;
+      }
+    };
+
     const tryRender = () => {
       if (cancelled) return;
       if (video.readyState >= 2 && video.videoWidth > 0) {
@@ -122,9 +136,20 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       }
     };
 
-    video.addEventListener('loadeddata', () => renderFrame());
-    video.addEventListener('seeked', () => renderFrame());
-    tryRender();
+    const onCanPlay = () => {
+      if (cancelled) return;
+      forceFirstFrame().then(() => {
+        if (!cancelled) tryRender();
+      });
+    };
+
+    video.addEventListener('seeked', () => { if (!cancelled) renderFrame(); });
+
+    if (video.readyState >= 3) {
+      onCanPlay();
+    } else {
+      video.addEventListener('canplay', onCanPlay, { once: true });
+    }
 
     return () => { cancelled = true; };
   }, [currentIndex, renderFrame]);
