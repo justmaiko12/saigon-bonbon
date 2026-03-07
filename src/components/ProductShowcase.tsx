@@ -183,6 +183,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   const next = () => {
     setIsFlipped(false);
+    setIsAnimating(false);
     stopRenderLoop();
     if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     setCurrentIndex((prev) => (prev + 1) % flavors.length);
@@ -190,6 +191,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   const prev = () => {
     setIsFlipped(false);
+    setIsAnimating(false);
     stopRenderLoop();
     if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length);
