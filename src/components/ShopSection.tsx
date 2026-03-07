@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function ShopSection() {
   return (
-    <section className="relative py-24 px-4 flex flex-col items-center justify-center" id="shop">
+    <section className="relative pt-24 pb-8 px-4 flex flex-col items-center justify-center" id="shop">
       <div className="w-full max-w-5xl">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           

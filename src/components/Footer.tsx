@@ -15,7 +15,7 @@ export default function Footer({ setBgColor }: { setBgColor?: (color: string) =>
   }, [isInView, setBgColor]);
 
   return (
-    <footer ref={ref} className="relative pt-32 pb-16 px-6 overflow-hidden mt-24">
+    <footer ref={ref} className="relative pt-16 pb-16 px-6 overflow-hidden mt-8">
       {/* Sunburst background rays */}
       <div 
         className="absolute inset-0 -z-10 mix-blend-overlay bg-bottom bg-no-repeat bg-cover opacity-60" 
