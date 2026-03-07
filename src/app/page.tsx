@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Background from "@/components/Background";
 import HeroSection from "@/components/HeroSection";
@@ -14,6 +14,14 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   const [bgColor, setBgColor] = useState("linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)");
+
+  // Sync html background with current gradient for iPhone safe area bars
+  useEffect(() => {
+    const match = bgColor.match(/#[0-9A-Fa-f]{6}/);
+    if (match) {
+      document.documentElement.style.background = match[0];
+    }
+  }, [bgColor]);
 
   return (
     <main className="relative min-h-screen">
