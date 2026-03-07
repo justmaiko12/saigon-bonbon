@@ -15,16 +15,21 @@
 }
 
 :root {
-  /* Defaulting to black/dark for the base, though sections will have colored gradients */
-  --background: #000000;
   --foreground: #ffffff;
 }
 
+html {
+  background: linear-gradient(180deg, #FF107A 0%, #FF5E00 100%);
+}
+
 body {
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
+  /* Extend content into safe areas while background fills edge-to-edge */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 h1, h2, h3, h4, h5, h6 {

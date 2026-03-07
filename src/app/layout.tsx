@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -17,6 +17,12 @@ const bolero = localFont({
   src: "./fonts/BoleroesquePhysica.otf",
   variable: "--font-bolero",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Saigon Bonbon | This is Our Flavor",
