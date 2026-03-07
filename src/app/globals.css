@@ -19,7 +19,7 @@
 }
 
 html {
-  background: #000;
+  background: linear-gradient(180deg, #FF107A 0%, #FF5E00 100%);
 }
 
 body {
