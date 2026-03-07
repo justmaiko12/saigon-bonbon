@@ -39,22 +39,12 @@ const flavors = [
 export default function ProductShowcase({ setBgColor }: { setBgColor: (color: string) => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [needsBlend, setNeedsBlend] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const backVideoRef = useRef<HTMLVideoElement>(null);
   const reverseReqId = useRef<number | null>(null);
 
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
-
-  // Detect if browser can't play transparent webm (Safari/iOS)
-  useEffect(() => {
-    const video = document.createElement('video');
-    const canPlayWebm = video.canPlayType('video/webm; codecs="vp9"') || video.canPlayType('video/webm; codecs="vp8"');
-    if (!canPlayWebm) {
-      setNeedsBlend(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (isInView) {
@@ -149,7 +139,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               <video
                 ref={videoRef}
                 className="w-full h-full object-contain"
-                style={{ mixBlendMode: needsBlend ? 'screen' : undefined }}
+                style={{ mixBlendMode: 'screen' }}
                 muted
                 playsInline
                 preload="auto"
