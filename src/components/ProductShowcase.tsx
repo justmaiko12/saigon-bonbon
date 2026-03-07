@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useInView } from "framer-motion";
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import Image from "next/image";
@@ -42,9 +42,79 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const videoRef = useRef<HTMLVideoElement>(null);
   const backVideoRef = useRef<HTMLVideoElement>(null);
   const reverseReqId = useRef<number | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const renderLoopRef = useRef<number | null>(null);
+  const isRenderingRef = useRef(false);
 
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
+
+  // Render a single video frame to canvas with black pixels made transparent
+  const renderFrame = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || video.videoWidth === 0) return;
+
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+
+    const size = 480; // Render at 480px for mobile performance
+    if (canvas.width !== size) {
+      canvas.width = size;
+      canvas.height = size;
+    }
+
+    ctx.drawImage(video, 0, 0, size, size);
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const data = imageData.data;
+
+    // Make near-black pixels transparent
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      if (r < 35 && g < 35 && b < 35) {
+        data[i + 3] = 0;
+      } else if (r < 70 && g < 70 && b < 70) {
+        // Soft edge: partially transparent for dark pixels near the pouch
+        data[i + 3] = Math.max(r, g, b) * 3;
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+  }, []);
+
+  // Start/stop the canvas render loop
+  const startRenderLoop = useCallback(() => {
+    if (isRenderingRef.current) return;
+    isRenderingRef.current = true;
+    const loop = () => {
+      renderFrame();
+      if (isRenderingRef.current) {
+        renderLoopRef.current = requestAnimationFrame(loop);
+      }
+    };
+    renderLoopRef.current = requestAnimationFrame(loop);
+  }, [renderFrame]);
+
+  const stopRenderLoop = useCallback(() => {
+    isRenderingRef.current = false;
+    if (renderLoopRef.current) {
+      cancelAnimationFrame(renderLoopRef.current);
+      renderLoopRef.current = null;
+    }
+    // Render one final frame
+    renderFrame();
+  }, [renderFrame]);
+
+  // Render first frame when video loads
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const onLoaded = () => renderFrame();
+    video.addEventListener('loadeddata', onLoaded);
+    // Also try to render immediately in case already loaded
+    if (video.readyState >= 2) renderFrame();
+    return () => video.removeEventListener('loadeddata', onLoaded);
+  }, [currentIndex, renderFrame]);
 
   useEffect(() => {
     if (isInView) {
@@ -61,9 +131,11 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       if (videoRef.current.currentTime === videoRef.current.duration) {
         videoRef.current.currentTime = 0;
       }
-      // Assuming a 3.12 second video, a playback rate of ~2.6x gets it to ~1.2s.
-      videoRef.current.playbackRate = 2.6; 
+      videoRef.current.playbackRate = 2.6;
       videoRef.current.play();
+      startRenderLoop();
+      // Stop loop when video ends
+      videoRef.current.onended = () => stopRenderLoop();
     }
   };
 
@@ -71,52 +143,49 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     setIsFlipped(false);
     if (videoRef.current && activeFlavor.video) {
       videoRef.current.pause();
-      
+
       // If the video somehow reset, push it to the end so it can reverse
       if (videoRef.current.currentTime === 0 && videoRef.current.duration > 0) {
         videoRef.current.currentTime = videoRef.current.duration;
       }
-      
+
       let lastTime = performance.now();
-      let startReverseTime = performance.now();
       const duration = videoRef.current.currentTime;
-      
+      startRenderLoop();
+
       const step = (time: number) => {
         if (!videoRef.current) return;
         const dt = (time - lastTime) / 1000;
         lastTime = time;
-        
-        // Cap dt to prevent massive jumps
+
         const clampedDt = Math.min(dt, 0.1);
-        
-        // Simple Speed Ramp: starts slightly slower, then speeds up in the middle, then slows down at the end.
-        // It uses a sine wave curve based on the current progress of the reverse animation.
         const progress = 1 - (videoRef.current.currentTime / duration);
-        // speedMultiplier ranges from 1.5x at edges to 3.5x in the middle (averaging around 2.6x overall)
         const speedMultiplier = 1.5 + (Math.sin(progress * Math.PI) * 2.0);
-        
-        const newTime = videoRef.current.currentTime - (clampedDt * speedMultiplier); 
-        
+        const newTime = videoRef.current.currentTime - (clampedDt * speedMultiplier);
+
         if (newTime <= 0) {
           videoRef.current.currentTime = 0;
+          stopRenderLoop();
         } else {
           videoRef.current.currentTime = newTime;
           reverseReqId.current = requestAnimationFrame(step);
         }
       };
-      
+
       reverseReqId.current = requestAnimationFrame(step);
     }
   };
 
   const next = () => {
     setIsFlipped(false);
+    stopRenderLoop();
     if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     setCurrentIndex((prev) => (prev + 1) % flavors.length);
   };
 
   const prev = () => {
     setIsFlipped(false);
+    stopRenderLoop();
     if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length);
   };
@@ -136,17 +205,23 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
-              <video
-                ref={videoRef}
-                className="w-full h-full object-contain"
-                muted
-                playsInline
-                preload="auto"
-              >
-                <source src={activeFlavor.video.replace('.webm', '.mov')} type='video/quicktime; codecs="hvc1"' />
-                <source src={activeFlavor.video} type="video/webm" />
-                <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
-              </video>
+              <>
+                <video
+                  ref={videoRef}
+                  className="hidden"
+                  muted
+                  playsInline
+                  preload="auto"
+                  crossOrigin="anonymous"
+                >
+                  <source src={activeFlavor.video} type="video/webm" />
+                  <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
+                </video>
+                <canvas
+                  ref={canvasRef}
+                  className="w-full h-full object-contain"
+                />
+              </>
             ) : (
               <>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
