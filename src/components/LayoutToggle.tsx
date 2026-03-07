@@ -10,7 +10,7 @@ export default function LayoutToggle({
   setLayout: (layout: "option1" | "option2") => void;
 }) {
   return (
-    <div className="fixed top-6 right-6 z-[90] flex rounded-full border border-white/20 bg-black/30 backdrop-blur-md overflow-hidden shadow-lg">
+    <div className="fixed bottom-6 right-6 z-[90] flex rounded-full border border-white/20 bg-black/30 backdrop-blur-md overflow-hidden shadow-lg">
       <button
         onClick={() => {
           setLayout("option1");
