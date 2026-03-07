@@ -74,14 +74,14 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     const imageData = ctx.getImageData(0, 0, size, size);
     const data = imageData.data;
 
-    // Make near-black pixels transparent (tight threshold to preserve dark pouch details)
+    // Make near-black pixels transparent
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i], g = data[i + 1], b = data[i + 2];
-      if (r < 10 && g < 10 && b < 10) {
+      if (r < 20 && g < 20 && b < 20) {
         data[i + 3] = 0;
-      } else if (r < 25 && g < 25 && b < 25) {
-        // Soft edge: partially transparent for pixels near pure black
-        data[i + 3] = Math.min(255, Math.max(r, g, b) * 10);
+      } else if (r < 45 && g < 45 && b < 45) {
+        // Soft edge: partially transparent for dark pixels near the border
+        data[i + 3] = Math.min(255, Math.max(r, g, b) * 6);
       }
     }
 
