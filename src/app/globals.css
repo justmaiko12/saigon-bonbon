@@ -18,11 +18,7 @@
   --foreground: #ffffff;
 }
 
-html {
-  background: #000;
-}
-
-body {
+html, body {
   background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
