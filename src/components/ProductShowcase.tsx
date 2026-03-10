@@ -70,6 +70,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       canvas.height = size;
     }
 
+    ctx.clearRect(0, 0, size, size);
     ctx.drawImage(video, 0, 0, size, size);
     const imageData = ctx.getImageData(0, 0, size, size);
     const data = imageData.data;
