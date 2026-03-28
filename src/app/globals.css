@@ -19,11 +19,14 @@
   --foreground: #ffffff;
 }
 
-html, body {
+html {
+  overflow-x: clip; /* clip instead of hidden — doesn't break sticky */
+}
+
+body {
   background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
-  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {

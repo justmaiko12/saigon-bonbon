@@ -29,27 +29,6 @@ export default function Footer({ setBgColor }: { setBgColor?: (color: string) =>
       />
 
       <div className="max-w-6xl mx-auto flex flex-col items-center">
-        {/* Top Glass Card */}
-        <Draggable id="footer-card">
-          <div className="glass-panel p-8 md:p-16 rounded-3xl max-w-4xl w-full mb-16 shadow-2xl text-center md:text-left">
-            <EditableText id="footer-headline" as="h2" className="font-serif text-2xl md:text-4xl font-bold text-white mb-6 tracking-wide">
-              {footer.headline}
-            </EditableText>
-            <div className="space-y-4 text-white/90 text-sm md:text-base font-medium leading-relaxed max-w-3xl">
-              {footer.paragraphs.map((p, i) => (
-                <EditableText key={i} id={`footer-p${i}`} as="p">
-                  {p.replace(/\n/g, " ")}
-                </EditableText>
-              ))}
-            </div>
-            <button className="mt-8 px-8 py-3 border border-white/30 rounded-full text-white text-xs font-bold tracking-widest hover:bg-white hover:text-black transition-colors">
-              <EditableText id="footer-cta-btn">{footer.ctaText}</EditableText>
-            </button>
-          </div>
-        </Draggable>
-
-        <div className="h-[1px] w-full bg-white/30 mb-12 max-w-5xl" />
-
         {/* Bottom Section */}
         <div className="w-full max-w-5xl flex flex-col md:flex-row gap-12 justify-between items-start">
 
