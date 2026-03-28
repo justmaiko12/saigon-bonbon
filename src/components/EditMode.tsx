@@ -237,43 +237,7 @@ export function EditProvider({ children }: { children: React.ReactNode }) {
           />
         )}
 
-        {/* ─── Bottom Toolbar ─────────────────────── */}
-        <div className="fixed bottom-6 right-6 z-[200] flex flex-col items-end gap-2" data-edit-toolbar>
-          {isEditing && (
-            <div className="bg-black/90 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-2xl flex flex-col gap-3 min-w-[220px]">
-              <p className="text-white/60 text-[10px] font-mono tracking-widest uppercase">Edit Mode</p>
-
-              {/* Undo / Redo */}
-              <div className="flex gap-2">
-                <button onClick={handleUndo} disabled={undoStack.length === 0}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold tracking-wider transition-colors ${undoStack.length > 0 ? "bg-white/10 text-white hover:bg-white/20" : "bg-white/5 text-white/20 cursor-not-allowed"}`}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 2.636-6.364L3 7"/></svg>
-                  UNDO
-                </button>
-                <button onClick={handleRedo} disabled={redoStack.length === 0}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold tracking-wider transition-colors ${redoStack.length > 0 ? "bg-white/10 text-white hover:bg-white/20" : "bg-white/5 text-white/20 cursor-not-allowed"}`}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 7v6h-6"/><path d="M21 13a9 9 0 1 1-2.636-6.364L21 7"/></svg>
-                  REDO
-                </button>
-              </div>
-
-              <div className="h-px bg-white/10" />
-              <button onClick={handleExport} className="text-left text-xs text-cyan-300 hover:text-cyan-200 font-medium transition-colors">
-                📋 Copy changes (send to Claude)
-              </button>
-              <button onClick={handleReset} className="text-left text-xs text-red-400 hover:text-red-300 font-medium transition-colors">
-                🗑 Reset all edits
-              </button>
-              <p className="text-white/25 text-[9px] font-mono">⌘Z undo &bull; ⌘⇧Z redo</p>
-            </div>
-          )}
-          <button
-            onClick={() => { setIsEditing(!isEditing); if (isEditing) { setSelectedId(null); setSelectedType(null); } }}
-            className={`px-5 py-3 rounded-full font-bold text-xs tracking-widest shadow-2xl transition-all border ${isEditing ? "bg-cyan-500 text-black border-cyan-400 hover:bg-cyan-400" : "bg-black/80 text-white border-white/20 hover:bg-black/90 backdrop-blur-xl"}`}
-          >
-            {isEditing ? "✓ DONE EDITING" : "✏️ EDIT"}
-          </button>
-        </div>
+        {/* Edit toolbar hidden in production */}
       </UndoContext.Provider>
     </EditContext.Provider>
   );
