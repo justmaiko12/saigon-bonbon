@@ -43,15 +43,18 @@ export default function FlavorStory({ id, heading, body, image, imageAlt }: Flav
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
           viewport={{ once: true, margin: "-15%" }}
-          className="flex-1 relative w-full min-h-[450px] sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]"
+          className="flex-1 relative w-full min-h-[450px] sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px] overflow-hidden"
         >
-          <Image
-            src={image}
-            alt={imageAlt}
-            fill
-            className="object-contain object-center"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+          {/* Crop bottom 1/3 (faded edge) and zoom in */}
+          <div className="absolute inset-0 -bottom-[45%] scale-[1.3] origin-top">
+            <Image
+              src={image}
+              alt={imageAlt}
+              fill
+              className="object-contain object-top"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
         </motion.div>
       </div>
     </section>
