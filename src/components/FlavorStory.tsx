@@ -14,14 +14,14 @@ interface FlavorStoryProps {
 export default function FlavorStory({ id, heading, body, image, imageAlt }: FlavorStoryProps) {
   return (
     <section id={id} className="relative py-16 md:py-24 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
-        {/* Text — slides in from left */}
+      <div className="max-w-6xl mx-auto relative">
+        {/* Text — slides in from left, z-index above image */}
         <motion.div
           initial={{ opacity: 0, x: -80 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true, margin: "-15%" }}
-          className="flex-1 md:flex-[1.1]"
+          className="relative z-10 max-w-[55%] md:max-w-[50%]"
         >
           <h2 className="font-bolero iridescent-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-wide mb-8 whitespace-pre-line">
             {heading}
@@ -37,28 +37,29 @@ export default function FlavorStory({ id, heading, body, image, imageAlt }: Flav
           </div>
         </motion.div>
 
-        {/* Image — slides in from right */}
+        {/* Image — positioned right, scaled large, allowed to overlap text */}
         <motion.div
           initial={{ opacity: 0, x: 80 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
           viewport={{ once: true, margin: "-15%" }}
-          className="flex-1 relative w-full min-h-[450px] sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]"
+          className="absolute top-0 right-0 w-[60%] md:w-[55%] h-full"
+          style={{ minHeight: "100%" }}
         >
           {/* Soft fade at bottom edge */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 -top-[5%] -bottom-[5%]"
             style={{
-              maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
             }}
           >
             <Image
               src={image}
               alt={imageAlt}
               fill
-              className="object-contain object-center"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-contain object-top"
+              sizes="(max-width: 768px) 100vw, 55vw"
             />
           </div>
         </motion.div>

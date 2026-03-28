@@ -16,7 +16,7 @@ export default function NutritionHighlights() {
           viewport={{ once: true, margin: "-10%" }}
           className="max-w-5xl mx-auto"
         >
-          <div className="relative w-full aspect-[875/638] rounded-3xl overflow-hidden bg-black/20">
+          <div className="relative w-full aspect-[875/638]">
             <Image
               src="/assets/michael-gummy.png"
               alt="Michael holding Saigon Bonbon gummy — Feels as good as it tastes"
