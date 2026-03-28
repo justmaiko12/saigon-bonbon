@@ -37,8 +37,12 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i], g = data[i + 1], b = data[i + 2];
+      // Mask black background
       if (r < 20 && g < 20 && b < 20) { data[i + 3] = 0; }
       else if (r < 45 && g < 45 && b < 45) { data[i + 3] = Math.min(255, Math.max(r, g, b) * 6); }
+      // Mask blue background (#0000FF and near-blue)
+      if (b > 200 && r < 60 && g < 60) { data[i + 3] = 0; }
+      else if (b > 150 && r < 80 && g < 80) { data[i + 3] = Math.min(255, Math.max(0, 255 - (b - Math.max(r, g)) * 3)); }
     }
     ctx.putImageData(imageData, 0, 0);
   }, []);
@@ -136,8 +140,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             {activeFlavor.video ? (
               <>
                 <video ref={videoRef} className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none" muted playsInline preload="auto">
-                  <source src={activeFlavor.video} type="video/webm" />
-                  <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
+                  <source src={activeFlavor.video} type={activeFlavor.video.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
                 </video>
                 <canvas ref={canvasRef} className="w-full h-full object-contain" />
                 {!isAnimating && activeFlavor.poster && (

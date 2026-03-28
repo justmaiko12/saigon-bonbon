@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import { CartProvider } from "@/lib/cart";
+import ComingSoon from "@/components/ComingSoon";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -40,7 +41,9 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${lostType.variable} ${bolero.variable} antialiased`}
       >
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          <ComingSoon>{children}</ComingSoon>
+        </CartProvider>
       </body>
     </html>
   );

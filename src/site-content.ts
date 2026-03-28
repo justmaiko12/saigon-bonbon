@@ -23,7 +23,7 @@ export const nav = {
   logo: "/assets/logo-transparent.png",
   links: [
     { label: "Home", target: "top" },
-    { label: "Our Story", target: "flavor-story" },
+    { label: "Our Story", target: "/our-story", isPage: true },
     { label: "Flavors", target: "flavors" },
     { label: "Shop", target: "shop" },
   ],
@@ -51,9 +51,11 @@ export const storySections = [
     ],
     image: "/assets/tee-pink.png",
     imageAlt: "Tee Tran with Saigon Bonbon",
-    imageScale: "w-[90%] md:w-[85%]",
+    imageScale: "w-[95%] md:w-[90%]",
     textGap: "mb-1",
     compact: true,
+    imageOffset: { x: 11, y: 184 },
+    imageZoom: 1.6,
   },
   {
     id: "beyond-story",
@@ -110,7 +112,7 @@ export const flavors = [
     bg: "linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)",
     color: "#FF107A",
     nutritionColor: "#FF5E00",
-    video: "/assets/lychee-flip.webm",
+    video: "/assets/lychee-flipnew.mp4",
     poster: "/assets/lychee-front.png",
   },
   {
@@ -120,7 +122,7 @@ export const flavors = [
     bg: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
     color: "#FF5E00",
     nutritionColor: "#FF5E00",
-    video: "/assets/mango-flip.webm",
+    video: "/assets/mango-flipnew.mp4",
     poster: "/assets/mango-front.png",
   },
   {
@@ -130,7 +132,7 @@ export const flavors = [
     bg: "linear-gradient(180deg, #67B626 0%, #009045 100%)",
     color: "#67B626",
     nutritionColor: "#67B626",
-    video: "/assets/pandan-flip.webm",
+    video: "/assets/pandan-flipnew.mp4",
     poster: "/assets/pandan-front.png",
   },
 ];
