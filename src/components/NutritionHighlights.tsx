@@ -1,44 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { nutritionHighlights, madeWithIntention } from "@/site-content";
+import Image from "next/image";
+import { madeWithIntention } from "@/site-content";
 
 export default function NutritionHighlights() {
   return (
     <>
-      {/* Feels As Good As It Tastes */}
-      <section className="relative py-20 md:py-28 px-6 overflow-hidden">
-        <div className="max-w-5xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            viewport={{ once: true }}
-            className="font-bolero iridescent-text text-4xl sm:text-5xl md:text-6xl font-bold leading-[0.95] tracking-wide mb-12 md:mb-16 whitespace-pre-line text-center"
-          >
-            {nutritionHighlights.heading}
-          </motion.h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
-            {nutritionHighlights.stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="flex flex-col items-center text-center gap-3"
-              >
-                <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                  <span className="text-white text-lg">✦</span>
-                </div>
-                <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase whitespace-pre-line leading-tight">
-                  {stat.label}
-                </span>
-              </motion.div>
-            ))}
+      {/* Feels As Good As It Tastes — pre-designed composition */}
+      <section className="relative py-12 md:py-20 px-4 sm:px-6 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true, margin: "-10%" }}
+          className="max-w-5xl mx-auto"
+        >
+          <div className="relative w-full aspect-[875/638] rounded-3xl overflow-hidden bg-black/20">
+            <Image
+              src="/assets/michael-gummy.png"
+              alt="Michael holding Saigon Bonbon gummy — Feels as good as it tastes"
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 100vw, 960px"
+              priority
+            />
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Made With Intention */}
