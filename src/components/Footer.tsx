@@ -3,6 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
+import Image from "next/image";
 import { footer } from "@/site-content";
 import { EditableText, Draggable } from "@/components/EditMode";
 
@@ -35,11 +36,8 @@ export default function Footer({ setBgColor }: { setBgColor?: (color: string) =>
           {/* Logo */}
           <Draggable id="footer-logo">
             <div className="flex-shrink-0 flex items-center justify-center w-full md:w-auto">
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-2 border border-white/20">
-                  <span className="text-[10px] text-white/50 font-mono">ICON</span>
-                </div>
-                <span className="font-serif text-xl font-bold text-white tracking-widest leading-tight text-center">SAIGON<br/>BONBON</span>
+              <div className="relative w-32 h-32 md:w-40 md:h-40">
+                <Image src="/assets/footer-logo.png" alt="Saigon Bonbon" fill className="object-contain" />
               </div>
             </div>
           </Draggable>
