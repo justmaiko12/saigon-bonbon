@@ -92,8 +92,8 @@ export default function ShopSection({ variant = "full" }: { variant?: "full" | "
           <PackCard pack={shop.sixPack} id="6pack" checkoutUrl={sixPack?.checkoutUrl} />
         </div>
 
-        {/* Badges */}
-        {variant === "full" && <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 mt-20">
+        {/* Badges — triangle on mobile (1 top centered, 2 bottom), row on desktop */}
+        {variant === "full" && <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-6 md:gap-12 lg:gap-16 mt-20">
           {shop.badges.map((badge, i) => (
             <Draggable key={i} id={`shop-badge-${i}`}>
               <motion.div
@@ -101,7 +101,7 @@ export default function ShopSection({ variant = "full" }: { variant?: "full" | "
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="flex items-center gap-4"
+                className={`flex items-center gap-3 md:gap-4 ${i === 0 ? "col-span-2 justify-center" : "justify-center"}`}
               >
                 {badge.icon === "lion" ? (
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF5E00] to-[#DDA2AC] flex items-center justify-center p-2 relative overflow-hidden">

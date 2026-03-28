@@ -51,6 +51,9 @@ export const storySections = [
     ],
     image: "/assets/tee-pink.png",
     imageAlt: "Tee Tran with Saigon Bonbon",
+    imageScale: "w-[90%] md:w-[85%]",
+    textGap: "mb-1",
+    compact: true,
   },
   {
     id: "beyond-story",
