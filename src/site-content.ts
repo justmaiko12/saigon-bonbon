@@ -30,32 +30,72 @@ export const nav = {
   buyButtonText: "Buy",
 };
 
-// ─── HERO SECTION ───────────────────────────────────────────
-export const hero = {
-  subtitle: "Introducing",
-  brand: "SAIGON BONBON",
-  headline: "THIS IS\nOUR FLAVOR.",
-  bgGradient: "linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)",
-
-  // Full variant — intro text (left column)
-  introParagraphs: [
-    "Saigon Bonbon is a Vietnamese-American company rooted in something universal — the desire to celebrate who we are, fully and unapologetically. Our roots shape us, and our joy is meant to be shared.",
-    "Our iconic gummy and mascot, Lân, embodies that spirit. In Vietnamese culture, Lân is a mythical guardian symbolizing prosperity, peace, and good fortune, and the star of the Múa Lân during Lunar New Year and Mid-Autumn celebrations.",
-    "To us, the Lân honors where we come from while moving boldly into what's next. Saigon Bonbon turns that spirit into something you can taste — because culture isn't meant to be dimmed. It's meant to be celebrated.",
-  ],
-  tagline: "More than candy, it's a celebration in gummy form.",
-
-  // Images
-  heroImage: "/assets/pattern.png",        // Replace with hero photo
-  foundersImage: "/assets/pattern.png",     // Replace with founders photo
-  gummiesImage: "/assets/gummies-trio.png", // Three Lân gummies
+// ─── HERO VIDEO ────────────────────────────────────────────
+export const heroVideo = {
+  src: "/assets/brand-video.mp4",
 };
 
-// ─── INTRO SECTION ──────────────────────────────────────────
-export const intro = {
-  headline: "AUTHENTIC\nVIETNAMESE-INSPIRED\nFLAVORS\nYOU CAN ENJOY NOW,\nAND EVERY DAY AFTER.",
-  bgImage: "/assets/lion-silhouettes-transparent.png",
-  bgGradient: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
+// ─── STORY SECTIONS ────────────────────────────────────────
+export const storySections = [
+  {
+    id: "flavor-story",
+    heading: "FLAVOR IS\nMORE THAN\nTASTE.",
+    body: [
+      "It's how culture lives.",
+      "In the traditions that shape us.",
+      "In how we express who we are.",
+      "In how each generation adds something new.",
+      "",
+      "At Saigon Bonbon, we turn that into flavor.",
+      "Vietnamese-inspired gummy candy.",
+    ],
+    image: "/assets/tee-pink.png",
+    imageAlt: "Tee Tran with Saigon Bonbon",
+  },
+  {
+    id: "beyond-story",
+    heading: "BEYOND\nSPECIAL\nOCCASION.",
+    body: [
+      "In Vietnamese culture, Lân appears at Lunar New Year, weddings, and grand openings to bring good fortune, joy, and new beginnings.",
+      "",
+      "It's reserved for moments that matter.",
+      "",
+      "But life isn't just those moments.",
+      "We believe there's something worth celebrating every day.",
+      "So we made it part of our everyday.",
+    ],
+    image: "/assets/lion-dance-orange.png",
+    imageAlt: "Vietnamese Lion Dance",
+  },
+];
+
+// ─── GUMMY SCROLL ANIMATION ───────────────────────────────
+export const gummyScroll = {
+  heading: "NOW IT TAKES SHAPE.",
+  subheading: "THE LÂN, REIMAGINED IN GUMMY FORM.",
+  videoSrc: "/assets/gummy-scroll.mp4",
+};
+
+// ─── NUTRITION HIGHLIGHTS ──────────────────────────────────
+export const nutritionHighlights = {
+  heading: "FEELS AS GOOD\nAS IT TASTES.",
+  stats: [
+    { label: "ONLY 4g\nSUGAR" },
+    { label: "ZERO\nSUGAR\nALCOHOLS" },
+    { label: "10g\nPREBIOTIC\nFIBER" },
+    { label: "100%\nPLANT\nBASED" },
+  ],
+  image: "/assets/pattern.png", // Replace with Michael holding gummy photo when available
+  imageAlt: "Michael holding Saigon Bonbon gummy",
+};
+
+export const madeWithIntention = {
+  heading: "MADE WITH\nINTENTION",
+  items: [
+    "DESIGNED IN SOUTHERN CALIFORNIA.",
+    "CRAFTED IN THE USA.",
+    "QUALITY YOU CAN TRUST.",
+  ],
 };
 
 // ─── PRODUCT SHOWCASE (FLAVORS) ─────────────────────────────
@@ -97,70 +137,6 @@ export const nutritionStats = [
   { value: "100%", label: "PLANT\nBASED" },
   { value: "10g", label: "PREBIOTIC\nFIBER" },
   { value: "ZERO", label: "SUGAR\nALCOHOLS" },
-];
-
-// ─── VIDEO SECTION ──────────────────────────────────────────
-export const video = {
-  headline: "EVERY DAY WE DANCE",
-  thumbnailPlaceholder: "Lion Dance + Bao Han Video Thumbnail",
-  buttonText: "WATCH THE FILM",
-
-  // Full variant paragraphs
-  paragraphs: [
-    "Long have we searched for something that truly reflected us. Something to stand behind. Something to be proud of.",
-    "Now, it's here.\nThis is us—no longer quiet, no longer waiting.",
-    "We don't ask for permission.\nWe don't save our joy for special occasions.",
-  ],
-  closingLine: "Because every day is a gift.\nEvery day, we dance.",
-};
-
-// ─── STORY SECTION ──────────────────────────────────────────
-export const story = {
-  headline: "HOW IT CAME TO BEING",
-
-  // Full variant
-  paragraphs: [
-    "Saigon Bonbon is a confluence of three worlds.",
-    "From Tee Tran's childhood memories and cherished Vietnamese upbringing;",
-    "Bao Han's journey of evolution, survival, and finding joy in the simplest things;",
-    "And of Maiko taking the world by storm - using social media to showcase real Vietnamese talent that speaks to the new generation.",
-    "Together, these three form the Creative Triad of Saigon Bonbon. Tee provides the vision, Bao Han is the heart, and Maiko drives the movement.",
-    "Saigon Bonbon is not just in the business of selling candy - it's all about sharing our joy, heritage, and dreams of a future where uniqueness is celebrated, not hidden. It's a celebration in candy form.",
-  ],
-
-  // Condensed variant
-  condensedParagraphs: [
-    'Born from the vision of <strong>Tee Tran</strong>, the heart of <strong>Bao Han</strong>, and the movement of <strong>Maiko</strong> — three Vietnamese-Americans who refused to keep their joy quiet.',
-    "We're not just selling candy. We're sharing heritage, dreams, and a future where uniqueness is celebrated.",
-  ],
-  condensedClosing: "A celebration in candy form.",
-
-  photoshootPlaceholder: "[Add Image from Photoshoot Here]",
-};
-
-// ─── ACCORDION SECTION ──────────────────────────────────────
-export const accordion = [
-  {
-    id: "thoughtfully-made",
-    title: "THOUGHTFULLY MADE",
-    content:
-      "Made with wellness in mind. Less sugar so you can indulge in the flavors without guilt. This is a treat you can enjoy everyday.",
-    media: "Manufacturing Line - Sugar Reduction",
-  },
-  {
-    id: "crafted-usa",
-    title: "CRAFTED IN THE USA",
-    content:
-      "Saigon Bonbon is proudly crafted in the USA, a melting pot of culture and creativity. Every batch we make is crafted with care, supports local production, and uplifts the communities we live in.",
-    media: "Manufacturing Line - USA Facility",
-  },
-  {
-    id: "custom-shape",
-    title: "CUSTOM SHAPE",
-    content:
-      "Our gummies are made with a custom mould that we designed ourselves, shaped in the likeness of the Lân. A small symbol of joy and good fortune - carried in every bite.",
-    media: "Manufacturing Line - Gummy Moulds",
-  },
 ];
 
 // ─── SHOP SECTION ───────────────────────────────────────────
