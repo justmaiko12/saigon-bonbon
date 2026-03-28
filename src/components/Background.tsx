@@ -16,7 +16,7 @@ export default function Background({ color }: { color: string }) {
       transition={{ duration: 1, ease: "easeInOut" }}
     >
       <div
-        className="absolute inset-0 opacity-[0.6] mix-blend-multiply"
+        className="absolute inset-0 opacity-[0.35] mix-blend-overlay"
         style={{
           backgroundImage: "url('/assets/pattern.png')",
           backgroundRepeat: "repeat",
