@@ -24,8 +24,8 @@ export default function Home() {
 
         <HeroVideo />
 
-        {storySections.map((section) => (
-          <FlavorStory key={section.id} {...section} />
+        {storySections.map((section, i) => (
+          <FlavorStory key={section.id} {...section} flipped={i % 2 === 1} />
         ))}
 
         <GummyScrollAnimation />

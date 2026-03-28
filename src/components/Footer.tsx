@@ -76,10 +76,10 @@ export default function Footer({ setBgColor }: { setBgColor?: (color: string) =>
               <EditableText id="footer-email">{footer.contactEmail}</EditableText>
             </a>
 
-              <EditableText id="footer-links-label" as="p" className="text-white font-bold text-xs md:text-sm tracking-widest mt-8 mb-4">
+              <EditableText id="footer-links-label" as="p" className="text-white font-bold text-xs md:text-sm tracking-widest mt-5 mb-2">
                 {footer.usefulLinksLabel}
               </EditableText>
-              <ul className="space-y-3">
+              <ul className="space-y-1.5">
                 {footer.usefulLinks.map(link => (
                   <li key={link}>
                     <a href="#" className="text-white/80 hover:text-white text-xs md:text-sm font-medium transition-colors">{link}</a>

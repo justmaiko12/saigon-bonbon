@@ -9,19 +9,20 @@ interface FlavorStoryProps {
   body: string[];
   image: string;
   imageAlt: string;
+  flipped?: boolean;
 }
 
-export default function FlavorStory({ id, heading, body, image, imageAlt }: FlavorStoryProps) {
+export default function FlavorStory({ id, heading, body, image, imageAlt, flipped = false }: FlavorStoryProps) {
   return (
     <section id={id} className="relative py-16 md:py-24 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto relative">
-        {/* Text — slides in from left, z-index above image */}
+      <div className="max-w-6xl mx-auto relative min-h-[600px] sm:min-h-[700px] md:min-h-[800px]">
+        {/* Text — z-index above image */}
         <motion.div
-          initial={{ opacity: 0, x: -80 }}
+          initial={{ opacity: 0, x: flipped ? 80 : -80 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true, margin: "-15%" }}
-          className="relative z-10 max-w-[55%] md:max-w-[50%]"
+          className={`relative z-10 max-w-[55%] md:max-w-[50%] ${flipped ? "ml-auto" : ""}`}
         >
           <h2 className="font-bolero iridescent-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-wide mb-8 whitespace-pre-line">
             {heading}
@@ -37,18 +38,18 @@ export default function FlavorStory({ id, heading, body, image, imageAlt }: Flav
           </div>
         </motion.div>
 
-        {/* Image — positioned right, scaled large, allowed to overlap text */}
+        {/* Image — large, overlapping */}
         <motion.div
-          initial={{ opacity: 0, x: 80 }}
+          initial={{ opacity: 0, x: flipped ? -80 : 80 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
           viewport={{ once: true, margin: "-15%" }}
-          className="absolute top-0 right-0 w-[60%] md:w-[55%] h-full"
+          className={`absolute top-0 ${flipped ? "left-0" : "right-0"} w-[70%] md:w-[65%] h-full`}
           style={{ minHeight: "100%" }}
         >
           {/* Soft fade at bottom edge */}
           <div
-            className="absolute inset-0 -top-[5%] -bottom-[5%]"
+            className="absolute inset-0 -top-[10%] -bottom-[10%]"
             style={{
               maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
@@ -59,7 +60,7 @@ export default function FlavorStory({ id, heading, body, image, imageAlt }: Flav
               alt={imageAlt}
               fill
               className="object-contain object-top"
-              sizes="(max-width: 768px) 100vw, 55vw"
+              sizes="(max-width: 768px) 100vw, 65vw"
             />
           </div>
         </motion.div>
