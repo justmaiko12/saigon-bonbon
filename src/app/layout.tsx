@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Saigon Bonbon | This is Our Flavor",
+  title: "Saigon Bonbon",
   description: "Authentic Vietnamese-inspired flavors you can enjoy now, and every day after.",
 };
 
