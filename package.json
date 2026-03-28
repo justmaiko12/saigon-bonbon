@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@shopify/hydrogen-react": "^2026.1.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.5",
     "jimp": "^1.6.0",

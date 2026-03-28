@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# brand assets (too large for GitHub — keep in Dropbox/Drive)
+/Brand Files/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

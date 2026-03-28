@@ -5,114 +5,57 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useInView } from "framer-motion";
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import Image from "next/image";
-
-const flavors = [
-  {
-    id: "lychee",
-    name: "LUSCIOUS LYCHEE ROSE",
-    desc: "Light lychee infused with soft floral rose. Modern girl, free spirit, and elegant. As alluring a summer Vietnamese home.",
-    bg: "linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)",
-    color: "#FF107A",
-    nutritionColor: "#FF5E00",
-    video: "/assets/lychee-flip.webm",
-    poster: "/assets/lychee-front.png"
-  },
-  {
-    id: "mango",
-    name: "SPICY MANGO TAMARIND",
-    desc: "Juicy mango, tangy tamarind, and a subtle chili kick. Just like the street snacks we used to love.",
-    bg: "linear-gradient(180deg, #FF5E00 0%, #67B626 100%)",
-    color: "#FF5E00",
-    nutritionColor: "#FF5E00",
-    video: "/assets/mango-flip.webm",
-    poster: "/assets/mango-front.png"
-  },
-  {
-    id: "coconut",
-    name: "COCONUT PANDAN CRUSH",
-    desc: "Creamy coconut meets fragrant pandan — smooth, toasty, and unmistakably Southeast Asian. A Vietnamese dessert classic that always hits.",
-    bg: "linear-gradient(180deg, #67B626 0%, #009045 100%)",
-    color: "#67B626",
-    nutritionColor: "#67B626",
-    video: "/assets/pandan-flip.webm",
-    poster: "/assets/pandan-front.png"
-  }
-];
+import { flavors, nutritionStats } from "@/site-content";
+import { EditableText, EditableImage, Draggable, useEdit } from "@/components/EditMode";
 
 export default function ProductShowcase({ setBgColor }: { setBgColor: (color: string) => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const backVideoRef = useRef<HTMLVideoElement>(null);
   const reverseReqId = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderLoopRef = useRef<number | null>(null);
   const isRenderingRef = useRef(false);
   const touchStartX = useRef<number | null>(null);
+  const { isEditing } = useEdit();
 
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
 
-  // Render a single video frame to canvas with black pixels made transparent
   const renderFrame = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas || video.videoWidth === 0) return;
-
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
-
-    // Use native video resolution (1440) for sharp rendering on retina
     const size = video.videoWidth;
-    if (canvas.width !== size) {
-      canvas.width = size;
-      canvas.height = size;
-    }
-
+    if (canvas.width !== size) { canvas.width = size; canvas.height = size; }
     ctx.clearRect(0, 0, size, size);
     ctx.drawImage(video, 0, 0, size, size);
     const imageData = ctx.getImageData(0, 0, size, size);
     const data = imageData.data;
-
-    // Make near-black pixels transparent
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i], g = data[i + 1], b = data[i + 2];
-      if (r < 20 && g < 20 && b < 20) {
-        data[i + 3] = 0;
-      } else if (r < 45 && g < 45 && b < 45) {
-        // Soft edge: partially transparent for dark pixels near the border
-        data[i + 3] = Math.min(255, Math.max(r, g, b) * 6);
-      }
+      if (r < 20 && g < 20 && b < 20) { data[i + 3] = 0; }
+      else if (r < 45 && g < 45 && b < 45) { data[i + 3] = Math.min(255, Math.max(r, g, b) * 6); }
     }
-
     ctx.putImageData(imageData, 0, 0);
   }, []);
 
-  // Start/stop the canvas render loop
   const startRenderLoop = useCallback(() => {
     if (isRenderingRef.current) return;
     isRenderingRef.current = true;
-    const loop = () => {
-      renderFrame();
-      if (isRenderingRef.current) {
-        renderLoopRef.current = requestAnimationFrame(loop);
-      }
-    };
+    const loop = () => { renderFrame(); if (isRenderingRef.current) { renderLoopRef.current = requestAnimationFrame(loop); } };
     renderLoopRef.current = requestAnimationFrame(loop);
   }, [renderFrame]);
 
   const stopRenderLoop = useCallback(() => {
     isRenderingRef.current = false;
-    if (renderLoopRef.current) {
-      cancelAnimationFrame(renderLoopRef.current);
-      renderLoopRef.current = null;
-    }
-    // Render one final frame
+    if (renderLoopRef.current) { cancelAnimationFrame(renderLoopRef.current); renderLoopRef.current = null; }
     renderFrame();
   }, [renderFrame]);
 
-  // Render canvas frame on seek (for reverse animation)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -122,24 +65,17 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   }, [currentIndex, renderFrame]);
 
   useEffect(() => {
-    if (isInView) {
-      setBgColor(flavors[currentIndex].bg);
-    }
+    if (isInView) setBgColor(flavors[currentIndex].bg);
   }, [currentIndex, isInView, setBgColor]);
 
   const activeFlavor = flavors[currentIndex];
 
   const handleFlipToBack = () => {
-    setIsFlipped(true);
-    setIsAnimating(true);
+    setIsFlipped(true); setIsAnimating(true);
     if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
     if (videoRef.current && activeFlavor.video) {
-      if (videoRef.current.currentTime === videoRef.current.duration) {
-        videoRef.current.currentTime = 0;
-      }
-      videoRef.current.playbackRate = 2.6;
-      videoRef.current.play();
-      startRenderLoop();
+      if (videoRef.current.currentTime === videoRef.current.duration) videoRef.current.currentTime = 0;
+      videoRef.current.playbackRate = 2.6; videoRef.current.play(); startRenderLoop();
       videoRef.current.onended = () => stopRenderLoop();
     }
   };
@@ -148,55 +84,26 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     setIsFlipped(false);
     if (videoRef.current && activeFlavor.video) {
       videoRef.current.pause();
-
-      // If the video somehow reset, push it to the end so it can reverse
-      if (videoRef.current.currentTime === 0 && videoRef.current.duration > 0) {
-        videoRef.current.currentTime = videoRef.current.duration;
-      }
-
+      if (videoRef.current.currentTime === 0 && videoRef.current.duration > 0) videoRef.current.currentTime = videoRef.current.duration;
       let lastTime = performance.now();
       const duration = videoRef.current.currentTime;
       startRenderLoop();
-
       const step = (time: number) => {
         if (!videoRef.current) return;
-        const dt = (time - lastTime) / 1000;
-        lastTime = time;
-
+        const dt = (time - lastTime) / 1000; lastTime = time;
         const clampedDt = Math.min(dt, 0.1);
         const progress = 1 - (videoRef.current.currentTime / duration);
         const speedMultiplier = 1.5 + (Math.sin(progress * Math.PI) * 2.0);
         const newTime = videoRef.current.currentTime - (clampedDt * speedMultiplier);
-
-        if (newTime <= 0) {
-          videoRef.current.currentTime = 0;
-          stopRenderLoop();
-          setIsAnimating(false);
-        } else {
-          videoRef.current.currentTime = newTime;
-          reverseReqId.current = requestAnimationFrame(step);
-        }
+        if (newTime <= 0) { videoRef.current.currentTime = 0; stopRenderLoop(); setIsAnimating(false); }
+        else { videoRef.current.currentTime = newTime; reverseReqId.current = requestAnimationFrame(step); }
       };
-
       reverseReqId.current = requestAnimationFrame(step);
     }
   };
 
-  const next = () => {
-    setIsFlipped(false);
-    setIsAnimating(false);
-    stopRenderLoop();
-    if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
-    setCurrentIndex((prev) => (prev + 1) % flavors.length);
-  };
-
-  const prev = () => {
-    setIsFlipped(false);
-    setIsAnimating(false);
-    stopRenderLoop();
-    if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
-    setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length);
-  };
+  const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
+  const prev = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current); setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length); };
 
   return (
     <section
@@ -208,48 +115,37 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         if (touchStartX.current === null) return;
         const diff = e.changedTouches[0].clientX - touchStartX.current;
         touchStartX.current = null;
-        if (Math.abs(diff) > 50) {
-          if (diff < 0) next();
-          else prev();
-        }
+        if (Math.abs(diff) > 50) { if (diff < 0) next(); else prev(); }
       }}
     >
       <div className="w-full max-w-5xl relative scale-[0.85] sm:scale-100 origin-top md:origin-center" style={{ perspective: "2000px" }}>
-        
-        {/* Floating Pouch Video (Stays on top, outside the CSS flip) */}
+
+        {/* Floating Pouch — NO Draggable wrapping canvas/video to avoid breaking positioning */}
         <AnimatePresence mode="wait">
-          <motion.div 
+          <motion.div
             key={`video-${currentIndex}`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`} style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`}
+            style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <>
-                <video
-                  ref={videoRef}
-                  className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none"
-                  muted
-                  playsInline
-                  preload="auto"
-                >
+                <video ref={videoRef} className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none" muted playsInline preload="auto">
                   <source src={activeFlavor.video} type="video/webm" />
                   <source src={activeFlavor.video.replace('.webm', '.mp4')} type="video/mp4" />
                 </video>
-                <canvas
-                  ref={canvasRef}
-                  className="w-full h-full object-contain"
-                />
+                <canvas ref={canvasRef} className="w-full h-full object-contain" />
                 {!isAnimating && activeFlavor.poster && (
-                  <Image
-                    src={activeFlavor.poster}
-                    alt={activeFlavor.name}
-                    fill
-                    className="object-contain z-10"
-                    priority
-                  />
+                  isEditing ? (
+                    <div className="absolute inset-0 z-10 pointer-events-auto">
+                      <EditableImage id={`flavor-poster-${activeFlavor.id}`} src={activeFlavor.poster} alt={activeFlavor.name} fill className="object-contain" />
+                    </div>
+                  ) : (
+                    <Image src={activeFlavor.poster} alt={activeFlavor.name} fill className="object-contain z-10" priority />
+                  )
                 )}
               </>
             ) : (
@@ -258,12 +154,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                 <span className="text-white font-bolero text-xl md:text-2xl z-10 text-center px-4 leading-tight drop-shadow-md">
                   {activeFlavor.name}<br/>(FRONT POUCH)
                 </span>
-                {/* Floating Fruits Placeholder */}
-                <motion.div 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-8 -right-8 md:-top-12 md:-right-12 w-24 h-24 md:w-40 md:h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" 
-                />
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-8 -right-8 md:-top-12 md:-right-12 w-24 h-24 md:w-40 md:h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" />
               </>
             )}
           </motion.div>
@@ -272,126 +163,105 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         {/* Main Card Container */}
         <div className="relative w-full flex justify-center lg:justify-end mt-[80px] sm:mt-[200px] md:mt-0">
           <AnimatePresence mode="wait">
-            <motion.div 
+            <motion.div
               key={`card-${currentIndex}`}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              layout 
-              className={`w-[88%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 rounded-[2rem] min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[280px] sm:pt-[380px] md:pt-16 mt-0`}
+              layout
+              className="w-[88%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[280px] sm:pt-[380px] md:pt-16 mt-0"
+              style={{ borderRadius: "var(--flavor-card-radius)" }}
             >
-            <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[50%] lg:pl-24 md:pt-0">
-              
-              {/* Shared Layout Title */}
-              <motion.h2 
-                layout="position"
-                key={`title-${currentIndex}`}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[5.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal lg:whitespace-nowrap translate-x-3 md:translate-x-0"
-                style={{ paddingRight: '20px' }}
-              >
-                {activeFlavor.name}&nbsp;
-              </motion.h2>
+              <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[50%] lg:pl-24 md:pt-0">
 
-              <AnimatePresence mode="wait">
-                {!isFlipped ? (
-                  <motion.div
-                    key={`front-${currentIndex}`}
-                    initial={{ opacity: 0, y: 10, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: "auto" }}
-                    exit={{ opacity: 0, y: -10, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex flex-col overflow-hidden items-center md:items-start text-center md:text-left"
-                  >
-                    <p className="text-white/90 text-xs sm:text-sm md:text-lg mb-8 md:mb-12 leading-relaxed font-medium max-w-xl">
-                      {activeFlavor.desc}
-                    </p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key={`back-${currentIndex}`}
-                    initial={{ opacity: 0, y: 10, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: "auto" }}
-                    exit={{ opacity: 0, y: -10, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex flex-col overflow-y-hidden overflow-x-visible w-full md:w-[115%] lg:w-full md:-ml-8 lg:ml-0"
-                  >
-                    {/* Nutrition Badges */}
-                    <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:pl-0 lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
-                      <div className="text-center w-full lg:w-auto">
-                        <span className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">4g</span><br/>
-                        <span className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">SUGAR</span>
-                      </div>
-                      <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />
-                      <div className="text-center w-full lg:w-auto">
-                        <span className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">100%</span><br/>
-                        <span className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">PLANT<br/>BASED</span>
-                      </div>
-                      <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />
-                      <div className="text-center w-full lg:w-auto">
-                        <span className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">10g</span><br/>
-                        <span className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">PREBIOTIC<br/>FIBER</span>
-                      </div>
-                      <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />
-                      <div className="text-center w-full lg:w-auto">
-                        <span className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">ZERO</span><br/>
-                        <span className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">SUGAR<br/>ALCOHOLS</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <motion.div layout="position" className="flex justify-center md:justify-start w-full">
-                <motion.button
-                  onClick={isFlipped ? handleFlipToFront : handleFlipToBack}
-                  animate={!isFlipped ? { opacity: [0.7, 1, 0.7] } : { opacity: 1 }}
-                  transition={!isFlipped ? { duration: 2, repeat: 2, ease: "easeInOut" } : {}}
-                  className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 rounded-full border border-white/30 bg-white/10 hover:bg-white/20 text-white transition-colors text-[10px] md:text-xs font-bold tracking-widest shadow-lg w-fit mt-6 md:mt-0 mb-4 md:mb-0"
+                <motion.h2
+                  layout="position"
+                  key={`title-${currentIndex}`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="font-bolero text-center md:text-left text-[8vw] sm:text-[6vw] md:text-[5.5vw] lg:text-[1.8rem] xl:text-[2rem] font-bold mb-3 md:mb-6 mt-8 sm:mt-16 md:mt-0 leading-none tracking-wide drop-shadow-sm iridescent-text whitespace-normal lg:whitespace-nowrap translate-x-3 md:translate-x-0"
+                  style={{ paddingRight: '20px' }}
                 >
-                  <RotateCcw size={16} className="w-3 h-3 md:w-4 md:h-4" />
-                  {isFlipped ? "DESCRIPTION" : "INGREDIENTS & NUTRITIONAL VALUES"}
-                </motion.button>
-              </motion.div>
+                  <EditableText id={`flavor-name-${activeFlavor.id}`}>{activeFlavor.name}</EditableText>&nbsp;
+                </motion.h2>
 
-              <AnimatePresence>
-                {isFlipped && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute right-2 bottom-2 md:right-6 md:bottom-6 pointer-events-none w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-[100px] lg:h-[100px] z-10"
+                <AnimatePresence mode="wait">
+                  {!isFlipped ? (
+                    <motion.div
+                      key={`front-${currentIndex}`}
+                      initial={{ opacity: 0, y: 10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: "auto" }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col overflow-hidden items-center md:items-start text-center md:text-left"
+                    >
+                      <EditableText id={`flavor-desc-${activeFlavor.id}`} as="p" className="text-white/90 text-xs sm:text-sm md:text-lg mb-8 md:mb-12 leading-relaxed font-medium max-w-xl">
+                        {activeFlavor.desc}
+                      </EditableText>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key={`back-${currentIndex}`}
+                      initial={{ opacity: 0, y: 10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: "auto" }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col overflow-y-hidden overflow-x-visible w-full md:w-[115%] lg:w-full md:-ml-8 lg:ml-0"
+                    >
+                      <div className="grid grid-cols-2 lg:flex lg:flex-nowrap items-start lg:items-center justify-items-center lg:justify-start w-full md:pl-0 lg:pl-0 max-w-2xl mb-8 md:mb-12 mt-2 md:mt-4 gap-y-6 sm:gap-y-8 gap-x-2 sm:gap-x-4 lg:gap-8">
+                        {nutritionStats.map((stat, i) => (
+                          <div key={i} className="contents">
+                            <div className="text-center w-full lg:w-auto">
+                              <EditableText id={`nutrition-value-${i}`} className="font-bolero text-[4rem] sm:text-6xl md:text-5xl lg:text-6xl text-white leading-none">{stat.value}</EditableText>
+                              <br/>
+                              <EditableText id={`nutrition-label-${i}`} className="text-white/90 text-[13px] sm:text-sm md:text-xs lg:text-sm font-bold tracking-widest mt-1 md:mt-2 block leading-tight uppercase">{stat.label}</EditableText>
+                            </div>
+                            {i < nutritionStats.length - 1 && <div className="hidden lg:block w-px h-12 lg:h-20 bg-white/30" />}
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <motion.div layout="position" className="flex justify-center md:justify-start w-full">
+                  <motion.button
+                    onClick={isFlipped ? handleFlipToFront : handleFlipToBack}
+                    animate={!isFlipped ? { opacity: [0.7, 1, 0.7] } : { opacity: 1 }}
+                    transition={!isFlipped ? { duration: 2, repeat: 2, ease: "easeInOut" } : {}}
+                    className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 rounded-full border border-white/30 bg-white/10 hover:bg-white/20 text-white transition-colors text-[10px] md:text-xs font-bold tracking-widest shadow-lg w-fit mt-6 md:mt-0 mb-4 md:mb-0"
                   >
-                    <Image 
-                      src="/assets/usa-stamp-transparent.png" 
-                      alt="Crafted in California Made in USA" 
-                      fill
-                      className="object-contain drop-shadow-2xl"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
+                    <RotateCcw size={16} className="w-3 h-3 md:w-4 md:h-4" />
+                    <EditableText id="flavor-flip-btn">{isFlipped ? "DESCRIPTION" : "INGREDIENTS & NUTRITIONAL VALUES"}</EditableText>
+                  </motion.button>
+                </motion.div>
+
+                <AnimatePresence>
+                  {isFlipped && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute right-2 bottom-2 md:right-6 md:bottom-6 pointer-events-none w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-[100px] lg:h-[100px] z-10"
+                    >
+                      <Image src="/assets/usa-stamp-transparent.png" alt="Crafted in California Made in USA" fill className="object-contain drop-shadow-2xl" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Carousel Controls (Below Card) */}
+        {/* Carousel Controls */}
         <div className="flex items-center justify-center gap-6 mt-16 relative z-10">
-          <button onClick={prev} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors bg-white/5 backdrop-blur-sm">
-            <ChevronLeft size={20} />
-          </button>
+          <button onClick={prev} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors bg-white/5 backdrop-blur-sm"><ChevronLeft size={20} /></button>
           <div className="flex gap-3">
-            {flavors.map((_, idx) => (
-              <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "w-8 bg-white" : "w-2 bg-white/30"}`} />
-            ))}
+            {flavors.map((_, idx) => (<div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "w-8 bg-white" : "w-2 bg-white/30"}`} />))}
           </div>
-          <button onClick={next} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors bg-white/5 backdrop-blur-sm">
-            <ChevronRight size={20} />
-          </button>
+          <button onClick={next} className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/20 transition-colors bg-white/5 backdrop-blur-sm"><ChevronRight size={20} /></button>
         </div>
 
       </div>

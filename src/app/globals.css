@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../site-layout.css";
 
 @theme inline {
   --color-background: var(--background);

@@ -1,0 +1,69 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ *  SAIGON BONBON — LAYOUT & SPACING CONFIG
+ * ═══════════════════════════════════════════════════════════════
+ *
+ *  Edit these CSS variables to adjust spacing, sizes, and layout
+ *  without touching any component code. Save → browser updates.
+ *
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+:root {
+  /* ─── Hero ─────────────────────────────────────── */
+  --hero-headline-size: 7rem;
+  --hero-headline-size-md: 8rem;
+  --hero-brand-size: 3rem;
+  --hero-brand-size-md: 5rem;
+  --hero-card-max-width: 42rem;
+  --hero-card-padding: 2rem;
+  --hero-card-padding-md: 2.5rem;
+  --hero-card-radius: 1.5rem;
+
+  /* ─── Intro ────────────────────────────────────── */
+  --intro-min-height: 80vh;
+  --intro-headline-size: 3rem;
+  --intro-headline-size-lg: 6rem;
+
+  /* ─── Product Showcase / Flavors ────────────────── */
+  --pouch-width-mobile: 450px;
+  --pouch-width-sm: 550px;
+  --pouch-width-md: 450px;
+  --pouch-width-lg: 550px;
+  --flavor-card-radius: 2rem;
+  --flavor-card-padding: 1rem;
+  --flavor-card-padding-md: 4rem;
+
+  /* ─── Video Section ────────────────────────────── */
+  --video-headline-size: 3rem;
+  --video-headline-size-md: 5rem;
+
+  /* ─── Story Section ────────────────────────────── */
+  --story-card-max-width: 48rem;
+  --story-card-padding: 2rem;
+  --story-card-padding-md: 4rem;
+  --story-card-radius: 1.5rem;
+
+  /* ─── Accordion Section ────────────────────────── */
+  --accordion-media-width: 280px;
+  --accordion-media-width-md: 320px;
+  --accordion-media-radius: 1.5rem;
+
+  /* ─── Shop Section ─────────────────────────────── */
+  --shop-image-height: 250px;
+  --shop-image-height-md: 300px;
+  --shop-card-padding: 2rem;
+  --shop-card-padding-md: 3rem;
+  --shop-card-radius: 1.5rem;
+
+  /* ─── Footer ───────────────────────────────────── */
+  --footer-card-max-width: 56rem;
+  --footer-card-padding: 2rem;
+  --footer-card-padding-md: 4rem;
+  --footer-card-radius: 1.5rem;
+
+  /* ─── Global Sections ──────────────────────────── */
+  --section-padding-y: 6rem;
+  --section-max-width: 80rem;
+  --card-border-radius: 1.5rem;
+}
