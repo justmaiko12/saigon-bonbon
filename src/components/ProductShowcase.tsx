@@ -70,27 +70,48 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   }, [renderFrame]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const onSeeked = () => renderFrame();
-    const showFirstFrame = () => {
+    let cancelled = false;
+    const tryRender = () => {
+      const video = videoRef.current;
+      if (!video || cancelled) return;
       if (video.readyState >= 2) {
         video.currentTime = 0;
-        renderFrame();
+        renderFrame(false);
+        return true;
       }
+      return false;
     };
-    video.addEventListener('seeked', onSeeked);
-    video.addEventListener('loadeddata', showFirstFrame);
-    video.addEventListener('canplay', showFirstFrame);
-    // Also try immediately in case video is already loaded
-    showFirstFrame();
-    // And poll briefly for the remount case
-    const timer = setTimeout(showFirstFrame, 200);
+
+    // Try immediately
+    if (tryRender()) return;
+
+    // Listen for video ready
+    const onReady = () => { tryRender(); };
+    const attachListeners = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      video.addEventListener('loadeddata', onReady);
+      video.addEventListener('canplay', onReady);
+      video.addEventListener('seeked', () => renderFrame(false));
+    };
+
+    attachListeners();
+
+    // Poll for the first render — covers the case where ref isn't set yet
+    const poll = setInterval(() => {
+      if (cancelled) { clearInterval(poll); return; }
+      if (!videoRef.current) { attachListeners(); return; }
+      if (tryRender()) clearInterval(poll);
+    }, 100);
+
     return () => {
-      video.removeEventListener('seeked', onSeeked);
-      video.removeEventListener('loadeddata', showFirstFrame);
-      video.removeEventListener('canplay', showFirstFrame);
-      clearTimeout(timer);
+      cancelled = true;
+      clearInterval(poll);
+      const video = videoRef.current;
+      if (video) {
+        video.removeEventListener('loadeddata', onReady);
+        video.removeEventListener('canplay', onReady);
+      }
     };
   }, [currentIndex, renderFrame]);
 
