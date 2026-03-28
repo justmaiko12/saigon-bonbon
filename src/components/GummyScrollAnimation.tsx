@@ -129,7 +129,7 @@ export default function GummyScrollAnimation() {
     };
   }, [isNearView]);
 
-  // Render frames on scroll
+  // Render frames on scroll — scale to fill viewport
   useEffect(() => {
     if (frames.length === 0) return;
 
@@ -138,8 +138,32 @@ export default function GummyScrollAnimation() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    canvas.width = frames[0].width;
-    canvas.height = frames[0].height;
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const drawFrame = (frame: ImageBitmap) => {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const fw = frame.width;
+      const fh = frame.height;
+
+      // Cover — scale to fill, center crop
+      const scale = Math.max(cw / fw, ch / fh);
+      const sw = fw * scale;
+      const sh = fh * scale;
+      const sx = (cw - sw) / 2;
+      const sy = (ch - sh) / 2;
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(frame, sx, sy, sw, sh);
+    };
 
     const unsubscribe = scrollYProgress.on("change", (progress) => {
       const frameIndex = Math.min(
@@ -147,15 +171,15 @@ export default function GummyScrollAnimation() {
         frames.length - 1
       );
       if (frameIndex >= 0 && frames[frameIndex]) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(frames[frameIndex], 0, 0);
+        drawFrame(frames[frameIndex]);
       }
     });
 
-    ctx.drawImage(frames[0], 0, 0);
+    drawFrame(frames[0]);
 
     return () => {
       unsubscribe();
+      window.removeEventListener("resize", resize);
       frames.forEach((b) => b.close());
     };
   }, [frames, scrollYProgress]);
@@ -171,8 +195,8 @@ export default function GummyScrollAnimation() {
 
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-contain"
-          style={{ maxHeight: "100vh" }}
+          className="absolute inset-0 w-full h-full"
+          style={{ objectFit: "cover" }}
         />
 
         {/* Overlay text */}
