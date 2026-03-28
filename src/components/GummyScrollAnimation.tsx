@@ -11,7 +11,6 @@ export default function GummyScrollAnimation() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Only start extraction when section is near viewport
   const isNearView = useInView(containerRef, { margin: "200% 0px" });
   const hasStartedRef = useRef(false);
 
@@ -23,7 +22,7 @@ export default function GummyScrollAnimation() {
   const textOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
   const textY = useTransform(scrollYProgress, [0.5, 0.7], [40, 0]);
 
-  // Extract frames — with cleanup, timeout, and cancellation
+  // Extract frames with black background removal
   useEffect(() => {
     if (!isNearView || hasStartedRef.current) return;
     hasStartedRef.current = true;
@@ -39,7 +38,6 @@ export default function GummyScrollAnimation() {
       video.preload = "auto";
       video.crossOrigin = "anonymous";
 
-      // Wait for video data with timeout + error handling
       const loaded = await Promise.race([
         new Promise<boolean>((resolve) => {
           video!.onloadeddata = () => resolve(true);
@@ -57,10 +55,12 @@ export default function GummyScrollAnimation() {
         return;
       }
 
+      const w = video.videoWidth;
+      const h = video.videoHeight;
       const offscreen = document.createElement("canvas");
-      offscreen.width = video.videoWidth;
-      offscreen.height = video.videoHeight;
-      const ctx = offscreen.getContext("2d")!;
+      offscreen.width = w;
+      offscreen.height = h;
+      const ctx = offscreen.getContext("2d", { willReadFrequently: true })!;
 
       const duration = video.duration;
       const totalFrames = Math.min(Math.floor(duration * 24), 90);
@@ -87,6 +87,21 @@ export default function GummyScrollAnimation() {
         }
 
         ctx.drawImage(video, 0, 0);
+
+        // Remove black background — make dark pixels transparent
+        const imageData = ctx.getImageData(0, 0, w, h);
+        const data = imageData.data;
+        for (let p = 0; p < data.length; p += 4) {
+          const r = data[p], g = data[p + 1], b = data[p + 2];
+          const brightness = (r + g + b) / 3;
+          if (brightness < 25) {
+            data[p + 3] = 0; // Fully transparent
+          } else if (brightness < 60) {
+            data[p + 3] = Math.min(255, (brightness - 25) * (255 / 35)); // Fade in
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+
         const bitmap = await createImageBitmap(offscreen);
         extractedFrames.push(bitmap);
       }
@@ -106,7 +121,6 @@ export default function GummyScrollAnimation() {
 
     return () => {
       cancelled = true;
-      // Release video resource
       if (video) {
         video.pause();
         video.src = "";
@@ -138,12 +152,10 @@ export default function GummyScrollAnimation() {
       }
     });
 
-    // Render first frame immediately
     ctx.drawImage(frames[0], 0, 0);
 
     return () => {
       unsubscribe();
-      // Close all bitmaps on cleanup
       frames.forEach((b) => b.close());
     };
   }, [frames, scrollYProgress]);
@@ -165,13 +177,13 @@ export default function GummyScrollAnimation() {
 
         {/* Overlay text */}
         <motion.div
-          className="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none"
+          className="absolute inset-0 flex flex-col items-center justify-end pb-16 sm:pb-24 pointer-events-none px-4"
           style={{ opacity: textOpacity, y: textY }}
         >
-          <h2 className="font-bolero text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-bold text-center leading-tight tracking-wide drop-shadow-lg">
+          <h2 className="font-bolero iridescent-text text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-tight tracking-wide drop-shadow-lg">
             {gummyScroll.heading}
           </h2>
-          <p className="font-bold text-white/80 text-xs sm:text-sm md:text-base tracking-[0.3em] uppercase mt-4 drop-shadow-md">
+          <p className="font-bold text-white/80 text-[10px] sm:text-sm md:text-base tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-3 sm:mt-4 drop-shadow-md text-center">
             {gummyScroll.subheading}
           </p>
         </motion.div>
