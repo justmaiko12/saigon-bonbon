@@ -54,12 +54,19 @@ export default function Navigation() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-4xl bg-black/60 backdrop-blur-xl rounded-full px-6 py-3 flex items-center justify-between shadow-2xl border border-white/20"
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-lg bg-white/10 backdrop-blur-2xl rounded-full px-5 py-2 flex items-center gap-6 shadow-lg border border-white/15"
           >
-            <button onClick={(e) => handleScroll(e, 'top')} className="relative w-32 h-8 hover:opacity-80 transition-opacity cursor-pointer">
+            <button onClick={(e) => handleScroll(e, 'top')} className="relative w-24 h-6 hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0">
               <EditableImage id="nav-logo-sticky" src={nav.logo} alt="Saigon Bonbon Logo" fill className="object-contain object-left" />
             </button>
-            <button onClick={(e) => handleScroll(e, 'shop')} className="bg-gradient-to-r from-cyan-200 via-pink-200 to-orange-200 text-black px-6 py-2 rounded-full text-xs font-bold tracking-widest hover:opacity-90 transition-opacity shadow-lg">
+            <div className="flex items-center gap-2">
+              {nav.links.slice(1, 3).map((link, i) => (
+                <button key={link.target} onClick={(e) => handleScroll(e, link.target)} className="text-white/70 hover:text-white text-[11px] font-medium tracking-wide transition-colors cursor-pointer px-2 py-1 rounded-full hover:bg-white/10">
+                  {link.label}
+                </button>
+              ))}
+            </div>
+            <button onClick={(e) => handleScroll(e, 'shop')} className="bg-gradient-to-r from-cyan-200 via-pink-200 to-orange-200 text-black px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wider hover:opacity-90 transition-opacity shadow-md">
               <EditableText id="nav-buy-btn">{nav.buyButtonText}</EditableText>
             </button>
           </motion.div>

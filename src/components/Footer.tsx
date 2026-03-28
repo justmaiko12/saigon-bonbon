@@ -36,7 +36,7 @@ export default function Footer({ setBgColor }: { setBgColor?: (color: string) =>
           {/* Logo */}
           <Draggable id="footer-logo">
             <div className="flex-shrink-0 flex items-center justify-center w-full md:w-auto">
-              <div className="relative w-32 h-32 md:w-40 md:h-40">
+              <div className="relative w-40 h-56 md:w-48 md:h-64">
                 <Image src="/assets/footer-logo.png" alt="Saigon Bonbon" fill className="object-contain" />
               </div>
             </div>

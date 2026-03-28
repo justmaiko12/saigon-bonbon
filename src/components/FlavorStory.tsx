@@ -37,21 +37,27 @@ export default function FlavorStory({ id, heading, body, image, imageAlt }: Flav
           </div>
         </motion.div>
 
-        {/* Image — slides in from right, shows full image */}
+        {/* Image — slides in from right */}
         <motion.div
           initial={{ opacity: 0, x: 80 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
           viewport={{ once: true, margin: "-15%" }}
-          className="flex-1 relative w-full min-h-[450px] sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px] overflow-hidden"
+          className="flex-1 relative w-full min-h-[450px] sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]"
         >
-          {/* Crop bottom 1/3 (faded edge) and zoom in */}
-          <div className="absolute inset-0 -bottom-[45%] scale-[1.3] origin-top">
+          {/* Soft fade at bottom edge */}
+          <div
+            className="absolute inset-0"
+            style={{
+              maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
+            }}
+          >
             <Image
               src={image}
               alt={imageAlt}
               fill
-              className="object-contain object-top"
+              className="object-contain object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
