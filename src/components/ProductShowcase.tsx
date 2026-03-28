@@ -13,9 +13,9 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const reverseReqId = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderLoopRef = useRef<number | null>(null);
+  const reverseListenerRef = useRef<(() => void) | null>(null);
   const isRenderingRef = useRef(false);
   const touchStartX = useRef<number | null>(null);
   const { isEditing } = useEdit();
@@ -23,49 +23,75 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-40% 0px" });
 
-  const renderFrame = useCallback(() => {
+  const chromaKey = useCallback((data: Uint8ClampedArray) => {
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      const maxRG = r > g ? r : g; // avoid Math.max for speed
+      const blueDom = b - maxRG;
+      if (blueDom > 60) {
+        data[i + 3] = 0;
+      } else if (blueDom > 10) {
+        const t = (blueDom - 10) * 0.02; // /50
+        data[i] = r + (220 - r) * t | 0;
+        data[i + 1] = g + (90 - g) * t | 0;
+        data[i + 2] = b - blueDom * t | 0;
+      }
+    }
+  }, []);
+
+  const renderFrame = useCallback((halfRes?: boolean) => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas || video.videoWidth === 0) return;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
-    const size = video.videoWidth;
-    if (canvas.width !== size) { canvas.width = size; canvas.height = size; }
+    // Use half resolution during animation for performance
+    const full = video.videoWidth;
+    const size = halfRes ? full >> 1 : full;
+    if (canvas.width !== size || canvas.height !== size) { canvas.width = size; canvas.height = size; }
     ctx.clearRect(0, 0, size, size);
     ctx.drawImage(video, 0, 0, size, size);
     const imageData = ctx.getImageData(0, 0, size, size);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i], g = data[i + 1], b = data[i + 2];
-      // Mask black background
-      if (r < 20 && g < 20 && b < 20) { data[i + 3] = 0; }
-      else if (r < 45 && g < 45 && b < 45) { data[i + 3] = Math.min(255, Math.max(r, g, b) * 6); }
-      // Mask blue background (#0000FF and near-blue)
-      if (b > 200 && r < 60 && g < 60) { data[i + 3] = 0; }
-      else if (b > 150 && r < 80 && g < 80) { data[i + 3] = Math.min(255, Math.max(0, 255 - (b - Math.max(r, g)) * 3)); }
-    }
+    chromaKey(imageData.data);
     ctx.putImageData(imageData, 0, 0);
-  }, []);
+  }, [chromaKey]);
 
   const startRenderLoop = useCallback(() => {
     if (isRenderingRef.current) return;
     isRenderingRef.current = true;
-    const loop = () => { renderFrame(); if (isRenderingRef.current) { renderLoopRef.current = requestAnimationFrame(loop); } };
+    const loop = () => { renderFrame(true); if (isRenderingRef.current) { renderLoopRef.current = requestAnimationFrame(loop); } };
     renderLoopRef.current = requestAnimationFrame(loop);
   }, [renderFrame]);
 
   const stopRenderLoop = useCallback(() => {
     isRenderingRef.current = false;
     if (renderLoopRef.current) { cancelAnimationFrame(renderLoopRef.current); renderLoopRef.current = null; }
-    renderFrame();
+    renderFrame(false); // final frame at full resolution
   }, [renderFrame]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     const onSeeked = () => renderFrame();
+    const showFirstFrame = () => {
+      if (video.readyState >= 2) {
+        video.currentTime = 0;
+        renderFrame();
+      }
+    };
     video.addEventListener('seeked', onSeeked);
-    return () => video.removeEventListener('seeked', onSeeked);
+    video.addEventListener('loadeddata', showFirstFrame);
+    video.addEventListener('canplay', showFirstFrame);
+    // Also try immediately in case video is already loaded
+    showFirstFrame();
+    // And poll briefly for the remount case
+    const timer = setTimeout(showFirstFrame, 200);
+    return () => {
+      video.removeEventListener('seeked', onSeeked);
+      video.removeEventListener('loadeddata', showFirstFrame);
+      video.removeEventListener('canplay', showFirstFrame);
+      clearTimeout(timer);
+    };
   }, [currentIndex, renderFrame]);
 
   useEffect(() => {
@@ -74,42 +100,88 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   const activeFlavor = flavors[currentIndex];
 
+  // Clean up any active reverse seek listener
+  const cleanupReverse = useCallback(() => {
+    if (reverseListenerRef.current && videoRef.current) {
+      videoRef.current.removeEventListener('seeked', reverseListenerRef.current);
+      reverseListenerRef.current = null;
+    }
+  }, []);
+
   const handleFlipToBack = () => {
     setIsFlipped(true); setIsAnimating(true);
-    if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current);
-    if (videoRef.current && activeFlavor.video) {
-      if (videoRef.current.currentTime === videoRef.current.duration) videoRef.current.currentTime = 0;
-      videoRef.current.playbackRate = 2.6; videoRef.current.play(); startRenderLoop();
-      videoRef.current.onended = () => stopRenderLoop();
+    cleanupReverse();
+    const vid = videoRef.current;
+    if (vid && activeFlavor.video) {
+      vid.onended = () => { stopRenderLoop(); setIsAnimating(false); };
+      vid.playbackRate = 2.6;
+      vid.currentTime = 0;
+
+      const tryPlay = () => {
+        startRenderLoop();
+        vid.play().catch(() => {});
+      };
+
+      // Wait for video to be ready
+      if (vid.readyState >= 3) {
+        tryPlay();
+      } else {
+        const onReady = () => {
+          vid.removeEventListener('canplay', onReady);
+          tryPlay();
+        };
+        vid.addEventListener('canplay', onReady);
+        // Fallback in case canplay already fired
+        setTimeout(() => {
+          vid.removeEventListener('canplay', onReady);
+          tryPlay();
+        }, 300);
+      }
     }
   };
 
   const handleFlipToFront = () => {
     setIsFlipped(false);
-    if (videoRef.current && activeFlavor.video) {
-      videoRef.current.pause();
-      if (videoRef.current.currentTime === 0 && videoRef.current.duration > 0) videoRef.current.currentTime = videoRef.current.duration;
-      // Guard against NaN when currentTime is 0
-      if (!videoRef.current.currentTime) { stopRenderLoop(); setIsAnimating(false); return; }
-      let lastTime = performance.now();
-      const duration = videoRef.current.currentTime;
-      startRenderLoop();
-      const step = (time: number) => {
-        if (!videoRef.current) return;
-        const dt = (time - lastTime) / 1000; lastTime = time;
-        const clampedDt = Math.min(dt, 0.1);
-        const progress = 1 - (videoRef.current.currentTime / duration);
-        const speedMultiplier = 1.5 + (Math.sin(progress * Math.PI) * 2.0);
-        const newTime = videoRef.current.currentTime - (clampedDt * speedMultiplier);
-        if (newTime <= 0) { videoRef.current.currentTime = 0; stopRenderLoop(); setIsAnimating(false); }
-        else { videoRef.current.currentTime = newTime; reverseReqId.current = requestAnimationFrame(step); }
-      };
-      reverseReqId.current = requestAnimationFrame(step);
+    cleanupReverse();
+    const vid = videoRef.current;
+    if (!vid || !activeFlavor.video) return;
+    vid.pause();
+    vid.onended = null;
+
+    const totalDuration = vid.duration;
+    if (!totalDuration || isNaN(totalDuration)) { stopRenderLoop(); setIsAnimating(false); return; }
+
+    const endPos = vid.currentTime > 0.1 ? vid.currentTime : totalDuration;
+    const steps = 20;
+    const seekTargets: number[] = [];
+    for (let s = steps - 1; s >= 0; s--) {
+      seekTargets.push((endPos * s) / steps);
     }
+    seekTargets.push(0);
+
+    let stepIdx = 0;
+    startRenderLoop();
+
+    const onSeeked = () => {
+      stepIdx++;
+      if (stepIdx >= seekTargets.length) {
+        vid.removeEventListener('seeked', onSeeked);
+        reverseListenerRef.current = null;
+        vid.currentTime = 0;
+        stopRenderLoop();
+        setIsAnimating(false);
+      } else {
+        vid.currentTime = seekTargets[stepIdx];
+      }
+    };
+
+    reverseListenerRef.current = onSeeked;
+    vid.addEventListener('seeked', onSeeked);
+    vid.currentTime = seekTargets[0];
   };
 
-  const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
-  const prev = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); if (reverseReqId.current) cancelAnimationFrame(reverseReqId.current); setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length); };
+  const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
+  const prev = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length); };
 
   return (
     <section
@@ -134,7 +206,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[10px] sm:top-[5px] md:top-[38%] lg:top-[40%] md:-translate-y-1/2 w-[450px] sm:w-[550px] md:w-[450px] lg:w-[550px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[-50px] sm:top-[-60px] md:top-[28%] lg:top-[30%] md:-translate-y-1/2 w-[500px] sm:w-[600px] md:w-[500px] lg:w-[600px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`}
             style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
@@ -178,7 +250,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
               className="w-[88%] sm:w-[90%] md:w-[85%] lg:w-[75%] p-4 sm:p-6 md:p-16 min-h-[300px] md:min-h-[400px] flex flex-col justify-end md:justify-center relative shadow-2xl transition-colors duration-500 glass-panel pt-[280px] sm:pt-[380px] md:pt-16 mt-0"
               style={{ borderRadius: "var(--flavor-card-radius)" }}
             >
-              <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[50%] lg:pl-24 md:pt-0">
+              <div className="w-full flex flex-col items-center md:items-start pt-12 md:pl-[50%] lg:pl-24 md:pt-0 relative z-[60]">
 
                 <motion.h2
                   layout="position"
@@ -249,7 +321,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute right-2 bottom-2 md:right-6 md:bottom-6 pointer-events-none w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-[100px] lg:h-[100px] z-10"
+                      className="absolute right-3 bottom-3 md:right-4 md:bottom-4 pointer-events-none w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[70px] lg:h-[70px] z-10"
                     >
                       <Image src="/assets/usa-stamp-transparent.png" alt="Crafted in California Made in USA" fill className="object-contain drop-shadow-2xl" />
                     </motion.div>

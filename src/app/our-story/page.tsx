@@ -10,37 +10,29 @@ import { motion } from "framer-motion";
 
 const teamMembers = [
   {
-    name: "BAO HAN",
-    title: "Brand Ambassador, Co-Founder",
-    image: "/assets/bao-han.png",
-    bio: [
-      "Bao Han is what we like to call a good spirit.",
-      "",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    ],
-    flipped: false,
-  },
-  {
     name: "TEE TRAN",
     title: "Founder & CEO",
-    image: "/assets/tee-pink.png",
+    image: "/assets/tee-portrait.jpg",
     bio: [
-      "Tee Tran is the CEO and founder.",
-      "",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "I have spent most of my career helping brands define who they are and how they connect with people. Strategy, storytelling, and creative direction have shaped my work for over a decade. Saigon Bonbon is different. This is personal. It brings together everything I have learned with everything I care about. Culture, identity, and the belief that what we create should carry meaning.",
     ],
-    flipped: true,
+  },
+  {
+    name: "BAO HAN",
+    title: "Co-Founder & Brand Ambassador",
+    image: "/assets/bao-han-portrait.jpg",
+    bio: [
+      "Bao Han is best known for her performances on Paris By Night, where she became a beloved voice for Vietnamese audiences around the world. Her career left a lasting imprint on the community. After being diagnosed with Parkinson\u2019s disease, she stepped away from the stage, but not from what she represents. Saigon Bonbon continues that presence in a new form, with the same heart and spirit.",
+    ],
   },
   {
     name: "MICHAEL LE",
-    title: "Creative Director, Co-Founder",
-    image: "/assets/michael-gummy.png",
+    title: "Co-Founder & Creative Director",
+    subtitle: "@justmaiko",
+    image: "/assets/michael-portrait.jpg",
     bio: [
-      "Michael is a young Gen-Z force.",
-      "",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "Michael Le is one of the most influential dancers and digital creators in the world, with a global audience of more than 50 million followers. His work has helped define an entire era of short form dance content, turning choreography into something that travels across cultures and reaches millions in real time. At Saigon Bonbon, he leads creative expression. Through movement, storytelling, and culture in motion, he brings the brand into the world in a way that cannot be replicated. He represents what comes next.",
     ],
-    flipped: false,
   },
 ];
 
@@ -54,7 +46,7 @@ export default function OurStoryPage() {
         <Navigation />
 
         {/* Hero / Intro */}
-        <section className="relative pt-32 md:pt-40 pb-16 px-6">
+        <section className="relative pt-32 md:pt-40 pb-12 px-6">
           <div className="max-w-3xl mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -62,7 +54,7 @@ export default function OurStoryPage() {
               transition={{ duration: 0.8 }}
               className="font-bolero iridescent-text text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-wide mb-8"
             >
-              HOW IT CAME TO BEING
+              OUR STORY
             </motion.h1>
 
             <motion.div
@@ -71,75 +63,93 @@ export default function OurStoryPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-white/85 text-sm md:text-base leading-relaxed font-medium space-y-4"
             >
-              <p>Saigon Bonbon is a confluence of three worlds.</p>
-              <p>From Tee Tran{"'"}s confidence-infusing and intentional Vietnamese upbringing.</p>
-              <p>Bao Han{"'"}s journey of discovery, success, and finding joy in the simplest things.</p>
-              <p>And of Michael using the world as its own canvas — using social media to introduce and hold space for culture free.</p>
-              <p>Together, three deep love for the  Lân created Saigon Bonbon. Tee provided the vision, Bao Han is the heart, and Michael is the soul — each adding to the mission.</p>
-              <p>Saigon Bonbon is not just in the business of selling candy — it{"'"}s about sharing a joy, heritage, and vision for a future where culture is celebrated, not hidden. It{"'"}s a celebration in every bite.</p>
+              <p>Saigon Bonbon did not begin as a business idea. It began with a promise. When you get married, you say a lot of things. To love. To support. To stand by each other. In sickness and in health. I said those words to my wife, Bao Han, like most people do, without fully understanding what they meant. And then life tested that promise.</p>
+              <p>Many people know Bao Han from Paris By Night. She was a Vietnamese pop icon. A performer. A voice people grew up with. But by the time I met her, that chapter had already closed. She had been diagnosed with Parkinson{"\u2019"}s disease. The stage, the performances, the life she knew, all of it changed.</p>
+              <p>Somewhere in that moment, I began to see things differently. Culture does not stay the same. It does not belong only to the past. It evolves. That idea became the foundation for Saigon Bonbon. What we carry, our traditions, our stories, our identity, does not disappear. It finds new ways to show up. In music. In movement. And sometimes in the smallest, most unexpected places. For us, it showed up in candy.</p>
+              <p>{"\u201C"}This Is Our Flavor{"\u201D"} is how we think about everything. Not just flavor as taste, but flavor as identity. It is where you come from. It is how you express yourself. It is what you choose to carry forward, and what you choose to change.</p>
+              <p>As Vietnamese Americans, we are not here to preserve culture exactly as it was. We are here to build on it. To make it feel current. To make it feel like us. And to share it with anyone who connects with it, whether you grew up in it or are just discovering it.</p>
+              <p>Saigon Bonbon is only the beginning. This is not about candy. It is about culture moving forward. And finding new ways to live in everyday life.</p>
+              <p className="font-bold italic text-white/95">This is our flavor.</p>
             </motion.div>
           </div>
         </section>
 
+        {/* Founders Heading */}
+        <section className="relative pt-12 md:pt-20 px-6">
+          <div className="max-w-3xl mx-auto">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true, margin: "-10%" }}
+              className="font-bolero iridescent-text text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-wide"
+            >
+              FOUNDERS
+            </motion.h2>
+          </div>
+        </section>
+
         {/* Team Members */}
-        {teamMembers.map((member, i) => (
-          <section key={member.name} className="relative py-16 md:py-24 px-6 overflow-hidden">
-            <div className="max-w-5xl mx-auto relative min-h-[400px] md:min-h-[500px]">
-              {/* Text */}
-              <motion.div
-                initial={{ opacity: 0, x: member.flipped ? 60 : -60 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                viewport={{ once: true, margin: "-10%" }}
-                className={`relative z-10 max-w-[60%] md:max-w-[55%] ${member.flipped ? "ml-auto" : ""}`}
-              >
-                <h2 className="font-bolero iridescent-text text-2xl sm:text-3xl md:text-4xl font-bold leading-[0.95] tracking-wide mb-2">
-                  {member.name}
-                </h2>
-                <p className="text-white/60 text-xs md:text-sm font-bold tracking-widest uppercase mb-6">
-                  {member.title}
-                </p>
-                <div className="text-white/85 text-xs md:text-sm leading-relaxed font-medium space-y-1">
-                  {member.bio.map((line, j) =>
-                    line === "" ? <br key={j} /> : <p key={j}>{line}</p>
-                  )}
-                </div>
-              </motion.div>
-
-              {/* Image */}
-              <motion.div
-                initial={{ opacity: 0, x: member.flipped ? -60 : 60 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                viewport={{ once: true, margin: "-10%" }}
-                className={`absolute top-0 ${member.flipped ? "left-0" : "right-0"} w-[50%] md:w-[45%] h-full`}
-              >
-                <div
-                  className="absolute inset-0 -top-[5%] -bottom-[5%]"
-                  style={{
-                    maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-                    WebkitMaskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-                  }}
+        {teamMembers.map((member, i) => {
+          const flipped = i % 2 === 1;
+          return (
+            <section key={member.name} className="relative py-12 md:py-20 px-6 overflow-hidden">
+              <div className="max-w-4xl mx-auto relative min-h-[350px] md:min-h-[450px]">
+                {/* Text */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: "easeOut" }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  className={`relative z-10 max-w-[55%] md:max-w-[50%] ${flipped ? "ml-auto text-right" : ""}`}
                 >
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-contain object-top"
-                    sizes="(max-width: 768px) 50vw, 45vw"
-                  />
-                </div>
-              </motion.div>
-            </div>
+                  <h2 className="font-bolero iridescent-text text-2xl sm:text-3xl md:text-4xl font-bold leading-[0.95] tracking-wide mb-1">
+                    {member.name}
+                  </h2>
+                  <p className="text-white/50 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-1">
+                    {member.title}
+                  </p>
+                  {"subtitle" in member && member.subtitle && (
+                    <p className="text-white/40 text-[10px] md:text-xs font-medium tracking-wide mb-6">
+                      {member.subtitle}
+                    </p>
+                  )}
+                  {!("subtitle" in member) && <div className="mb-5" />}
+                  <div className={`text-white/80 text-xs md:text-sm leading-relaxed font-medium space-y-3 ${flipped ? "ml-auto" : ""}`}>
+                    {member.bio.map((line, j) =>
+                      line === "" ? <br key={j} /> : <p key={j}>{line}</p>
+                    )}
+                  </div>
+                </motion.div>
 
-            {/* Divider between members */}
-            {i < teamMembers.length - 1 && (
-              <div className="max-w-3xl mx-auto mt-16">
-                <div className="h-px bg-white/10" />
+                {/* Image */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  className={`absolute top-0 ${flipped ? "left-0" : "right-0"} w-[45%] md:w-[40%] h-full`}
+                >
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+                      WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+                    }}
+                  >
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 768px) 45vw, 40vw"
+                    />
+                  </div>
+                </motion.div>
               </div>
-            )}
-          </section>
-        ))}
+            </section>
+          );
+        })}
 
         <Footer setBgColor={setBgColor} />
       </main>

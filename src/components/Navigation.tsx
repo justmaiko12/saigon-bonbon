@@ -19,6 +19,9 @@ export default function Navigation() {
     e.preventDefault();
     if (link.isPage) {
       router.push(link.target);
+    } else if (window.location.pathname !== "/") {
+      // On a subpage — navigate back to homepage with hash
+      router.push(link.target === "top" ? "/" : `/#${link.target}`);
     } else if (link.target === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {

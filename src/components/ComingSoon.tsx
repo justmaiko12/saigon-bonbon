@@ -5,12 +5,15 @@ import Image from "next/image";
 
 const BYPASS_KEY = "sbb-preview";
 
+const SECRET_PASS = "sb26";
+
 export default function ComingSoon({ children }: { children: React.ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [passInput, setPassInput] = useState("");
+  const [shake, setShake] = useState(false);
 
   useEffect(() => {
-    // Check URL param or localStorage for bypass
     const params = new URLSearchParams(window.location.search);
     if (params.get("preview") === "true" || localStorage.getItem(BYPASS_KEY) === "true") {
       localStorage.setItem(BYPASS_KEY, "true");
@@ -18,6 +21,17 @@ export default function ComingSoon({ children }: { children: React.ReactNode }) 
     }
     setChecking(false);
   }, []);
+
+  const handleSubmitPass = () => {
+    if (passInput === SECRET_PASS) {
+      localStorage.setItem(BYPASS_KEY, "true");
+      setUnlocked(true);
+    } else {
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+      setPassInput("");
+    }
+  };
 
   if (checking) return null;
 
@@ -60,23 +74,17 @@ export default function ComingSoon({ children }: { children: React.ReactNode }) 
           Stay tuned.
         </p>
 
-        {/* Email signup */}
-        <div className="w-full max-w-sm">
-          <div className="flex items-center border-b border-white/50 pb-2 group focus-within:border-white transition-colors">
-            <input
-              type="email"
-              placeholder="Enter email address"
-              className="bg-transparent border-none outline-none text-white placeholder:text-white/50 flex-1 text-sm px-2 font-medium"
-            />
-            <button className="text-white hover:text-white/80 transition-colors pr-2">
-              <div className="bg-white rounded-full p-1.5 text-[#D92384]">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </div>
-            </button>
-          </div>
+        {/* Secret pass — minimal, just looks like part of the page */}
+        <div className={`w-full max-w-[200px] mt-16 ${shake ? "animate-[shake_0.3s_ease-in-out]" : ""}`}>
+          <input
+            type="password"
+            value={passInput}
+            onChange={(e) => setPassInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSubmitPass()}
+            placeholder="- - - -"
+            className="w-full bg-transparent border-none outline-none text-white/60 placeholder:text-white/20 text-sm font-medium tracking-[0.5em] text-center pb-2 border-b border-white/20 focus:border-white/40 transition-colors"
+            style={{ borderBottom: "1px solid rgba(255,255,255,0.2)" }}
+          />
         </div>
       </div>
     </div>

@@ -54,8 +54,8 @@ export const storySections = [
     imageScale: "w-[95%] md:w-[90%]",
     textGap: "mb-1",
     compact: true,
-    imageOffset: { x: 11, y: 184 },
-    imageZoom: 1.6,
+    imageOffset: { x: -11, y: 119 },
+    imageZoom: 1.3,
   },
   {
     id: "beyond-story",
@@ -113,7 +113,7 @@ export const flavors = [
     color: "#FF107A",
     nutritionColor: "#FF5E00",
     video: "/assets/lychee-flipnew.mp4",
-    poster: "/assets/lychee-front.png",
+    poster: null,
   },
   {
     id: "mango",
@@ -123,7 +123,7 @@ export const flavors = [
     color: "#FF5E00",
     nutritionColor: "#FF5E00",
     video: "/assets/mango-flipnew.mp4",
-    poster: "/assets/mango-front.png",
+    poster: null,
   },
   {
     id: "coconut",
@@ -133,7 +133,7 @@ export const flavors = [
     color: "#67B626",
     nutritionColor: "#67B626",
     video: "/assets/pandan-flipnew.mp4",
-    poster: "/assets/pandan-front.png",
+    poster: null,
   },
 ];
 
