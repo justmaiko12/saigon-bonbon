@@ -3,14 +3,15 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import Background from "@/components/Background";
-import HeroSection from "@/components/HeroSection";
-import IntroSection from "@/components/IntroSection";
+import HeroVideo from "@/components/HeroVideo";
+import FlavorStory from "@/components/FlavorStory";
+import GummyScrollAnimation from "@/components/GummyScrollAnimation";
 import ProductShowcase from "@/components/ProductShowcase";
-import VideoModalSection from "@/components/VideoModalSection";
-import AccordionSection from "@/components/AccordionSection";
+import NutritionHighlights from "@/components/NutritionHighlights";
 import ShopSection from "@/components/ShopSection";
 import Footer from "@/components/Footer";
 import { EditProvider } from "@/components/EditMode";
+import { storySections } from "@/site-content";
 
 export default function Home() {
   const [bgColor, setBgColor] = useState("linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)");
@@ -21,11 +22,16 @@ export default function Home() {
         <Background color={bgColor} />
         <Navigation />
 
-        <HeroSection setBgColor={setBgColor} />
-        <IntroSection setBgColor={setBgColor} />
+        <HeroVideo />
+
+        {storySections.map((section) => (
+          <FlavorStory key={section.id} {...section} />
+        ))}
+
+        <GummyScrollAnimation />
+
         <ProductShowcase setBgColor={setBgColor} />
-        <VideoModalSection />
-        <AccordionSection />
+        <NutritionHighlights />
         <ShopSection />
 
         <Footer setBgColor={setBgColor} />
