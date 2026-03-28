@@ -23,7 +23,7 @@ export const nav = {
   logo: "/assets/logo-transparent.png",
   links: [
     { label: "Home", target: "top" },
-    { label: "Our Story", target: "about" },
+    { label: "Our Story", target: "flavor-story" },
     { label: "Flavors", target: "flavors" },
     { label: "Shop", target: "shop" },
   ],

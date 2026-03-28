@@ -85,6 +85,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     if (videoRef.current && activeFlavor.video) {
       videoRef.current.pause();
       if (videoRef.current.currentTime === 0 && videoRef.current.duration > 0) videoRef.current.currentTime = videoRef.current.duration;
+      // Guard against NaN when currentTime is 0
+      if (!videoRef.current.currentTime) { stopRenderLoop(); setIsAnimating(false); return; }
       let lastTime = performance.now();
       const duration = videoRef.current.currentTime;
       startRenderLoop();
