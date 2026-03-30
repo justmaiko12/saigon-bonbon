@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { shop } from "@/site-content";
 import { EditableText, EditableImage, Draggable } from "@/components/EditMode";
+import { useDiscount } from "@/lib/discount";
 
 interface ShopifyProduct {
   id: number;
@@ -20,6 +21,7 @@ const SALE_PRICES: Record<string, string> = {
 
 function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: string; checkoutUrl?: string }) {
   const [isLoading, setIsLoading] = useState(false);
+  const { hasDiscount, discountCode } = useDiscount();
   const salePrice = SALE_PRICES[pack.price] || pack.price;
 
   const handleBuy = () => {
@@ -28,7 +30,9 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
       return;
     }
     setIsLoading(true);
-    window.location.href = checkoutUrl;
+    // Append discount code to checkout URL for QR visitors
+    const url = hasDiscount ? `${checkoutUrl}?discount=${discountCode}` : checkoutUrl;
+    window.location.href = url;
   };
 
   return (
@@ -40,19 +44,22 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
         viewport={{ once: true }}
         className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl relative overflow-hidden"
       >
-        {/* Early supporter badge */}
-        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-3 py-1">
-          <span className="text-[10px] font-bold tracking-widest text-white uppercase">20% Off</span>
-        </div>
+        {hasDiscount && (
+          <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-3 py-1">
+            <span className="text-[10px] font-bold tracking-widest text-white uppercase">20% Off</span>
+          </div>
+        )}
 
         <EditableText id={`shop-${id}-label`} as="h3" className="font-bold tracking-widest text-sm md:text-base mb-2 iridescent-text">
           {pack.label}
         </EditableText>
-        <EditableText id={`shop-${id}-title`} as="h2" className="font-bolero text-2xl md:text-3xl font-bold mb-2 tracking-wide iridescent-text">
+        <EditableText id={`shop-${id}-title`} as="h2" className={`font-bolero text-2xl md:text-3xl font-bold ${hasDiscount ? "mb-2" : "mb-10"} tracking-wide iridescent-text`}>
           {pack.title}
         </EditableText>
 
-        <p className="text-white/60 text-[11px] font-bold tracking-[0.2em] uppercase mb-8">Early Supporter Pricing</p>
+        {hasDiscount && (
+          <p className="text-white/60 text-[11px] font-bold tracking-[0.2em] uppercase mb-8">Early Supporter Pricing</p>
+        )}
 
         <div className="w-full relative h-[250px] md:h-[300px] mb-10">
           <EditableImage
@@ -65,10 +72,14 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
         </div>
 
         <div className="flex items-center justify-between w-full mt-auto">
-          <div className="flex items-baseline gap-3">
-            <span className="text-white text-2xl font-bold">{salePrice}</span>
-            <span className="text-white/40 text-base line-through">{pack.price}</span>
-          </div>
+          {hasDiscount ? (
+            <div className="flex items-baseline gap-3">
+              <span className="text-white text-2xl font-bold">{salePrice}</span>
+              <span className="text-white/40 text-base line-through">{pack.price}</span>
+            </div>
+          ) : (
+            <span className="text-white/90 text-2xl font-medium">{pack.price}</span>
+          )}
           <button
             onClick={handleBuy}
             disabled={isLoading}

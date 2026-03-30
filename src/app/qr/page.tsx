@@ -15,11 +15,11 @@ import { DiscountProvider } from "@/lib/discount";
 import LoadingScreen from "@/components/LoadingScreen";
 import { storySections } from "@/site-content";
 
-export default function Home() {
+export default function QRPage() {
   const [bgColor, setBgColor] = useState("linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)");
 
   return (
-    <DiscountProvider hasDiscount={false}>
+    <DiscountProvider hasDiscount={true}>
     <LoadingScreen>
     <EditProvider>
       <main className="relative min-h-screen">
