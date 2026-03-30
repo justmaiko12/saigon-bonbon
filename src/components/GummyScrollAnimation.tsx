@@ -42,8 +42,15 @@ export default function GummyScrollAnimation() {
     const onReady = () => setIsLoading(false);
     vid.addEventListener("loadeddata", onReady, { once: true });
 
+    // iOS Safari won't preload video — force buffer with a brief play/pause
+    let buffering = false;
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      buffering = true;
+      vid.play().then(() => { vid.pause(); vid.currentTime = 0; buffering = false; }).catch(() => { buffering = false; });
+    }
+
     const unsubscribe = scrollYProgress.on("change", (progress) => {
-      if (vid.duration && !isNaN(vid.duration)) {
+      if (!buffering && vid.duration && !isNaN(vid.duration)) {
         vid.currentTime = progress * vid.duration;
       }
     });
@@ -59,11 +66,9 @@ export default function GummyScrollAnimation() {
     if (!isNearView || hasStartedRef.current) return;
     hasStartedRef.current = true;
 
-    // On mobile, skip frame extraction — use video scrub fallback
-    if (mobile.current) {
-      setUseFallback(true);
-      return;
-    }
+    // Mobile: try frame extraction with lower resolution and fewer frames
+    // Only fall back to video scrub if extraction actually fails
+    const isMobileDevice = mobile.current;
 
     let cancelled = false;
     let video: HTMLVideoElement | null = null;
@@ -107,16 +112,19 @@ export default function GummyScrollAnimation() {
         return;
       }
 
-      // Use half resolution to reduce memory and CPU
-      const w = Math.round(video.videoWidth / 2);
-      const h = Math.round(video.videoHeight / 2);
+      // Lower resolution on mobile (1/3) vs desktop (1/2) for performance
+      const divisor = isMobileDevice ? 3 : 2;
+      const w = Math.round(video.videoWidth / divisor);
+      const h = Math.round(video.videoHeight / divisor);
       const offscreen = document.createElement("canvas");
       offscreen.width = w;
       offscreen.height = h;
       const ctx = offscreen.getContext("2d", { willReadFrequently: true })!;
 
       const duration = video.duration;
-      const totalFrames = Math.min(Math.floor(duration * 12), 36);
+      const fps = isMobileDevice ? 8 : 12;
+      const maxFrames = isMobileDevice ? 24 : 36;
+      const totalFrames = Math.min(Math.floor(duration * fps), maxFrames);
       const extractedFrames: ImageBitmap[] = [];
 
       for (let i = 0; i < totalFrames; i++) {

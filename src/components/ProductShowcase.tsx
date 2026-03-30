@@ -95,6 +95,33 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
   const activeFlavor = flavors[currentIndex];
 
+  // Force video load on mobile — iOS won't preload video without interaction
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid || !activeFlavor.video) return;
+    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (!isMobileDevice) return;
+
+    let cancelled = false;
+    const forceLoad = () => {
+      if (cancelled) return;
+      if (vid.readyState >= 2 && vid.videoWidth > 0) {
+        renderFrame(false);
+        return;
+      }
+      vid.play().then(() => {
+        vid.pause();
+        vid.currentTime = 0;
+        vid.addEventListener('seeked', () => { if (!cancelled) renderFrame(false); }, { once: true });
+      }).catch(() => {
+        vid.load();
+      });
+    };
+
+    const timer = setTimeout(forceLoad, 150);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [currentIndex, activeFlavor.video, renderFrame]);
+
   // Clean up any active reverse seek listener
   const cleanupReverse = useCallback(() => {
     if (reverseListenerRef.current && videoRef.current) {
@@ -145,12 +172,31 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     const totalDuration = vid.duration;
     const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // Mobile: skip reverse seek animation (unreliable on iOS Safari/Chrome)
-    // Desktop: animate reverse by stepping backwards through seek positions
+    // Mobile: fade transition instead of frame-by-frame reverse (unreliable on iOS)
     if (isMobileDevice || !totalDuration || isNaN(totalDuration)) {
+      setIsAnimating(true);
+      const canvas = canvasRef.current;
+      // Fade out, seek to first frame, fade back in
+      if (canvas) {
+        canvas.style.transition = 'opacity 0.2s ease-out';
+        canvas.style.opacity = '0.2';
+      }
+      let finalized = false;
+      const finalize = () => {
+        if (finalized) return;
+        finalized = true;
+        renderFrame(false);
+        if (canvas) {
+          canvas.style.opacity = '1';
+          setTimeout(() => { if (canvas) canvas.style.transition = ''; }, 250);
+        }
+        stopRenderLoop();
+        setIsAnimating(false);
+      };
       vid.currentTime = 0;
-      stopRenderLoop();
-      setIsAnimating(false);
+      vid.addEventListener('seeked', finalize, { once: true });
+      // Fallback if seeked never fires (some iOS edge cases)
+      setTimeout(finalize, 400);
       return;
     }
 
