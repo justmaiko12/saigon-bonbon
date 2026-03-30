@@ -11,12 +11,14 @@ import NutritionHighlights from "@/components/NutritionHighlights";
 import ShopSection from "@/components/ShopSection";
 import Footer from "@/components/Footer";
 import { EditProvider } from "@/components/EditMode";
+import LoadingScreen from "@/components/LoadingScreen";
 import { storySections } from "@/site-content";
 
 export default function Home() {
   const [bgColor, setBgColor] = useState("linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)");
 
   return (
+    <LoadingScreen>
     <EditProvider>
       <main className="relative min-h-screen">
         <Background color={bgColor} />
@@ -37,5 +39,6 @@ export default function Home() {
         <Footer setBgColor={setBgColor} />
       </main>
     </EditProvider>
+    </LoadingScreen>
   );
 }

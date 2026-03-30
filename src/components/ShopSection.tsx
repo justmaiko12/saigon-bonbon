@@ -13,8 +13,14 @@ interface ShopifyProduct {
   variants: { id: number; title: string; price: string; available: boolean }[];
 }
 
+const SALE_PRICES: Record<string, string> = {
+  "$19.99": "$16.00",
+  "$39.98": "$31.99",
+};
+
 function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: string; checkoutUrl?: string }) {
   const [isLoading, setIsLoading] = useState(false);
+  const salePrice = SALE_PRICES[pack.price] || pack.price;
 
   const handleBuy = () => {
     if (!checkoutUrl) {
@@ -32,14 +38,21 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl"
+        className="glass-panel p-8 md:p-12 rounded-3xl flex flex-col items-center text-center shadow-2xl relative overflow-hidden"
       >
+        {/* Early supporter badge */}
+        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-3 py-1">
+          <span className="text-[10px] font-bold tracking-widest text-white uppercase">20% Off</span>
+        </div>
+
         <EditableText id={`shop-${id}-label`} as="h3" className="font-bold tracking-widest text-sm md:text-base mb-2 iridescent-text">
           {pack.label}
         </EditableText>
-        <EditableText id={`shop-${id}-title`} as="h2" className="font-bolero text-2xl md:text-3xl font-bold mb-10 tracking-wide iridescent-text">
+        <EditableText id={`shop-${id}-title`} as="h2" className="font-bolero text-2xl md:text-3xl font-bold mb-2 tracking-wide iridescent-text">
           {pack.title}
         </EditableText>
+
+        <p className="text-white/60 text-[11px] font-bold tracking-[0.2em] uppercase mb-8">Early Supporter Pricing</p>
 
         <div className="w-full relative h-[250px] md:h-[300px] mb-10">
           <EditableImage
@@ -52,9 +65,10 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
         </div>
 
         <div className="flex items-center justify-between w-full mt-auto">
-          <EditableText id={`shop-${id}-price`} className="text-white/90 text-2xl font-medium">
-            {pack.price}
-          </EditableText>
+          <div className="flex items-baseline gap-3">
+            <span className="text-white text-2xl font-bold">{salePrice}</span>
+            <span className="text-white/40 text-base line-through">{pack.price}</span>
+          </div>
           <button
             onClick={handleBuy}
             disabled={isLoading}

@@ -17,7 +17,7 @@ export default function HeroVideo() {
   };
 
   return (
-    <section className="relative w-full pt-20 sm:pt-24 pb-4 px-4 sm:px-6 md:px-10">
+    <section className="relative w-full pt-20 sm:pt-24 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-6 md:px-10">
       <div className="relative w-full max-w-7xl mx-auto h-[75vh] sm:h-[80vh] overflow-hidden rounded-3xl bg-gradient-to-br from-[#FF107A] to-[#FF5E00]">
         {!hasError && (
           <video

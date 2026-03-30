@@ -54,8 +54,8 @@ export const storySections = [
     imageScale: "w-[95%] md:w-[90%]",
     textGap: "mb-1",
     compact: true,
-    imageOffset: { x: -11, y: 119 },
-    imageZoom: 1.3,
+    imageOffset: { x: -40, y: 60 },
+    imageZoom: 1.12,
   },
   {
     id: "beyond-story",

@@ -69,51 +69,14 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     renderFrame(false); // final frame at full resolution
   }, [renderFrame]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const tryRender = () => {
-      const video = videoRef.current;
-      if (!video || cancelled) return;
-      if (video.readyState >= 2) {
-        video.currentTime = 0;
-        renderFrame(false);
-        return true;
-      }
-      return false;
-    };
-
-    // Try immediately
-    if (tryRender()) return;
-
-    // Listen for video ready
-    const onReady = () => { tryRender(); };
-    const attachListeners = () => {
-      const video = videoRef.current;
-      if (!video) return;
-      video.addEventListener('loadeddata', onReady);
-      video.addEventListener('canplay', onReady);
-      video.addEventListener('seeked', () => renderFrame(false));
-    };
-
-    attachListeners();
-
-    // Poll for the first render — covers the case where ref isn't set yet
-    const poll = setInterval(() => {
-      if (cancelled) { clearInterval(poll); return; }
-      if (!videoRef.current) { attachListeners(); return; }
-      if (tryRender()) clearInterval(poll);
-    }, 100);
-
-    return () => {
-      cancelled = true;
-      clearInterval(poll);
-      const video = videoRef.current;
-      if (video) {
-        video.removeEventListener('loadeddata', onReady);
-        video.removeEventListener('canplay', onReady);
-      }
-    };
-  }, [currentIndex, renderFrame]);
+  // Render first frame when the video element is ready — called directly from the element,
+  // so it works regardless of AnimatePresence exit/enter timing
+  const handleVideoReady = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || video.videoWidth === 0) return;
+    // Video naturally starts at position 0, just render the current frame
+    renderFrame(false);
+  }, [renderFrame]);
 
   useEffect(() => {
     if (isInView) setBgColor(flavors[currentIndex].bg);
@@ -136,26 +99,25 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     if (vid && activeFlavor.video) {
       vid.onended = () => { stopRenderLoop(); setIsAnimating(false); };
       vid.playbackRate = 2.6;
-      vid.currentTime = 0;
 
-      const tryPlay = () => {
+      // Don't set currentTime = 0 if already there (no-op in some browsers).
+      // After handleFlipToFront or initial load, video is already at 0.
+      const doPlay = () => {
         startRenderLoop();
         vid.play().catch(() => {});
       };
 
-      // Wait for video to be ready
       if (vid.readyState >= 3) {
-        tryPlay();
+        doPlay();
       } else {
         const onReady = () => {
           vid.removeEventListener('canplay', onReady);
-          tryPlay();
+          doPlay();
         };
         vid.addEventListener('canplay', onReady);
-        // Fallback in case canplay already fired
         setTimeout(() => {
           vid.removeEventListener('canplay', onReady);
-          tryPlay();
+          doPlay();
         }, 300);
       }
     }
@@ -227,12 +189,20 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4 }}
-            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[-50px] sm:top-[-60px] md:top-[28%] lg:top-[30%] md:-translate-y-1/2 w-[500px] sm:w-[600px] md:w-[500px] lg:w-[600px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`}
+            className={`absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-56 lg:-left-24 top-[-65px] sm:top-[-75px] md:top-[26%] lg:top-[28%] md:-translate-y-1/2 w-[500px] sm:w-[600px] md:w-[500px] lg:w-[600px] aspect-square z-50 pointer-events-none flex flex-col items-center justify-center transition-colors duration-500 ${!activeFlavor.video ? 'shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden' : ''}`}
             style={{ backgroundColor: activeFlavor.video ? 'transparent' : activeFlavor.color }}
           >
             {activeFlavor.video ? (
               <>
-                <video ref={videoRef} className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none" muted playsInline preload="auto">
+                <video
+                  ref={videoRef}
+                  className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none"
+                  muted
+                  playsInline
+                  preload="auto"
+                  onLoadedData={handleVideoReady}
+                  onCanPlay={handleVideoReady}
+                >
                   <source src={activeFlavor.video} type={activeFlavor.video.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
                 </video>
                 <canvas ref={canvasRef} className="w-full h-full object-contain" />

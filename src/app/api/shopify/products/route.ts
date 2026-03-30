@@ -10,7 +10,7 @@ export async function GET() {
   // To get variant IDs, we use the Storefront-accessible product JSON
   try {
     const [threePackRes, sixPackRes] = await Promise.all([
-      fetch(`https://${SHOP}/products/saigon-bonbon-3-pack-signature-flavors.json`),
+      fetch(`https://${SHOP}/products/3-pack-signature-flavors.json`),
       fetch(`https://${SHOP}/products/saigon-bonbon-6-pack-signature-flavors.json`),
     ]);
 
