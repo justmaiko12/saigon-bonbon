@@ -143,11 +143,15 @@ export default function GummyScrollAnimation() {
     if (!ctx) return;
 
     const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
     };
     resize();
     window.addEventListener("resize", resize);
@@ -199,8 +203,7 @@ export default function GummyScrollAnimation() {
 
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full"
-          style={{ objectFit: "cover" }}
+          className="absolute top-0 left-0"
         />
 
         {/* Overlay text */}
