@@ -170,38 +170,17 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     vid.onended = null;
 
     const totalDuration = vid.duration;
-    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // Mobile: fade transition instead of frame-by-frame reverse (unreliable on iOS)
-    if (isMobileDevice || !totalDuration || isNaN(totalDuration)) {
-      setIsAnimating(true);
-      const canvas = canvasRef.current;
-      // Fade out, seek to first frame, fade back in
-      if (canvas) {
-        canvas.style.transition = 'opacity 0.2s ease-out';
-        canvas.style.opacity = '0.2';
-      }
-      let finalized = false;
-      const finalize = () => {
-        if (finalized) return;
-        finalized = true;
-        renderFrame(false);
-        if (canvas) {
-          canvas.style.opacity = '1';
-          setTimeout(() => { if (canvas) canvas.style.transition = ''; }, 250);
-        }
-        stopRenderLoop();
-        setIsAnimating(false);
-      };
+    if (!totalDuration || isNaN(totalDuration)) {
       vid.currentTime = 0;
-      vid.addEventListener('seeked', finalize, { once: true });
-      // Fallback if seeked never fires (some iOS edge cases)
-      setTimeout(finalize, 400);
+      stopRenderLoop();
+      setIsAnimating(false);
       return;
     }
 
+    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const endPos = vid.currentTime > 0.1 ? vid.currentTime : totalDuration;
-    const steps = 20;
+    const steps = isMobileDevice ? 10 : 20;
     const seekTargets: number[] = [];
     for (let s = steps - 1; s >= 0; s--) {
       seekTargets.push((endPos * s) / steps);
@@ -211,9 +190,21 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     let stepIdx = 0;
     startRenderLoop();
 
+    // Timeout fallback if seeking stalls on mobile
+    const fallbackTimer = setTimeout(() => {
+      if (reverseListenerRef.current) {
+        vid.removeEventListener('seeked', onSeeked);
+        reverseListenerRef.current = null;
+      }
+      vid.currentTime = 0;
+      stopRenderLoop();
+      setIsAnimating(false);
+    }, isMobileDevice ? 2000 : 5000);
+
     const onSeeked = () => {
       stepIdx++;
       if (stepIdx >= seekTargets.length) {
+        clearTimeout(fallbackTimer);
         vid.removeEventListener('seeked', onSeeked);
         reverseListenerRef.current = null;
         vid.currentTime = 0;
