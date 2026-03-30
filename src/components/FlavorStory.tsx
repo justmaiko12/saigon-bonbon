@@ -20,7 +20,7 @@ interface FlavorStoryProps {
 
 export default function FlavorStory({ id, heading, body, image, imageAlt, flipped = false, imageScale, textGap, compact, imageOffset, imageZoom }: FlavorStoryProps) {
   return (
-    <section id={id} className={`relative px-6 overflow-visible ${compact ? "pt-16 pb-6 md:pt-20 md:pb-12" : "py-16 md:py-24"}`}>
+    <section id={id} className={`relative px-6 overflow-x-hidden overflow-y-visible ${compact ? "pt-16 pb-6 md:pt-20 md:pb-12" : "py-16 md:py-24"}`}>
       <div className={`max-w-6xl mx-auto relative ${compact ? "min-h-[700px] sm:min-h-[850px] md:min-h-[1000px]" : "min-h-[600px] sm:min-h-[700px] md:min-h-[800px]"}`}>
         {/* Text — z-index above image */}
         <Draggable id={`${id}-text`} className="relative z-10">

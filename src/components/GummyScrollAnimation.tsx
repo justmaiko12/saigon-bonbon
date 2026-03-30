@@ -11,7 +11,7 @@ export default function GummyScrollAnimation() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const isNearView = useInView(containerRef, { margin: "200% 0px" });
+  const isNearView = useInView(containerRef, { margin: "50% 0px" });
   const hasStartedRef = useRef(false);
 
   const { scrollYProgress } = useScroll({
@@ -55,15 +55,16 @@ export default function GummyScrollAnimation() {
         return;
       }
 
-      const w = video.videoWidth;
-      const h = video.videoHeight;
+      // Use half resolution to reduce memory and CPU usage
+      const w = Math.round(video.videoWidth / 2);
+      const h = Math.round(video.videoHeight / 2);
       const offscreen = document.createElement("canvas");
       offscreen.width = w;
       offscreen.height = h;
       const ctx = offscreen.getContext("2d", { willReadFrequently: true })!;
 
       const duration = video.duration;
-      const totalFrames = Math.min(Math.floor(duration * 24), 90);
+      const totalFrames = Math.min(Math.floor(duration * 12), 36);
       const extractedFrames: ImageBitmap[] = [];
 
       for (let i = 0; i < totalFrames; i++) {
@@ -104,6 +105,9 @@ export default function GummyScrollAnimation() {
 
         const bitmap = await createImageBitmap(offscreen);
         extractedFrames.push(bitmap);
+
+        // Yield to main thread every few frames to prevent freezing
+        if (i % 4 === 3) await new Promise<void>((r) => setTimeout(r, 0));
       }
 
       if (!cancelled && extractedFrames.length > 0) {

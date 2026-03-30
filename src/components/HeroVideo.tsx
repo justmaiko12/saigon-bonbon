@@ -26,7 +26,7 @@ export default function HeroVideo() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             onVolumeChange={() => setIsMuted(videoRef.current?.muted ?? true)}
             onError={() => setHasError(true)}
             className="absolute inset-0 w-full h-full object-cover"

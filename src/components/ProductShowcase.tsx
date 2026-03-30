@@ -82,6 +82,17 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     if (isInView) setBgColor(flavors[currentIndex].bg);
   }, [currentIndex, isInView, setBgColor]);
 
+  // Cleanup render loop and listeners on unmount
+  useEffect(() => {
+    return () => {
+      isRenderingRef.current = false;
+      if (renderLoopRef.current) { cancelAnimationFrame(renderLoopRef.current); renderLoopRef.current = null; }
+      if (reverseListenerRef.current && videoRef.current) {
+        videoRef.current.removeEventListener('seeked', reverseListenerRef.current);
+      }
+    };
+  }, []);
+
   const activeFlavor = flavors[currentIndex];
 
   // Clean up any active reverse seek listener

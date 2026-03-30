@@ -3,14 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
-const CRITICAL_IMAGES = [
-  "/assets/logo-transparent.png",
-  "/assets/tee-pink.png",
-  "/assets/lion-dance-orange.png",
-  "/assets/3_pack-transparent.png",
-  "/assets/6_pack-transparent.png",
-];
-
 export default function LoadingScreen({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
@@ -18,30 +10,20 @@ export default function LoadingScreen({ children }: { children: React.ReactNode 
   useEffect(() => {
     let cancelled = false;
 
-    const preloadImages = CRITICAL_IMAGES.map(
-      (src) =>
-        new Promise<void>((resolve) => {
-          const img = new window.Image();
-          img.onload = () => resolve();
-          img.onerror = () => resolve(); // Don't block on failures
-          img.src = src;
-        })
-    );
-
     const fontsReady = document.fonts?.ready ?? Promise.resolve();
-
-    // Wait for images + fonts, but cap at 4 seconds max
-    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 4000));
+    // Minimum 800ms so the screen doesn't flash, max 3s so it doesn't hang
+    const minWait = new Promise<void>((r) => setTimeout(r, 800));
+    const maxWait = new Promise<void>((r) => setTimeout(r, 3000));
 
     Promise.race([
-      Promise.all([...preloadImages, fontsReady]),
-      timeout,
+      Promise.all([fontsReady, minWait]),
+      maxWait,
     ]).then(() => {
       if (cancelled) return;
       setFadeOut(true);
       setTimeout(() => {
         if (!cancelled) setReady(true);
-      }, 600);
+      }, 500);
     });
 
     return () => { cancelled = true; };
