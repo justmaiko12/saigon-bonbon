@@ -143,7 +143,16 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     vid.onended = null;
 
     const totalDuration = vid.duration;
-    if (!totalDuration || isNaN(totalDuration)) { stopRenderLoop(); setIsAnimating(false); return; }
+    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Mobile: skip reverse seek animation (unreliable on iOS Safari/Chrome)
+    // Desktop: animate reverse by stepping backwards through seek positions
+    if (isMobileDevice || !totalDuration || isNaN(totalDuration)) {
+      vid.currentTime = 0;
+      stopRenderLoop();
+      setIsAnimating(false);
+      return;
+    }
 
     const endPos = vid.currentTime > 0.1 ? vid.currentTime : totalDuration;
     const steps = 20;

@@ -1,15 +1,22 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { gummyScroll } from "@/site-content";
+
+function isMobile() {
+  if (typeof window === "undefined") return false;
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+}
 
 export default function GummyScrollAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [frames, setFrames] = useState<ImageBitmap[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
 
   const isNearView = useInView(containerRef, { margin: "50% 0px" });
   const hasStartedRef = useRef(false);
@@ -22,10 +29,41 @@ export default function GummyScrollAnimation() {
   const textOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
   const textY = useTransform(scrollYProgress, [0.5, 0.7], [40, 0]);
 
-  // Extract frames with black background removal
+  // Mobile: use video playback driven by scroll instead of frame extraction
+  const mobile = useRef(false);
+  useEffect(() => { mobile.current = isMobile(); }, []);
+
+  // Mobile fallback: scrub video by scroll position
+  useEffect(() => {
+    if (!useFallback) return;
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    const onReady = () => setIsLoading(false);
+    vid.addEventListener("loadeddata", onReady, { once: true });
+
+    const unsubscribe = scrollYProgress.on("change", (progress) => {
+      if (vid.duration && !isNaN(vid.duration)) {
+        vid.currentTime = progress * vid.duration;
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      vid.removeEventListener("loadeddata", onReady);
+    };
+  }, [useFallback, scrollYProgress]);
+
+  // Desktop: extract frames with black background removal
   useEffect(() => {
     if (!isNearView || hasStartedRef.current) return;
     hasStartedRef.current = true;
+
+    // On mobile, skip frame extraction — use video scrub fallback
+    if (mobile.current) {
+      setUseFallback(true);
+      return;
+    }
 
     let cancelled = false;
     let video: HTMLVideoElement | null = null;
@@ -50,12 +88,26 @@ export default function GummyScrollAnimation() {
       ]);
 
       if (!loaded || cancelled) {
-        if (!cancelled) setHasError(true);
-        setIsLoading(false);
+        if (!cancelled) { setUseFallback(true); }
         return;
       }
 
-      // Use half resolution to reduce memory and CPU usage
+      // Check if seeking actually works (some browsers don't support it)
+      try {
+        video.currentTime = 0.1;
+        await Promise.race([
+          new Promise<void>((resolve) => {
+            video!.addEventListener("seeked", () => resolve(), { once: true });
+          }),
+          new Promise<void>((_, reject) => setTimeout(() => reject(new Error("seek timeout")), 3000)),
+        ]);
+      } catch {
+        // Seeking doesn't work — fall back to video scrub
+        if (!cancelled) { setUseFallback(true); }
+        return;
+      }
+
+      // Use half resolution to reduce memory and CPU
       const w = Math.round(video.videoWidth / 2);
       const h = Math.round(video.videoHeight / 2);
       const offscreen = document.createElement("canvas");
@@ -75,11 +127,7 @@ export default function GummyScrollAnimation() {
 
         video.currentTime = (i / totalFrames) * duration;
         await new Promise<void>((resolve) => {
-          const onSeeked = () => {
-            video?.removeEventListener("seeked", onSeeked);
-            resolve();
-          };
-          video!.addEventListener("seeked", onSeeked, { once: true });
+          video!.addEventListener("seeked", () => resolve(), { once: true });
         });
 
         if (cancelled) {
@@ -87,7 +135,7 @@ export default function GummyScrollAnimation() {
           break;
         }
 
-        ctx.drawImage(video, 0, 0);
+        ctx.drawImage(video, 0, 0, w, h);
 
         // Remove black background — make dark pixels transparent
         const imageData = ctx.getImageData(0, 0, w, h);
@@ -96,17 +144,24 @@ export default function GummyScrollAnimation() {
           const r = data[p], g = data[p + 1], b = data[p + 2];
           const brightness = (r + g + b) / 3;
           if (brightness < 25) {
-            data[p + 3] = 0; // Fully transparent
+            data[p + 3] = 0;
           } else if (brightness < 60) {
-            data[p + 3] = Math.min(255, (brightness - 25) * (255 / 35)); // Fade in
+            data[p + 3] = Math.min(255, (brightness - 25) * (255 / 35));
           }
         }
         ctx.putImageData(imageData, 0, 0);
 
-        const bitmap = await createImageBitmap(offscreen);
-        extractedFrames.push(bitmap);
+        try {
+          const bitmap = await createImageBitmap(offscreen);
+          extractedFrames.push(bitmap);
+        } catch {
+          // createImageBitmap not supported — fallback
+          if (!cancelled) { setUseFallback(true); }
+          extractedFrames.forEach((b) => b.close());
+          return;
+        }
 
-        // Yield to main thread every few frames to prevent freezing
+        // Yield to main thread every few frames
         if (i % 4 === 3) await new Promise<void>((r) => setTimeout(r, 0));
       }
 
@@ -117,10 +172,7 @@ export default function GummyScrollAnimation() {
     };
 
     extract().catch(() => {
-      if (!cancelled) {
-        setHasError(true);
-        setIsLoading(false);
-      }
+      if (!cancelled) setUseFallback(true);
     });
 
     return () => {
@@ -133,7 +185,7 @@ export default function GummyScrollAnimation() {
     };
   }, [isNearView]);
 
-  // Render frames on scroll — scale to fill viewport
+  // Desktop: render frames on scroll
   useEffect(() => {
     if (frames.length === 0) return;
 
@@ -161,14 +213,11 @@ export default function GummyScrollAnimation() {
       const ch = canvas.height;
       const fw = frame.width;
       const fh = frame.height;
-
-      // Cover — scale to fill, center crop
       const scale = Math.max(cw / fw, ch / fh);
       const sw = fw * scale;
       const sh = fh * scale;
       const sx = (cw - sw) / 2;
       const sy = (ch - sh) / 2;
-
       ctx.clearRect(0, 0, cw, ch);
       ctx.drawImage(frame, sx, sy, sw, sh);
     };
@@ -201,10 +250,25 @@ export default function GummyScrollAnimation() {
           </div>
         )}
 
-        <canvas
-          ref={canvasRef}
-          className="absolute top-0 left-0"
-        />
+        {/* Desktop: canvas-based frame rendering */}
+        {!useFallback && (
+          <canvas
+            ref={canvasRef}
+            className="absolute top-0 left-0"
+          />
+        )}
+
+        {/* Mobile fallback: direct video scrub */}
+        {useFallback && (
+          <video
+            ref={videoRef}
+            src={gummyScroll.videoSrc}
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
 
         {/* Overlay text */}
         <motion.div
