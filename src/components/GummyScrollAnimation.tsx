@@ -42,15 +42,15 @@ export default function GummyScrollAnimation() {
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
-    // Size canvas to parent (half res on mobile for chroma key performance)
+    // Size canvas to parent (1x CSS pixels on mobile, retina on desktop)
     const resize = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
       const w = parent.clientWidth;
       const h = parent.clientHeight;
-      const scale = mobile.current ? 0.5 : (window.devicePixelRatio || 1);
-      canvas.width = Math.round(w * scale);
-      canvas.height = Math.round(h * scale);
+      const dpr = mobile.current ? 1 : (window.devicePixelRatio || 1);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
       canvas.style.width = w + "px";
       canvas.style.height = h + "px";
     };
@@ -74,10 +74,10 @@ export default function GummyScrollAnimation() {
       for (let p = 0; p < data.length; p += 4) {
         const r = data[p], g = data[p + 1], b = data[p + 2];
         const brightness = (r + g + b) / 3;
-        if (brightness < 25) {
+        if (brightness < 45) {
           data[p + 3] = 0;
-        } else if (brightness < 60) {
-          data[p + 3] = Math.min(255, (brightness - 25) * (255 / 35));
+        } else if (brightness < 90) {
+          data[p + 3] = Math.min(255, (brightness - 45) * (255 / 45));
         }
       }
       ctx.putImageData(imageData, 0, 0);
