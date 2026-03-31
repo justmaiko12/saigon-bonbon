@@ -215,9 +215,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
         let idx = frames.length - 1;
         const playReverse = () => {
           if (idx < 0) {
-            // Done — render first frame at full res and clean up
+            // Done — seek video to 0 for next forward play, clean up frames
             vid.currentTime = 0;
-            renderFrame(false);
             frames.forEach(b => b.close());
             capturedFramesRef.current = [];
             setIsAnimating(false);
