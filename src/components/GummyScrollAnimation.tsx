@@ -33,40 +33,83 @@ export default function GummyScrollAnimation() {
   const mobile = useRef(false);
   useEffect(() => { mobile.current = isMobile(); }, []);
 
-  // Fallback: autoplay video when section is in view (mobile) or scrub by scroll (desktop)
+  // Mobile fallback: scroll-driven canvas rendering with black background removal
   useEffect(() => {
     if (!useFallback) return;
     const vid = videoRef.current;
-    if (!vid) return;
+    const canvas = canvasRef.current;
+    if (!vid || !canvas) return;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return;
 
-    // No spinner for mobile — video will autoplay when visible
-    setIsLoading(false);
+    // Size canvas to parent (half res on mobile for chroma key performance)
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      const scale = mobile.current ? 0.5 : (window.devicePixelRatio || 1);
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+    };
+    resize();
+    window.addEventListener("resize", resize);
 
-    if (mobile.current) {
-      // Mobile: autoplay when scrolled into view, pause when out
-      vid.loop = true;
-      vid.playbackRate = 0.8;
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            vid.play().catch(() => {});
-          } else {
-            vid.pause();
-          }
-        },
-        { threshold: 0.2 }
-      );
-      if (containerRef.current) observer.observe(containerRef.current);
-      return () => observer.disconnect();
-    }
+    const renderVideoFrame = () => {
+      if (vid.videoWidth === 0) return;
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const fw = vid.videoWidth;
+      const fh = vid.videoHeight;
+      const s = Math.max(cw / fw, ch / fh);
+      const sw = fw * s;
+      const sh = fh * s;
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(vid, (cw - sw) / 2, (ch - sh) / 2, sw, sh);
+      // Remove black background
+      const imageData = ctx.getImageData(0, 0, cw, ch);
+      const data = imageData.data;
+      for (let p = 0; p < data.length; p += 4) {
+        const r = data[p], g = data[p + 1], b = data[p + 2];
+        const brightness = (r + g + b) / 3;
+        if (brightness < 25) {
+          data[p + 3] = 0;
+        } else if (brightness < 60) {
+          data[p + 3] = Math.min(255, (brightness - 25) * (255 / 35));
+        }
+      }
+      ctx.putImageData(imageData, 0, 0);
+    };
 
-    // Desktop fallback: scrub by scroll position
+    // Force iOS to buffer the video, then render first frame
+    let ready = false;
+    const onLoaded = () => {
+      ready = true;
+      setIsLoading(false);
+      renderVideoFrame();
+    };
+    vid.addEventListener("loadeddata", onLoaded, { once: true });
+    vid.play().then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
+
+    // Render on each completed seek
+    const onSeeked = () => renderVideoFrame();
+    vid.addEventListener("seeked", onSeeked);
+
+    // Seek video on scroll
     const unsubscribe = scrollYProgress.on("change", (progress) => {
-      if (vid.duration && !isNaN(vid.duration)) {
+      if (ready && vid.duration && !isNaN(vid.duration)) {
         vid.currentTime = progress * vid.duration;
       }
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribe();
+      vid.removeEventListener("loadeddata", onLoaded);
+      vid.removeEventListener("seeked", onSeeked);
+      window.removeEventListener("resize", resize);
+    };
   }, [useFallback, scrollYProgress]);
 
   // Desktop: extract frames with black background removal
@@ -265,25 +308,21 @@ export default function GummyScrollAnimation() {
           </div>
         )}
 
-        {/* Desktop: canvas-based frame rendering */}
-        {!useFallback && (
-          <canvas
-            ref={canvasRef}
-            className="absolute top-0 left-0"
-          />
-        )}
+        {/* Hidden video source for mobile scroll-driven rendering */}
+        <video
+          ref={videoRef}
+          src={gummyScroll.videoSrc}
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+        />
 
-        {/* Mobile fallback: direct video scrub */}
-        {useFallback && (
-          <video
-            ref={videoRef}
-            src={gummyScroll.videoSrc}
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
+        {/* Canvas for both desktop (pre-extracted frames) and mobile (live rendering) */}
+        <canvas
+          ref={canvasRef}
+          className="absolute top-0 left-0"
+        />
 
         {/* Overlay text */}
         <motion.div
