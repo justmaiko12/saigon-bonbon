@@ -188,9 +188,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     seekTargets.push(0);
 
     let stepIdx = 0;
-    startRenderLoop();
 
-    // Timeout fallback if seeking stalls on mobile
+    // Timeout fallback if seeking stalls
     const fallbackTimer = setTimeout(() => {
       if (reverseListenerRef.current) {
         vid.removeEventListener('seeked', onSeeked);
@@ -215,9 +214,22 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       }
     };
 
-    reverseListenerRef.current = onSeeked;
-    vid.addEventListener('seeked', onSeeked);
-    vid.currentTime = seekTargets[0];
+    const beginReverse = () => {
+      startRenderLoop();
+      reverseListenerRef.current = onSeeked;
+      vid.addEventListener('seeked', onSeeked);
+      vid.currentTime = seekTargets[0];
+    };
+
+    // iOS: after video ends, seeking may not work — play/pause to reset to seekable state
+    if (isMobileDevice) {
+      vid.play().then(() => {
+        vid.pause();
+        beginReverse();
+      }).catch(() => beginReverse());
+    } else {
+      beginReverse();
+    }
   };
 
   const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
