@@ -17,6 +17,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const renderLoopRef = useRef<number | null>(null);
   const reverseListenerRef = useRef<(() => void) | null>(null);
   const isRenderingRef = useRef(false);
+  const capturedFramesRef = useRef<ImageBitmap[]>([]);
+  const captureIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const touchStartX = useRef<number | null>(null);
   const { isEditing } = useEdit();
 
@@ -82,7 +84,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     if (isInView) setBgColor(flavors[currentIndex].bg);
   }, [currentIndex, isInView, setBgColor]);
 
-  // Cleanup render loop and listeners on unmount
+  // Cleanup render loop, listeners, and captured frames on unmount
   useEffect(() => {
     return () => {
       isRenderingRef.current = false;
@@ -90,6 +92,9 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       if (reverseListenerRef.current && videoRef.current) {
         videoRef.current.removeEventListener('seeked', reverseListenerRef.current);
       }
+      if (captureIntervalRef.current) { clearInterval(captureIntervalRef.current); captureIntervalRef.current = null; }
+      capturedFramesRef.current.forEach(b => b.close());
+      capturedFramesRef.current = [];
     };
   }, []);
 
@@ -134,14 +139,32 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     setIsFlipped(true); setIsAnimating(true);
     cleanupReverse();
     const vid = videoRef.current;
+    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (vid && activeFlavor.video) {
-      vid.onended = () => { stopRenderLoop(); setIsAnimating(false); };
+      // Clear previous captured frames
+      capturedFramesRef.current.forEach(b => b.close());
+      capturedFramesRef.current = [];
+      if (captureIntervalRef.current) clearInterval(captureIntervalRef.current);
+
+      vid.onended = () => {
+        // Stop frame capture
+        if (captureIntervalRef.current) { clearInterval(captureIntervalRef.current); captureIntervalRef.current = null; }
+        stopRenderLoop();
+        setIsAnimating(false);
+      };
       vid.playbackRate = 2.6;
 
-      // Don't set currentTime = 0 if already there (no-op in some browsers).
-      // After handleFlipToFront or initial load, video is already at 0.
       const doPlay = () => {
         startRenderLoop();
+        // Mobile: capture frames during forward play for smooth reverse later
+        if (isMobileDevice && canvasRef.current) {
+          captureIntervalRef.current = setInterval(() => {
+            const c = canvasRef.current;
+            if (c && c.width > 0) {
+              createImageBitmap(c).then(bmp => capturedFramesRef.current.push(bmp)).catch(() => {});
+            }
+          }, 60);
+        }
         vid.play().catch(() => {});
       };
 
@@ -180,39 +203,42 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
 
     const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // Mobile: CSS scale transition — iOS seeking is unreliable for frame-by-frame reverse
+    // Mobile: play captured frames in reverse (no iOS seeking needed)
     if (isMobileDevice) {
-      setIsAnimating(true);
+      const frames = capturedFramesRef.current;
       const canvas = canvasRef.current;
-      // Scale down + fade out
-      if (canvas) {
-        canvas.style.transition = 'transform 0.25s ease-in, opacity 0.25s ease-in';
-        canvas.style.transform = 'scale(0.85)';
-        canvas.style.opacity = '0';
-      }
-      setTimeout(() => {
-        // Seek to first frame while hidden
-        vid.currentTime = 0;
-        const showFirstFrame = () => {
-          stopRenderLoop();
-          renderFrame(false);
-          // Scale back up + fade in
-          if (canvas) {
-            canvas.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-            canvas.style.transform = 'scale(1)';
-            canvas.style.opacity = '1';
-            setTimeout(() => {
-              if (canvas) canvas.style.transition = '';
-              setIsAnimating(false);
-            }, 300);
-          } else {
+      const ctx = canvas?.getContext('2d');
+
+      if (frames.length > 0 && canvas && ctx) {
+        setIsAnimating(true);
+        stopRenderLoop();
+        let idx = frames.length - 1;
+        const playReverse = () => {
+          if (idx < 0) {
+            // Done — render first frame at full res and clean up
+            vid.currentTime = 0;
+            renderFrame(false);
+            frames.forEach(b => b.close());
+            capturedFramesRef.current = [];
             setIsAnimating(false);
+            return;
           }
+          const cw = canvas.width;
+          const ch = canvas.height;
+          const f = frames[idx];
+          const scale = Math.max(cw / f.width, ch / f.height);
+          ctx.clearRect(0, 0, cw, ch);
+          ctx.drawImage(f, (cw - f.width * scale) / 2, (ch - f.height * scale) / 2, f.width * scale, f.height * scale);
+          idx--;
+          requestAnimationFrame(playReverse);
         };
-        vid.addEventListener('seeked', showFirstFrame, { once: true });
-        // Fallback if seeked doesn't fire
-        setTimeout(showFirstFrame, 400);
-      }, 250);
+        playReverse();
+      } else {
+        // No frames captured — just reset
+        vid.currentTime = 0;
+        stopRenderLoop();
+        setIsAnimating(false);
+      }
       return;
     }
 
@@ -257,8 +283,9 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     vid.currentTime = seekTargets[0];
   };
 
-  const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
-  const prev = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length); };
+  const clearCapturedFrames = () => { if (captureIntervalRef.current) { clearInterval(captureIntervalRef.current); captureIntervalRef.current = null; } capturedFramesRef.current.forEach(b => b.close()); capturedFramesRef.current = []; };
+  const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); clearCapturedFrames(); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
+  const prev = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); clearCapturedFrames(); setCurrentIndex((prev) => (prev - 1 + flavors.length) % flavors.length); };
 
   return (
     <section
