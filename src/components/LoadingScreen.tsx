@@ -2,6 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { heroVideo, gummyScroll, flavors } from "@/site-content";
+
+// Preload all video assets into browser cache
+function preloadVideos(): Promise<void> {
+  const urls = [
+    heroVideo.src,
+    gummyScroll.videoSrc,
+    ...flavors.map(f => f.video).filter(Boolean),
+  ] as string[];
+
+  return Promise.all(
+    urls.map(url => fetch(url).catch(() => {}))
+  ).then(() => {});
+}
 
 export default function LoadingScreen({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
@@ -11,12 +25,13 @@ export default function LoadingScreen({ children }: { children: React.ReactNode 
     let cancelled = false;
 
     const fontsReady = document.fonts?.ready ?? Promise.resolve();
-    // Minimum 800ms so the screen doesn't flash, max 3s so it doesn't hang
+    const videosReady = preloadVideos();
+    // Minimum 800ms so the screen doesn't flash, max 6s for slow connections
     const minWait = new Promise<void>((r) => setTimeout(r, 800));
-    const maxWait = new Promise<void>((r) => setTimeout(r, 3000));
+    const maxWait = new Promise<void>((r) => setTimeout(r, 6000));
 
     Promise.race([
-      Promise.all([fontsReady, minWait]),
+      Promise.all([fontsReady, videosReady, minWait]),
       maxWait,
     ]).then(() => {
       if (cancelled) return;

@@ -89,11 +89,6 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     if (isInView) setBgColor(flavors[currentIndex].bg);
   }, [currentIndex, isInView, setBgColor]);
 
-  // Preload all flavor videos into browser cache to eliminate first-flip lag
-  useEffect(() => {
-    flavors.forEach(f => { if (f.video) fetch(f.video).catch(() => {}); });
-  }, []);
-
   // Cleanup render loop, listeners, and captured frames on unmount
   useEffect(() => {
     return () => {
