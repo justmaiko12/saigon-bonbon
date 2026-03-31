@@ -26,17 +26,22 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   const isInView = useInView(ref, { margin: "-40% 0px" });
 
   const chromaKey = useCallback((data: Uint8ClampedArray) => {
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i], g = data[i + 1], b = data[i + 2];
-      const maxRG = r > g ? r : g; // avoid Math.max for speed
+    const buf32 = new Uint32Array(data.buffer);
+    for (let i = 0; i < buf32.length; i++) {
+      const px = buf32[i];
+      const r = px & 0xFF;
+      const g = (px >> 8) & 0xFF;
+      const b = (px >> 16) & 0xFF;
+      const maxRG = r > g ? r : g;
       const blueDom = b - maxRG;
       if (blueDom > 60) {
-        data[i + 3] = 0;
+        buf32[i] = px & 0x00FFFFFF; // alpha = 0
       } else if (blueDom > 10) {
-        const t = (blueDom - 10) * 0.02; // /50
-        data[i] = r + (220 - r) * t | 0;
-        data[i + 1] = g + (90 - g) * t | 0;
-        data[i + 2] = b - blueDom * t | 0;
+        const t = (blueDom - 10) * 0.02;
+        const nr = r + (220 - r) * t | 0;
+        const ng = g + (90 - g) * t | 0;
+        const nb = b - blueDom * t | 0;
+        buf32[i] = (0xFF << 24) | (nb << 16) | (ng << 8) | nr;
       }
     }
   }, []);
@@ -83,6 +88,11 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
   useEffect(() => {
     if (isInView) setBgColor(flavors[currentIndex].bg);
   }, [currentIndex, isInView, setBgColor]);
+
+  // Preload all flavor videos into browser cache to eliminate first-flip lag
+  useEffect(() => {
+    flavors.forEach(f => { if (f.video) fetch(f.video).catch(() => {}); });
+  }, []);
 
   // Cleanup render loop, listeners, and captured frames on unmount
   useEffect(() => {
@@ -163,7 +173,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
             if (c && c.width > 0) {
               createImageBitmap(c).then(bmp => capturedFramesRef.current.push(bmp)).catch(() => {});
             }
-          }, 60);
+          }, 100);
         }
         vid.play().catch(() => {});
       };

@@ -42,13 +42,13 @@ export default function GummyScrollAnimation() {
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
-    // Size canvas to parent (1x CSS pixels on mobile, retina on desktop)
+    // Size canvas to parent (0.75x CSS on mobile for perf, retina on desktop)
     const resize = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
       const w = parent.clientWidth;
       const h = parent.clientHeight;
-      const dpr = mobile.current ? 1 : (window.devicePixelRatio || 1);
+      const dpr = mobile.current ? 0.75 : (window.devicePixelRatio || 1);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       canvas.style.width = w + "px";
@@ -68,16 +68,19 @@ export default function GummyScrollAnimation() {
       const sh = fh * s;
       ctx.clearRect(0, 0, cw, ch);
       ctx.drawImage(vid, (cw - sw) / 2, (ch - sh) / 2, sw, sh);
-      // Remove black background
+      // Remove black background (Uint32Array for fewer memory accesses)
       const imageData = ctx.getImageData(0, 0, cw, ch);
-      const data = imageData.data;
-      for (let p = 0; p < data.length; p += 4) {
-        const r = data[p], g = data[p + 1], b = data[p + 2];
+      const buf32 = new Uint32Array(imageData.data.buffer);
+      for (let i = 0; i < buf32.length; i++) {
+        const px = buf32[i];
+        const r = px & 0xFF;
+        const g = (px >> 8) & 0xFF;
+        const b = (px >> 16) & 0xFF;
         const brightness = (r + g + b) / 3;
         if (brightness < 45) {
-          data[p + 3] = 0;
+          buf32[i] = px & 0x00FFFFFF;
         } else if (brightness < 90) {
-          data[p + 3] = Math.min(255, (brightness - 45) * (255 / 45));
+          buf32[i] = (Math.min(255, (brightness - 45) * (255 / 45)) << 24) | (px & 0x00FFFFFF);
         }
       }
       ctx.putImageData(imageData, 0, 0);
@@ -97,11 +100,14 @@ export default function GummyScrollAnimation() {
     const onSeeked = () => renderVideoFrame();
     vid.addEventListener("seeked", onSeeked);
 
-    // Seek video on scroll
+    // Seek video on scroll (throttled to ~30fps to reduce chroma key work)
+    let lastSeekTime = 0;
     const unsubscribe = scrollYProgress.on("change", (progress) => {
-      if (ready && vid.duration && !isNaN(vid.duration)) {
-        vid.currentTime = progress * vid.duration;
-      }
+      if (!ready || !vid.duration || isNaN(vid.duration)) return;
+      const now = performance.now();
+      if (now - lastSeekTime < 33) return;
+      lastSeekTime = now;
+      vid.currentTime = progress * vid.duration;
     });
 
     return () => {
@@ -322,6 +328,7 @@ export default function GummyScrollAnimation() {
         <canvas
           ref={canvasRef}
           className="absolute top-0 left-0"
+          style={{ willChange: 'contents' }}
         />
 
         {/* Overlay text */}
