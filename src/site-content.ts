@@ -78,7 +78,7 @@ export const storySections = [
 export const gummyScroll = {
   heading: "NOW IT TAKES SHAPE.",
   subheading: "THE LÂN, REIMAGINED IN GUMMY FORM.",
-  videoSrc: "/assets/gummy-scroll.mp4",
+  videoSrc: "/assets/gummy-scroll-60fps.mp4",
 };
 
 // ─── NUTRITION HIGHLIGHTS ──────────────────────────────────
