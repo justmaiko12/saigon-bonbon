@@ -179,8 +179,46 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     }
 
     const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Mobile: CSS scale transition — iOS seeking is unreliable for frame-by-frame reverse
+    if (isMobileDevice) {
+      setIsAnimating(true);
+      const canvas = canvasRef.current;
+      // Scale down + fade out
+      if (canvas) {
+        canvas.style.transition = 'transform 0.25s ease-in, opacity 0.25s ease-in';
+        canvas.style.transform = 'scale(0.85)';
+        canvas.style.opacity = '0';
+      }
+      setTimeout(() => {
+        // Seek to first frame while hidden
+        vid.currentTime = 0;
+        const showFirstFrame = () => {
+          stopRenderLoop();
+          renderFrame(false);
+          // Scale back up + fade in
+          if (canvas) {
+            canvas.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+            canvas.style.transform = 'scale(1)';
+            canvas.style.opacity = '1';
+            setTimeout(() => {
+              if (canvas) canvas.style.transition = '';
+              setIsAnimating(false);
+            }, 300);
+          } else {
+            setIsAnimating(false);
+          }
+        };
+        vid.addEventListener('seeked', showFirstFrame, { once: true });
+        // Fallback if seeked doesn't fire
+        setTimeout(showFirstFrame, 400);
+      }, 250);
+      return;
+    }
+
+    // Desktop: frame-by-frame reverse seek
     const endPos = vid.currentTime > 0.1 ? vid.currentTime : totalDuration;
-    const steps = isMobileDevice ? 10 : 20;
+    const steps = 20;
     const seekTargets: number[] = [];
     for (let s = steps - 1; s >= 0; s--) {
       seekTargets.push((endPos * s) / steps);
@@ -188,8 +226,8 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
     seekTargets.push(0);
 
     let stepIdx = 0;
+    startRenderLoop();
 
-    // Timeout fallback if seeking stalls
     const fallbackTimer = setTimeout(() => {
       if (reverseListenerRef.current) {
         vid.removeEventListener('seeked', onSeeked);
@@ -198,7 +236,7 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       vid.currentTime = 0;
       stopRenderLoop();
       setIsAnimating(false);
-    }, isMobileDevice ? 2000 : 5000);
+    }, 5000);
 
     const onSeeked = () => {
       stepIdx++;
@@ -214,22 +252,9 @@ export default function ProductShowcase({ setBgColor }: { setBgColor: (color: st
       }
     };
 
-    const beginReverse = () => {
-      startRenderLoop();
-      reverseListenerRef.current = onSeeked;
-      vid.addEventListener('seeked', onSeeked);
-      vid.currentTime = seekTargets[0];
-    };
-
-    // iOS: after video ends, seeking may not work — play/pause to reset to seekable state
-    if (isMobileDevice) {
-      vid.play().then(() => {
-        vid.pause();
-        beginReverse();
-      }).catch(() => beginReverse());
-    } else {
-      beginReverse();
-    }
+    reverseListenerRef.current = onSeeked;
+    vid.addEventListener('seeked', onSeeked);
+    vid.currentTime = seekTargets[0];
   };
 
   const next = () => { setIsFlipped(false); setIsAnimating(false); stopRenderLoop(); cleanupReverse(); setCurrentIndex((prev) => (prev + 1) % flavors.length); };
