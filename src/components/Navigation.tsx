@@ -64,7 +64,7 @@ export default function Navigation() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-lg bg-white/10 backdrop-blur-2xl rounded-full px-5 py-2 flex items-center gap-6 shadow-lg border border-white/15"
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] w-auto max-w-lg bg-white/10 backdrop-blur-2xl rounded-full px-5 py-2 flex items-center gap-6 shadow-lg border border-white/15 pointer-events-auto"
           >
             <button onClick={(e) => handleNav(e, { target: 'top' })} className="relative w-24 h-6 hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0">
               <EditableImage id="nav-logo-sticky" src={nav.logo} alt="Saigon Bonbon Logo" fill className="object-contain object-left" />
