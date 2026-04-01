@@ -46,7 +46,7 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
       >
         {hasDiscount && (
           <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-3 py-1">
-            <span className="text-[10px] font-bold tracking-widest text-white uppercase">20% Off</span>
+            <span className="text-[10px] font-bold tracking-widest text-white uppercase">20% Exclusive</span>
           </div>
         )}
 
@@ -58,7 +58,7 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
         </EditableText>
 
         {hasDiscount && (
-          <p className="text-white/60 text-[11px] font-bold tracking-[0.2em] uppercase mb-8">Early Supporter Pricing</p>
+          <p className="text-white/60 text-[11px] font-bold tracking-[0.2em] uppercase mb-8">Exclusive Launch Pricing</p>
         )}
 
         <div className="w-full relative h-[250px] md:h-[300px] mb-10">
