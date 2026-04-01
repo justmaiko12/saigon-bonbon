@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react";
 
-const DISCOUNT_CODE = "EARLYBIRD20";
+const DISCOUNT_CODE = "LAUNCH20-EAW8HRANJ3TW";
 
 interface DiscountContextType {
   hasDiscount: boolean;

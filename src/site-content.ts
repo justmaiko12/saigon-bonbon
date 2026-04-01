@@ -151,14 +151,14 @@ export const shop = {
     title: "SIGNATURE FLAVORS",
     image: "/assets/3_pack-transparent.png",
     price: "$19.99",
-    buttonText: "ADD TO CART",
+    buttonText: "BUY",
   },
   sixPack: {
     label: "6-PACK",
     title: "SIGNATURE FLAVORS",
     image: "/assets/6_pack-transparent.png",
     price: "$39.98",
-    buttonText: "ADD TO CART",
+    buttonText: "BUY",
   },
   badges: [
     {
