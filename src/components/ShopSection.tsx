@@ -30,9 +30,13 @@ function PackCard({ pack, id, checkoutUrl, freeShipping }: { pack: typeof shop.t
       return;
     }
     setIsLoading(true);
-    // Append discount code to checkout URL for QR visitors
-    const url = hasDiscount ? `${checkoutUrl}?discount=${discountCode}` : checkoutUrl;
-    window.location.href = url;
+    // Use Shopify's /discount/ route to reliably apply code before cart redirect
+    if (hasDiscount) {
+      const cartPath = new URL(checkoutUrl).pathname;
+      window.location.href = `https://saigon-bonbon.myshopify.com/discount/${discountCode}?redirect=${cartPath}`;
+    } else {
+      window.location.href = checkoutUrl;
+    }
   };
 
   return (
