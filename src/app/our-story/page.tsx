@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import Background from "@/components/Background";
 import Footer from "@/components/Footer";
 import { EditProvider } from "@/components/EditMode";
+import { DiscountProvider } from "@/lib/discount";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -40,6 +41,7 @@ export default function OurStoryPage() {
   const [bgColor, setBgColor] = useState("linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)");
 
   return (
+    <DiscountProvider hasDiscount={false}>
     <EditProvider>
       <main className="relative min-h-screen">
         <Background color={bgColor} />
@@ -154,5 +156,6 @@ export default function OurStoryPage() {
         <Footer setBgColor={setBgColor} />
       </main>
     </EditProvider>
+    </DiscountProvider>
   );
 }

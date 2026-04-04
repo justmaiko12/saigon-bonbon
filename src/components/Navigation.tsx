@@ -5,11 +5,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { nav } from "@/site-content";
 import { EditableText, EditableImage } from "@/components/EditMode";
+import { useDiscount } from "@/lib/discount";
 
 export default function Navigation() {
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
+  const { hasDiscount } = useDiscount();
+  const basePath = hasDiscount ? "/qr" : "";
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 150);
@@ -18,10 +21,10 @@ export default function Navigation() {
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, link: { target: string; isPage?: boolean }) => {
     e.preventDefault();
     if (link.isPage) {
-      router.push(link.target);
-    } else if (window.location.pathname !== "/") {
+      router.push(`${basePath}${link.target}`);
+    } else if (window.location.pathname !== "/" && window.location.pathname !== "/qr") {
       // On a subpage — navigate back to homepage with hash
-      router.push(link.target === "top" ? "/" : `/#${link.target}`);
+      router.push(link.target === "top" ? `${basePath}/` : `${basePath}/#${link.target}`);
     } else if (link.target === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
