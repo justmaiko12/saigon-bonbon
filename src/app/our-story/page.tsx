@@ -47,7 +47,7 @@ export default function OurStoryPage() {
 
         {/* Hero / Intro */}
         <section className="relative pt-32 md:pt-40 pb-12 px-6">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -76,7 +76,7 @@ export default function OurStoryPage() {
 
         {/* Founders Heading */}
         <section className="relative pt-12 md:pt-20 px-6">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
