@@ -19,7 +19,7 @@ const SALE_PRICES: Record<string, string> = {
   "$39.98": "$31.99",
 };
 
-function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: string; checkoutUrl?: string }) {
+function PackCard({ pack, id, checkoutUrl, freeShipping }: { pack: typeof shop.threePack; id: string; checkoutUrl?: string; freeShipping?: boolean }) {
   const [isLoading, setIsLoading] = useState(false);
   const { hasDiscount, discountCode } = useDiscount();
   const salePrice = SALE_PRICES[pack.price] || pack.price;
@@ -47,6 +47,20 @@ function PackCard({ pack, id, checkoutUrl }: { pack: typeof shop.threePack; id: 
         {hasDiscount && (
           <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-3 py-1">
             <span className="text-[10px] font-bold tracking-widest text-white uppercase">20% Exclusive</span>
+          </div>
+        )}
+
+        {freeShipping && (
+          <div className="absolute top-4 left-4 z-10">
+            <div className="bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full px-3.5 py-1.5 shadow-lg shadow-emerald-500/30 flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="3" width="15" height="13" rx="2"/>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <span className="text-[10px] font-bold tracking-wider text-white uppercase">Free Shipping</span>
+            </div>
           </div>
         )}
 
@@ -114,7 +128,7 @@ export default function ShopSection({ variant = "full" }: { variant?: "full" | "
       <div className="w-full max-w-5xl">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           <PackCard pack={shop.threePack} id="3pack" checkoutUrl={threePack?.checkoutUrl} />
-          <PackCard pack={shop.sixPack} id="6pack" checkoutUrl={sixPack?.checkoutUrl} />
+          <PackCard pack={shop.sixPack} id="6pack" checkoutUrl={sixPack?.checkoutUrl} freeShipping />
         </div>
 
         {/* Badges — triangle on mobile (1 top centered, 2 bottom), row on desktop */}
