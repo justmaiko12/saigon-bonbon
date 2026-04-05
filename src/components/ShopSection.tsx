@@ -55,15 +55,26 @@ function PackCard({ pack, id, checkoutUrl, freeShipping }: { pack: typeof shop.t
         )}
 
         {freeShipping && (
-          <div className="absolute top-4 left-4 z-10">
-            <div className="bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full px-3.5 py-1.5 shadow-lg shadow-emerald-500/30 flex items-center gap-1.5">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="1" y="3" width="15" height="13" rx="2"/>
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                <circle cx="5.5" cy="18.5" r="2.5"/>
-                <circle cx="18.5" cy="18.5" r="2.5"/>
-              </svg>
-              <span className="text-[10px] font-bold tracking-wider text-white uppercase">Free Shipping</span>
+          <div className="absolute top-0 right-0 z-10 pointer-events-none overflow-hidden rounded-tr-3xl" style={{ width: "120px", height: "120px" }}>
+            {/* Corner triangle */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(225deg, #AF0032 0%, #E51088 50%, transparent 50%)",
+              }}
+            />
+            {/* Text image on diagonal */}
+            <div
+              className="absolute"
+              style={{
+                top: "8px",
+                right: "8px",
+                width: "70px",
+                height: "70px",
+                transform: "rotate(5deg)",
+              }}
+            >
+              <img src="/assets/free-shipping-text.png" alt="Free Shipping!" className="w-full h-full object-contain drop-shadow-lg" />
             </div>
           </div>
         )}
