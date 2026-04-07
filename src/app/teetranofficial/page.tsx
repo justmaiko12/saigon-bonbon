@@ -1,27 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Background from "@/components/Background";
-
-const ORIGINAL_HTML = `
-<h1 style="text-align: center; font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">Let's Connect!</h1>
-<div style="max-width: 480px; margin: 0 auto; padding: 2rem 1rem; font-family: inherit; text-align: center;">
-<img src="https://cdn.shopify.com/s/files/1/0802/7720/9343/files/tee.jpg?v=1773481637" alt="Tee Tran" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; object-position: center top; margin-bottom: 1.25rem; display: block; margin-left: auto; margin-right: auto;">
-<p style="font-size: 1.5rem; font-weight: 600; margin: 0 0 0.25rem;">Tee Tran</p>
-<p style="margin: 0 0 1.25rem; opacity: 0.6; font-size: 0.95rem;">Founder &amp; CEO, Saigon Bonbon Inc.</p>
-<p style="margin: 0 0 2rem; font-size: 1rem; line-height: 1.7;">I founded Saigon Bonbon, a modern Vietnamese American candy brand celebrating identity through flavor and expression. Let's talk!</p>
-<a style="display: inline-block; padding: 0.75rem 2rem; background: #000; color: #fff; text-decoration: none; border-radius: 4px; font-size: 0.95rem; margin-bottom: 2.5rem;" href="https://cdn.shopify.com/s/files/1/0802/7720/9343/files/Tee_Tran_-_Saigon_Bonbon.vcf?v=1773479585" id="vcf-download">Save Contact</a>
-<p style="margin: 0 0 0.75rem; font-size: 0.85rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.08em;">Follow along</p>
-<div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-<a style="text-decoration: none; color: inherit; font-size: 0.95rem; opacity: 0.75;" href="https://linkedin.com/in/teetranofficial">LinkedIn</a>
-<a style="text-decoration: none; color: inherit; font-size: 0.95rem; opacity: 0.75;" href="https://instagram.com/teetranofficial">Instagram</a>
-<a style="text-decoration: none; color: inherit; font-size: 0.95rem; opacity: 0.75;" href="https://tiktok.com/@teetranofficial">TikTok</a>
-<a style="text-decoration: none; color: inherit; font-size: 0.95rem; opacity: 0.75;" href="https://youtube.com/@teetranofficial">YouTube</a>
-</div>
-</div>
-`;
 
 const SOCIALS = [
   { name: "LinkedIn", href: "https://linkedin.com/in/teetranofficial" },
@@ -34,46 +15,8 @@ const VCF_URL =
   "https://cdn.shopify.com/s/files/1/0802/7720/9343/files/Tee_Tran_-_Saigon_Bonbon.vcf?v=1773479585";
 
 export default function TeeTranContactPage() {
-  const [version, setVersion] = useState<1 | 2>(2);
-
   return (
-    <main className="relative min-h-screen">
-      {/* Version toggle */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-0.5 rounded-full bg-black/60 p-1 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-xl border border-white/10 shadow-lg">
-        <button
-          onClick={() => setVersion(1)}
-          className={`px-3.5 py-1.5 rounded-full transition-all duration-300 ${
-            version === 1 ? "bg-white text-black shadow" : "hover:text-white/80"
-          }`}
-        >
-          Original
-        </button>
-        <button
-          onClick={() => setVersion(2)}
-          className={`px-3.5 py-1.5 rounded-full transition-all duration-300 ${
-            version === 2 ? "bg-white text-black shadow" : "hover:text-white/80"
-          }`}
-        >
-          Brand
-        </button>
-      </div>
-
-      {version === 1 ? <OriginalVersion /> : <BrandVersion />}
-    </main>
-  );
-}
-
-function OriginalVersion() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-16 text-neutral-900">
-      <div dangerouslySetInnerHTML={{ __html: ORIGINAL_HTML }} />
-    </div>
-  );
-}
-
-function BrandVersion() {
-  return (
-    <div className="relative min-h-screen overflow-hidden">
+    <main className="relative min-h-screen overflow-hidden">
       <Background color="linear-gradient(180deg, #FF107A 0%, #FF5E00 100%)" />
 
       {/* Subtle grain overlay */}
@@ -97,7 +40,7 @@ function BrandVersion() {
             <div className="absolute -inset-2 rounded-full bg-white/20 blur-xl" />
             <div className="relative h-full w-full overflow-hidden rounded-full ring-[3px] ring-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
               <Image
-                src="/assets/tee-portrait.jpg"
+                src="/assets/tee-official.jpg"
                 alt="Tee Tran"
                 fill
                 className="object-cover object-top"
@@ -209,6 +152,6 @@ function BrandVersion() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
