@@ -21,6 +21,7 @@ const SALE_PRICES: Record<string, string> = {
 
 function PackCard({ pack, id, checkoutUrl, freeShipping }: { pack: typeof shop.threePack; id: string; checkoutUrl?: string; freeShipping?: boolean }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [qty, setQty] = useState(1);
   const { hasDiscount, discountCode } = useDiscount();
   const salePrice = SALE_PRICES[pack.price] || pack.price;
 
@@ -30,12 +31,14 @@ function PackCard({ pack, id, checkoutUrl, freeShipping }: { pack: typeof shop.t
       return;
     }
     setIsLoading(true);
+    // Swap the hardcoded :1 quantity in the Shopify cart URL with the selected qty
+    const urlWithQty = checkoutUrl.replace(/:\d+$/, `:${qty}`);
     // Use Shopify's /discount/ route to reliably apply code before cart redirect
     if (hasDiscount) {
-      const cartPath = new URL(checkoutUrl).pathname;
+      const cartPath = new URL(urlWithQty).pathname;
       window.location.href = `https://saigon-bonbon.myshopify.com/discount/${discountCode}?redirect=${cartPath}`;
     } else {
-      window.location.href = checkoutUrl;
+      window.location.href = urlWithQty;
     }
   };
 
@@ -100,22 +103,45 @@ function PackCard({ pack, id, checkoutUrl, freeShipping }: { pack: typeof shop.t
           />
         </div>
 
-        <div className="flex items-center justify-between w-full mt-auto">
-          {hasDiscount ? (
-            <div className="flex items-baseline gap-3">
-              <span className="text-white text-2xl font-bold">{salePrice}</span>
-              <span className="text-white/40 text-base line-through">{pack.price}</span>
-            </div>
-          ) : (
-            <span className="text-white/90 text-2xl font-medium">{pack.price}</span>
-          )}
-          <button
-            onClick={handleBuy}
-            disabled={isLoading}
-            className="bg-white/20 hover:bg-white text-white hover:text-black transition-colors px-6 py-3 rounded-full font-bold text-xs tracking-widest border border-white/30 disabled:opacity-50"
-          >
-            {isLoading ? "..." : pack.buttonText}
-          </button>
+        <div className="w-full mt-auto">
+          <div className="flex items-center justify-center gap-4 mb-5">
+            <button
+              type="button"
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+              disabled={qty <= 1}
+              aria-label="Decrease quantity"
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white text-xl font-bold leading-none flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              −
+            </button>
+            <span className="text-white font-bold text-lg min-w-[2ch] text-center tabular-nums">{qty}</span>
+            <button
+              type="button"
+              onClick={() => setQty((q) => Math.min(99, q + 1))}
+              aria-label="Increase quantity"
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white text-xl font-bold leading-none flex items-center justify-center transition-colors"
+            >
+              +
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between w-full">
+            {hasDiscount ? (
+              <div className="flex items-baseline gap-3">
+                <span className="text-white text-2xl font-bold">{salePrice}</span>
+                <span className="text-white/40 text-base line-through">{pack.price}</span>
+              </div>
+            ) : (
+              <span className="text-white/90 text-2xl font-medium">{pack.price}</span>
+            )}
+            <button
+              onClick={handleBuy}
+              disabled={isLoading}
+              className="bg-white/20 hover:bg-white text-white hover:text-black transition-colors px-6 py-3 rounded-full font-bold text-xs tracking-widest border border-white/30 disabled:opacity-50"
+            >
+              {isLoading ? "..." : pack.buttonText}
+            </button>
+          </div>
         </div>
       </motion.div>
     </Draggable>
