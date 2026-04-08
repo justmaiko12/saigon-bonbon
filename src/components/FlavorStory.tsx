@@ -29,9 +29,9 @@ export default function FlavorStory({ id, heading, body, image, imageAlt, flippe
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             viewport={{ once: true, margin: "-15%" }}
-            className={`relative max-w-[55%] md:max-w-[50%] ${flipped ? "ml-auto" : compact ? "ml-[8%] md:ml-[12%]" : ""}`}
+            className={`relative max-w-[80%] md:max-w-[50%] ${flipped ? "ml-auto" : compact ? "ml-[8%] md:ml-[12%]" : ""}`}
           >
-            <h2 className={`font-bolero iridescent-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-wide whitespace-pre-line ${textGap || "mb-8"}`}>
+            <h2 className={`font-bolero iridescent-text text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-wide whitespace-pre-line ${textGap || "mb-8"}`}>
               {heading}
             </h2>
             <div className="text-white/85 text-sm md:text-base leading-relaxed font-medium space-y-1">
